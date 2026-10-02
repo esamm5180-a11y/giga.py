@@ -2039,6 +2039,73 @@ Balaha.Net<!DOCTYPE html>
 setInterval(function() {
     loadInitialData();
 }, 30000);
+// نظام الكشف عن التحديثات البرمجية للكود عبر GitHub
+let lastKnownCommit = "";
+
+function checkForCodeUpdates() {
+    fetch("https://api.github.com/repos/esamm5180-a11y/giga.py/commits/main", {
+        headers: { "Accept": "application/vnd.github.v3+json" }
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data || !data.sha) return;
+        
+        const currentCommit = data.sha;
+
+        if (!lastKnownCommit) {
+            lastKnownCommit = localStorage.getItem("app_commit_version") || currentCommit;
+            localStorage.setItem("app_commit_version", lastKnownCommit);
+        }
+
+        if (currentCommit !== lastKnownCommit) {
+            showCodeUpdateAlert(currentCommit);
+        }
+    })
+    .catch(err => console.log("فحص التحديث البرمجي:", err));
+}
+
+function showCodeUpdateAlert(newCommitSha) {
+    if (document.getElementById("codeUpdateBanner")) return;
+
+    const banner = document.createElement("div");
+    banner.id = "codeUpdateBanner";
+    // تم ضبط الموضع ليكون في أعلى الشاشة بدلاً من الأسفل
+    banner.style.position = "fixed";
+    banner.style.top = "12px";
+    banner.style.left = "12px";
+    banner.style.right = "12px";
+    banner.style.zIndex = "999999";
+    banner.style.backgroundColor = "#0284c7";
+    banner.style.color = "#ffffff";
+    banner.style.padding = "10px 14px";
+    banner.style.borderRadius = "14px";
+    banner.style.boxShadow = "0 6px 20px rgba(0,0,0,0.5)";
+    banner.style.display = "flex";
+    banner.style.alignItems = "center";
+    banner.style.justifyContent = "space-between";
+    banner.style.fontSize = "12px";
+    banner.style.fontWeight = "bold";
+
+    banner.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <i class="fas fa-sparkles text-amber-300 text-base"></i>
+            <span>تحديث برمجي جديد متوفر!</span>
+        </div>
+        <button id="btnApplyUpdate" style="background: #ffffff; color: #0284c7; border: none; padding: 5px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+            تحديث الآن
+        </button>
+    `;
+
+    document.body.appendChild(banner);
+
+    document.getElementById("btnApplyUpdate").onclick = function() {
+        localStorage.setItem("app_commit_version", newCommitSha);
+        window.location.reload(true);
+    };
+}
+
+// فحص كل دقيقة
+setInterval(checkForCodeUpdates, 60000);
 
 </script>
 
