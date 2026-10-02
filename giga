@@ -1,0 +1,2041 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة إدارة ومتابعة خطوط الإنترنت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #060911;
+            --surface-1: #0d1322;
+            --surface-2: #162035;
+            --surface-glass: rgba(13, 19, 34, 0.85);
+            --accent: #2563eb;
+            --accent-glow: rgba(37, 99, 235, 0.4);
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --accent-cyan: #06b6d4;
+            --danger: #ef4444;
+            --danger-glow: rgba(239, 68, 68, 0.4);
+            --warning: #f59e0b;
+            --success: #10b981;
+            --success-glow: rgba(16, 185, 129, 0.4);
+            --telegram: #0088cc;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --radius-xl: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-xl: 0 16px 32px -10px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(37, 99, 235, 0.12) 0px, transparent 45%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+            color: var(--text-primary);
+            padding: 16px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 840px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-xl);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-gradient);
+            box-shadow: 0 4px 14px var(--accent-glow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        .brand-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-meta h1 {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-note-pill {
+            font-size: 12px;
+            color: #38bdf8;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .brand-lines-counter {
+            font-size: 11px;
+            color: #94a3b8;
+            font-weight: 700;
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .brand-lines-counter span {
+            color: #38bdf8;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-search-trigger {
+            background: var(--surface-2);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1.3;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .btn-search-trigger:hover {
+            border-color: rgba(56, 189, 248, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn {
+            border: none;
+            outline: none;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-flex {
+            flex: 1;
+        }
+
+        .btn-settings {
+            background: var(--surface-2);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            flex: 0.9;
+        }
+
+        .btn-settings:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-pay {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-pay.paid {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            border-color: #10b981 !important;
+            box-shadow: 0 0 14px var(--success-glow) !important;
+        }
+
+        .btn-extra {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+        }
+
+        .btn-history {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+
+        .btn-accent {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 3px 10px var(--accent-glow);
+            flex: 1.4;
+        }
+
+        .btn-action-icon {
+            background: var(--surface-2);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 0 14px;
+            font-size: 13px;
+            flex: 0.8;
+        }
+
+        .btn-action-icon:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-action-icon.danger:hover {
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.4);
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .alert-hub {
+            display: none;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .alert-hub.active {
+            display: block;
+        }
+
+        .alert-hub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .alert-hub-header h4 {
+            color: #fca5a5;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .alert-lines-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .alert-line-item {
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .alert-tag {
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .alert-tag.gb {
+            background: rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .alert-tag.days {
+            background: rgba(245, 158, 11, 0.25);
+            color: #fde68a;
+        }
+
+        .hero-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 20px 22px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .live-chip {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse-dot 1.2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        .hero-balance {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            margin: 6px 0 10px 0;
+        }
+
+        .hero-balance .number {
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+        }
+
+        .hero-balance .unit {
+            font-size: 15px;
+            color: #94a3b8;
+            font-weight: 700;
+        }
+
+        .progress-container {
+            margin: 14px 0 12px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 100px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #3b82f6 0%, #06b6d4 100%);
+            border-radius: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .hero-details-container {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .details-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .stepper-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stepper-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .stepper-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .clickable-burn {
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
+            transition: color 0.2s;
+        }
+
+        .all-lines-card {
+            background: var(--surface-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-xl);
+            padding: 18px 20px;
+            box-shadow: var(--shadow-xl);
+            margin-bottom: 16px;
+        }
+
+        .all-lines-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            padding-bottom: 8px;
+        }
+
+        .all-lines-header h3 {
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #f8fafc;
+        }
+
+        .sort-toggle-badge {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            color: #60a5fa;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .sort-toggle-badge:hover {
+            background: rgba(59, 130, 246, 0.25);
+        }
+
+        .sort-selector-bar {
+            display: none;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 6px;
+            margin-bottom: 12px;
+        }
+
+        .sort-selector-bar.active {
+            display: grid;
+        }
+
+        .sort-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 8px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .sort-tab-btn.active {
+            background: var(--accent-gradient);
+            color: #ffffff;
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
+
+        .lines-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        .lines-table th {
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .lines-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 13px;
+        }
+
+        .lines-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+            cursor: pointer;
+        }
+
+        .status-pill {
+            padding: 3px 8px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-pill.safe {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-pill.danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-pill.paid-pending {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .app-modal {
+            background: #0f1624;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 24px 20px;
+        }
+
+        .modal-avatar-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .modal-avatar {
+            width: 50px;
+            height: 50px;
+            background: #192338;
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #60a5fa;
+            font-size: 22px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: -4px;
+            left: 0;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .form-row {
+            margin-bottom: 12px;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #151d2f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #fff;
+            outline: none;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            background: #19233a;
+        }
+
+        .form-dual-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .modal-submit-btn {
+            width: 100%;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 14px var(--accent-glow);
+            margin-top: 8px;
+        }
+
+        .settings-section-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-bottom: 14px;
+        }
+
+        .settings-section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item.extra {
+            border-right: 3px solid var(--accent-cyan);
+        }
+
+        .history-item.renewal {
+            border-right: 3px solid var(--success);
+        }
+
+        .toast-notify {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #1e293b;
+            color: #fff;
+            border: 1px solid var(--accent);
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast-notify.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <header>
+        <div class="header-top">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-wifi"></i>
+                </div>
+                <div class="brand-meta">
+                    <h1 id="headerTitle">--</h1>
+                    <div class="brand-note-pill" id="headerNote">--</div>
+                    <!-- عداد إجمالي عدد الخطوط المسجلة -->
+                    <div class="brand-lines-counter">
+                        إجمالي الخطوط: <span id="totalLinesCounter" class="mono">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-controls">
+            <div class="control-row">
+                <!-- زر البحث مكان السهم لعرض الخط وفتح البحث السريع -->
+                <button type="button" class="btn-search-trigger" id="lineSearchTriggerBtn" onclick="openSearchModal()" title="انقر للبحث واختيار خط">
+                    <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--accent-cyan); font-size: 12px;"></i>
+                        <span id="searchTriggerLabel" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">اختر الخط...</span>
+                    </div>
+                    <span style="font-size: 10px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary);">بحث</span>
+                </button>
+
+                <button class="btn btn-history" onclick="openHistoryModal()" title="سجل الشحن والتجديد">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>السجل</span>
+                </button>
+
+                <button class="btn btn-settings" onclick="openSettingsModal()" title="إعدادات النظام والنسخ الاحتياطي والمزامنة السحابية">
+                    <i class="fa-solid fa-gear"></i> <span>الإعدادات</span>
+                </button>
+            </div>
+
+            <div class="control-row">
+                <button class="btn btn-pay btn-flex" id="paySubscriptionBtn" onclick="togglePaymentStatus()">
+                    <i class="fa-solid fa-circle-check"></i> <span id="payBtnLabel">دفع الاشتراك</span>
+                </button>
+
+                <button class="btn btn-extra btn-flex" onclick="openExtraQuotaModal()" title="إضافة كوتة">
+                    <i class="fa-solid fa-plus-circle"></i> <span>كوتة إضافية</span>
+                </button>
+            </div>
+
+            <div class="control-row">
+                <button class="btn btn-accent" onclick="openAddModal()">
+                    <i class="fa-solid fa-plus"></i> إضافة خط
+                </button>
+
+                <button class="btn btn-action-icon" onclick="openEditModal()" title="تعديل الخط">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>تعديل</span>
+                </button>
+
+                <button class="btn btn-action-icon danger" onclick="onDeleteLine()" title="حذف الخط">
+                    <i class="fa-solid fa-trash"></i> <span>حذف</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="alert-hub" id="alertHubSection">
+        <div class="alert-hub-header">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> خطوط تتطلب المتابعة فوراً:</h4>
+            <span style="font-size: 11px; color: #fca5a5;" id="alertHubCount">0 خطوط</span>
+        </div>
+        <div class="alert-lines-list" id="alertLinesContainer">
+        </div>
+    </div>
+
+    <div class="hero-card">
+        <div class="hero-top">
+            <div>
+                <span class="live-chip"><span class="live-dot"></span> مباشر بالثانية</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <!-- البادج الجديد المضاف لرقم الخط في المنتصف -->
+                <span class="live-chip mono" id="heroLineBadge" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border-color: rgba(56, 189, 248, 0.35); font-weight: 800;">
+                    ------
+                </span>
+
+                <span class="live-chip" id="paymentStatusBadge" style="display: none; background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">
+                    <i class="fa-solid fa-check-double"></i> تم الدفع (جاهز للشهر الجديد)
+                </span>
+                <span class="live-chip" id="daysBadge">--</span>
+            </div>
+        </div>
+
+        <div style="color: var(--text-secondary); font-size: 12px;">الرصيد الحي المتبقي</div>
+        <div class="hero-balance">
+            <span class="number mono" id="liveBalanceDisplay">0.000</span>
+            <span class="unit">GB</span>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-header">
+                <span>نسبة الرصيد المتبقي</span>
+                <strong class="mono" id="percentageText" style="color: #38bdf8;">0.00%</strong>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFillBar"></div>
+            </div>
+        </div>
+
+        <div class="hero-details-container">
+            <div class="details-line">
+                <span id="monthlyTotalDisplay" style="font-weight: 700;">الباقة: 0 GB</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <span id="dailyBurnDisplay" class="clickable-burn" onclick="promptEditDailyRate()" title="اضغط لتعديل الرقم مباشرة">السحب: 0 GB/يوم</span>
+                    <span class="stepper-wrap">
+                        <button class="stepper-btn" onclick="stepDailyRate(-0.5)" title="إنقاص 0.5 GB">-</button>
+                        <button class="stepper-btn" onclick="stepDailyRate(+0.5)" title="زيادة 0.5 GB">+</button>
+                    </span>
+                </span>
+            </div>
+            <div class="details-line">
+                <span id="alertDaysDisplay">حد الأيام: 0 أيام</span>
+                <span id="alertGBDisplay">حد الجيجات: 0 GB</span>
+                <span id="expiryDateDisplay">الانتهاء: --</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="all-lines-card">
+        <div class="all-lines-header" onclick="toggleSortBar()">
+            <h3>
+                <i class="fa-solid fa-list-check" style="color: var(--accent);"></i>
+                <span>حالة جميع الخطوط</span>
+            </h3>
+            <div class="sort-toggle-badge" id="currentSortBadge">
+                <i class="fa-solid fa-arrow-down-wide-short"></i>
+                <span id="sortModeLabel">الأعلى سحباً</span>
+            </div>
+        </div>
+
+        <div class="sort-selector-bar" id="sortSelectorBar">
+            <button type="button" class="sort-tab-btn active" id="tab-burn" onclick="changeSortMode('burn')">
+                <i class="fa-solid fa-fire"></i> الأعلى سحباً
+            </button>
+            <button type="button" class="sort-tab-btn" id="tab-gb" onclick="changeSortMode('gb')">
+                <i class="fa-solid fa-chart-pie"></i> قرب انتهاء الجيجات
+            </button>
+            <button type="button" class="sort-tab-btn" id="tab-date" onclick="changeSortMode('date')">
+                <i class="fa-solid fa-calendar-xmark"></i> قرب انتهاء التاريخ
+            </button>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table class="lines-table">
+                <thead>
+                    <tr>
+                        <th>الخط</th>
+                        <th>الرصيد الحي (GB)</th>
+                        <th>السحب (GB/يوم)</th>
+                        <th>الأيام المتبقية</th>
+                        <th>دفع الاشتراك</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="allLinesTableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- نافذة البحث السريع عن الخطوط -->
+<div class="modal-overlay" id="searchLinesModalOverlay">
+    <div class="app-modal" style="max-width: 400px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeSearchModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+        </div>
+        <h3 style="text-align: center; font-size: 16px; margin-bottom: 12px;">البحث واختيار الخط</h3>
+
+        <div class="form-row">
+            <input type="text" id="linesSearchQuickInput" class="form-input" placeholder="اكتب اسم الخط أو رقم الخدمة..." oninput="renderQuickSearchResults(this.value)">
+        </div>
+
+        <div id="quickSearchResultsList" class="history-list" style="max-height: 240px;">
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="historyModalOverlay">
+    <div class="app-modal" style="max-width: 440px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar" style="color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+        </div>
+        <h3 style="text-align: center; font-size: 16px; margin-bottom: 4px;">سجل الباقات والشحن</h3>
+        <p style="text-align: center; font-size: 12px; color: var(--text-secondary); margin-bottom: 14px;" id="historyModalLineName">--</p>
+
+        <div id="historyListContainer" class="history-list">
+        </div>
+
+        <button type="button" class="btn btn-pay" style="width: 100%; margin-top: 14px; color: var(--danger);" onclick="clearLineHistory()">
+            <i class="fa-solid fa-trash"></i> مسح سجل هذا الخط
+        </button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="settingsModalOverlay">
+    <div class="app-modal" style="max-width: 440px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+        </div>
+        <h3 style="text-align: center; font-size: 16px; margin-bottom: 14px;">إعدادات النظام والمزامنة</h3>
+        
+        <div class="settings-section-card">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent-cyan);"></i> المزامنة الفورية بين الهواتف (سحابياً)
+            </div>
+            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
+                ضع رابط قاعدة بيانات Firebase المجانية هنا على أي هاتف لربطها فوراً:
+            </p>
+            <div class="form-row">
+                <label>رابط قاعدة بيانات Firebase URL</label>
+                <input type="text" id="firebaseUrlInput" class="form-input mono" placeholder="https://xxx-default-rtdb.firebaseio.com">
+            </div>
+            <button type="button" class="modal-submit-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); padding: 10px;" onclick="saveCloudSettings()">
+                تفعيل وحفظ المزامنة السحابية
+            </button>
+        </div>
+
+        <div class="settings-section-card">
+            <div class="settings-section-title">
+                <i class="fa-solid fa-database" style="color: var(--accent-cyan);"></i> النسخ الاحتياطي للبيانات
+            </div>
+            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
+                انسخ الكود واحفظه في ملاحظات هاتفك لضمان بقاء البيانات عند التحديث:
+            </p>
+
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <button type="button" class="btn btn-flex btn-pay" onclick="copyBackupToClipboard()">
+                    <i class="fa-solid fa-copy" style="color: var(--accent-cyan);"></i> نسخ البيانات
+                </button>
+                <button type="button" class="btn btn-flex btn-pay" onclick="applyRestoreFromInput()">
+                    <i class="fa-solid fa-paste" style="color: var(--success);"></i> استعادة المكتوب
+                </button>
+            </div>
+
+            <textarea id="backupDataArea" class="form-input mono" rows="3" style="font-size: 11px; resize: vertical;" placeholder="اضغط 'نسخ البيانات' لعرض الكود هنا، أو الصق الكود هنا ثم اضغط 'استعادة المكتوب'"></textarea>
+        </div>
+
+        <div class="settings-section-card">
+            <div class="settings-section-title">
+                <i class="fa-brands fa-telegram" style="color: var(--telegram); font-size: 16px;"></i> ربط تنبيهات تيليجرام
+            </div>
+            <div class="form-row">
+                <label>توكن البوت (Bot Token)</label>
+                <input type="text" id="tgBotTokenInput" class="form-input mono" placeholder="123456789:ABCDefgh...">
+            </div>
+            <div class="form-row">
+                <label>معرّف المحادثة (Chat ID)</label>
+                <input type="text" id="tgChatIdInput" class="form-input mono" placeholder="-100123456789">
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button type="button" class="btn btn-flex" style="background: var(--telegram); color: white;" onclick="saveTelegramSettings()">
+                    <i class="fa-solid fa-floppy-disk"></i> حفظ الربط
+                </button>
+                <button type="button" class="btn btn-flex btn-pay" onclick="testTelegramMessage()">
+                    <i class="fa-solid fa-paper-plane"></i> تجربة إرسال
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="extraQuotaModalOverlay">
+    <div class="app-modal" style="max-width: 380px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeExtraQuotaModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar" style="color: var(--accent-cyan); border-color: rgba(6, 182, 212, 0.4);">
+                <i class="fa-solid fa-plus-circle"></i>
+            </div>
+        </div>
+
+        <h3 style="text-align: center; font-size: 16px; margin-bottom: 8px;">إضافة كوتة إضافية</h3>
+        <p style="text-align: center; font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;" id="extraModalSubtitle">للخط الحالي</p>
+
+        <form onsubmit="applyQuickExtraQuota(event)">
+            <div class="form-row">
+                <label>حدد حجم الكوتة الإضافية (GB)</label>
+                <input type="number" step="any" id="quickExtraInput" class="form-input" placeholder="مثال: 20 أو 50 أو 100" required autofocus>
+            </div>
+            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                * سيتم إضافة هذه الجيجابايت فوراً وتدوينها داخل سجل الخط.
+            </p>
+            <button type="submit" class="modal-submit-btn" style="background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);">
+                تنزيل الكوتة في الرصيد
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="modal-overlay" id="appModalOverlay">
+    <div class="app-modal">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-pen-to-square"></i></button>
+            <div class="modal-avatar">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+        </div>
+
+        <h3 id="modalHeading" style="text-align: center; font-size: 16px; margin-bottom: 18px;">تعديل بيانات الخط</h3>
+
+        <form id="lineDataForm" onsubmit="saveLineData(event)">
+            <input type="hidden" id="formIndexKey" value="-1">
+
+            <div class="form-row">
+                <label>رقم / اسم الخط داخل التطبيق</label>
+                <input type="text" id="inputLineName" class="form-input" placeholder="مثال: البيت أو 040208 أو الخط 1" required>
+            </div>
+
+            <div class="form-row">
+                <label style="color: #38bdf8;">رقم خط الأرضي في WE للربط الآلي (اختياري)</label>
+                <input type="text" id="inputWeServiceNumber" class="form-input mono" placeholder="مثال: 040208xxxx كود المحافظة + الرقم">
+            </div>
+
+            <div class="form-row">
+                <label style="color: #cbd5e1;">ملاحظات / وصف إضافي (اختياري)</label>
+                <input type="text" id="inputLineNote" class="form-input" placeholder="مثال: راوتر الدور الثاني...">
+            </div>
+
+            <div class="form-row">
+                <label style="color: #38bdf8; font-weight: 700;">الرصيد الفعلي المتبقي (GB)</label>
+                <input type="number" step="any" id="inputCurrentBalance" class="form-input" style="border-color: rgba(56, 189, 248, 0.4);" placeholder="مثال: 185.5" required>
+            </div>
+
+            <div class="form-row">
+                <label>السحب اليومي المعتمد للعداد (GB/يوم)</label>
+                <input type="number" step="any" id="inputDailyManual" class="form-input" required>
+            </div>
+
+            <div class="form-row">
+                <label>الباقة الشهرية الأساسية (GB)</label>
+                <input type="number" step="any" id="inputMonthlyPackage" class="form-input" required>
+            </div>
+
+            <div class="form-dual-row">
+                <div>
+                    <label>حد الجيجات (GB)</label>
+                    <input type="number" step="any" id="inputAlertGB" class="form-input" required>
+                </div>
+                <div>
+                    <label>حد الأيام (يوم)</label>
+                    <input type="number" id="inputAlertDays" class="form-input" min="1" max="30" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>تاريخ انتهاء الاشتراك</label>
+                <input type="date" id="inputExpiryDate" class="form-input" required>
+            </div>
+
+            <button type="submit" class="modal-submit-btn" id="modalSubmitBtn">حفظ الخط</button>
+        </form>
+    </div>
+</div>
+
+<div class="toast-notify" id="toastBox">
+    <i class="fa-solid fa-circle-check" id="toastIcon" style="color: var(--success); font-size: 16px;"></i>
+    <span id="toastMsg">تم التحديث بنجاح</span>
+</div>
+
+<script>
+    const SECONDS_IN_DAY = 86400;
+    const PRIMARY_STORAGE_KEY = 'WE_NET_TRACKER_MASTER_DATA';
+    const SENT_ALERTS_KEY = 'NET_TRACKER_SENT_ALERTS_MAP';
+
+    let canSendLiveAlerts = false;
+    setTimeout(() => {
+        canSendLiveAlerts = true;
+    }, 5000);
+
+    let sentAlertsMap = JSON.parse(localStorage.getItem(SENT_ALERTS_KEY)) || {};
+
+    function showToast(msg, isError = false) {
+        const box = document.getElementById('toastBox');
+        const icon = document.getElementById('toastIcon');
+        document.getElementById('toastMsg').innerText = msg;
+        if (isError) {
+            icon.className = "fa-solid fa-circle-exclamation";
+            icon.style.color = "var(--danger)";
+        } else {
+            icon.className = "fa-solid fa-circle-check";
+            icon.style.color = "var(--success)";
+        }
+        box.classList.add('show');
+        setTimeout(() => box.classList.remove('show'), 3000);
+    }
+
+    function getOffsetDate(days) {
+        const target = new Date();
+        target.setDate(target.getDate() + days);
+        const y = target.getFullYear();
+        const m = String(target.getMonth() + 1).padStart(2, '0');
+        const d = String(target.getDate()).padStart(2, '0');
+        return `${y}-${m}-${d}`;
+    }
+
+    const initialStorage = [
+        {
+            id: "line_default_1",
+            name: "040208",
+            weServiceNumber: "",
+            note: "البيت",
+            baseBalance: 140.0,
+            dailyManual: 5.0,
+            monthlyPackage: 200.0,
+            alertGB: 20.0,
+            alertDays: 5,
+            expiryDate: getOffsetDate(14),
+            lastSyncTime: Date.now(),
+            isPaid: false,
+            history: []
+        }
+    ];
+
+    function loadSavedLinesSafely() {
+        const legacyKeys = [
+            PRIMARY_STORAGE_KEY,
+            'pro_net_lines_stepper_reorder',
+            'pro_net_lines_live_alerts',
+            'pro_net_lines_settings_fixed',
+            'pro_net_tracker_saved_lines'
+        ];
+
+        for (const key of legacyKeys) {
+            const raw = localStorage.getItem(key);
+            if (raw) {
+                try {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed.map((l, i) => ({
+                            id: l.id || `line_${Date.now()}_${i}`,
+                            name: l.name || "خط غير معروف",
+                            weServiceNumber: l.weServiceNumber || "",
+                            note: l.note || "",
+                            baseBalance: Number(l.baseBalance) || 0,
+                            dailyManual: Number(l.dailyManual) || 5,
+                            monthlyPackage: Number(l.monthlyPackage) || 200,
+                            alertGB: Number(l.alertGB) || 15,
+                            alertDays: Number(l.alertDays) || 5,
+                            expiryDate: l.expiryDate || getOffsetDate(30),
+                            lastSyncTime: Number(l.lastSyncTime) || Date.now(),
+                            isPaid: Boolean(l.isPaid),
+                            history: Array.isArray(l.history) ? l.history : []
+                        }));
+                    }
+                } catch (e) {}
+            }
+        }
+        return initialStorage;
+    }
+
+    let allLines = loadSavedLinesSafely();
+    let activeLineId = allLines[0]?.id || "";
+    let currentSortMode = 'burn';
+
+    let tgSettings = JSON.parse(localStorage.getItem('pro_net_tg_settings')) || {
+        botToken: "",
+        chatId: ""
+    };
+
+    let cloudSettings = JSON.parse(localStorage.getItem('pro_net_cloud_settings')) || {
+        firebaseUrl: ""
+    };
+
+    function getActiveLine() {
+        return allLines.find(l => l.id === activeLineId) || allLines[0] || null;
+    }
+
+    function toggleSortBar() {
+        const bar = document.getElementById('sortSelectorBar');
+        bar.classList.toggle('active');
+    }
+
+    function changeSortMode(mode) {
+        currentSortMode = mode;
+        ['burn', 'gb', 'date'].forEach(m => {
+            const el = document.getElementById(`tab-${m}`);
+            if (el) el.classList.toggle('active', m === mode);
+        });
+
+        const labels = {
+            'burn': 'الأعلى سحباً',
+            'gb': 'قرب انتهاء الجيجات',
+            'date': 'قرب انتهاء التاريخ'
+        };
+        document.getElementById('sortModeLabel').innerText = labels[mode];
+
+        sortLinesDynamically();
+        persistData();
+        buildTableStructure();
+        renderStaticDetails();
+        showToast(`تم الترتيب حسب: ${labels[mode]}`);
+    }
+
+    function sortLinesDynamically() {
+        if (currentSortMode === 'burn') {
+            allLines.sort((a, b) => (Number(b.dailyManual) || 0) - (Number(a.dailyManual) || 0));
+        } else if (currentSortMode === 'gb') {
+            allLines.sort((a, b) => getCurrentLiveBalance(a) - getCurrentLiveBalance(b));
+        } else if (currentSortMode === 'date') {
+            allLines.sort((a, b) => calculateRemainingDays(a.expiryDate) - calculateRemainingDays(b.expiryDate));
+        }
+    }
+
+    function syncToCloud() {
+        if (!cloudSettings.firebaseUrl) return;
+        const cleanUrl = cloudSettings.firebaseUrl.trim().replace(/\/$/, "");
+        const url = `${cleanUrl}/net_tracker_data.json`;
+        
+        fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(allLines)
+        }).catch(err => console.error("Cloud sync push error:", err));
+    }
+
+    function syncFromCloud() {
+        if (!cloudSettings.firebaseUrl) return;
+        const cleanUrl = cloudSettings.firebaseUrl.trim().replace(/\/$/, "");
+        const url = `${cleanUrl}/net_tracker_data.json`;
+
+        fetch(url)
+            .then(res => res.json())
+            .then(data => {
+                if (Array.isArray(data) && data.length > 0) {
+                    const cloudString = JSON.stringify(data);
+                    const localString = JSON.stringify(allLines);
+                    if (cloudString !== localString) {
+                        allLines = data.map((l, i) => ({
+                            id: l.id || `cloud_${Date.now()}_${i}`,
+                            name: l.name || "خط",
+                            weServiceNumber: l.weServiceNumber || "",
+                            note: l.note || "",
+                            baseBalance: Number(l.baseBalance) || 0,
+                            dailyManual: Number(l.dailyManual) || 5,
+                            monthlyPackage: Number(l.monthlyPackage) || 200,
+                            alertGB: Number(l.alertGB) || 15,
+                            alertDays: Number(l.alertDays) || 5,
+                            expiryDate: l.expiryDate || getOffsetDate(30),
+                            lastSyncTime: Number(l.lastSyncTime) || Date.now(),
+                            isPaid: Boolean(l.isPaid),
+                            history: Array.isArray(l.history) ? l.history : []
+                        }));
+                        if (!allLines.some(l => l.id === activeLineId)) {
+                            activeLineId = allLines[0]?.id || "";
+                        }
+                        sortLinesDynamically();
+                        persistData();
+                        buildTableStructure();
+                        renderStaticDetails();
+                    }
+                }
+            })
+            .catch(err => console.error("Cloud sync fetch error:", err));
+    }
+
+    function saveCloudSettings() {
+        cloudSettings.firebaseUrl = document.getElementById('firebaseUrlInput').value.trim();
+        localStorage.setItem('pro_net_cloud_settings', JSON.stringify(cloudSettings));
+        showToast("✅ تم حفظ وتفعيل المزامنة السحابية بنجاح!");
+        syncToCloud();
+    }
+
+    function persistData() {
+        localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
+        syncToCloud();
+    }
+
+    sortLinesDynamically();
+    persistData();
+
+    function copyBackupToClipboard() {
+        const dataJson = JSON.stringify(allLines, null, 2);
+        const area = document.getElementById('backupDataArea');
+        area.value = dataJson;
+        
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(dataJson).then(() => {
+                showToast("✅ تم نسخ كود البيانات للحافظة بنجاح!");
+            }).catch(() => {
+                area.select();
+                showToast("تم إظهار الكود، يمكنك تحديده ونسخه");
+            });
+        } else {
+            area.select();
+            showToast("تم إظهار الكود، يمكنك تحديده ونسخه");
+        }
+    }
+
+    function applyRestoreFromInput() {
+        const area = document.getElementById('backupDataArea');
+        const content = area.value.trim();
+        if (!content) {
+            alert("يرجى لصق كود النسخة الاحتياطية داخل المربع أولاً.");
+            return;
+        }
+
+        try {
+            const parsed = JSON.parse(content);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                allLines = parsed.map((l, i) => ({
+                    id: l.id || `restored_${Date.now()}_${i}`,
+                    name: l.name || "خط",
+                    weServiceNumber: l.weServiceNumber || "",
+                    note: l.note || "",
+                    baseBalance: Number(l.baseBalance) || 0,
+                    dailyManual: Number(l.dailyManual) || 5,
+                    monthlyPackage: Number(l.monthlyPackage) || 200,
+                    alertGB: Number(l.alertGB) || 15,
+                    alertDays: Number(l.alertDays) || 5,
+                    expiryDate: l.expiryDate || getOffsetDate(30),
+                    lastSyncTime: Number(l.lastSyncTime) || Date.now(),
+                    isPaid: Boolean(l.isPaid),
+                    history: Array.isArray(l.history) ? l.history : []
+                }));
+                activeLineId = allLines[0].id;
+                sortLinesDynamically();
+                persistData();
+                buildTableStructure();
+                renderStaticDetails();
+                closeSettingsModal();
+                showToast("✅ تم استرجاع الخطوط والبيانات بنجاح!");
+            } else {
+                alert("الكود الملصق غير صالح، تأكد من نسخه بشكل كامل.");
+            }
+        } catch (e) {
+            alert("خطأ: النص المدخل ليس كود بيانات صالح.");
+        }
+    }
+
+    function saveTelegramSettings() {
+        tgSettings.botToken = document.getElementById('tgBotTokenInput').value.trim();
+        tgSettings.chatId = document.getElementById('tgChatIdInput').value.trim();
+        localStorage.setItem('pro_net_tg_settings', JSON.stringify(tgSettings));
+        showToast("تم حفظ إعدادات تيليجرام بنجاح");
+    }
+
+    function sendTelegramAlert(message) {
+        if (!tgSettings.botToken || !tgSettings.chatId) return;
+        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(message)}&parse_mode=HTML`;
+        
+        fetch(endpoint, { mode: 'no-cors' }).catch(() => {
+            const img = new Image();
+            img.src = endpoint + `&t=${Date.now()}`;
+        });
+    }
+
+    function testTelegramMessage() {
+        saveTelegramSettings();
+        if (!tgSettings.botToken || !tgSettings.chatId) {
+            alert("يرجى إدخال توكن البوت والـ Chat ID أولاً.");
+            return;
+        }
+        showToast("جارٍ إرسال رسالة الاختبار...");
+        const testMsg = `🔔 <b>اختبار التنبيهات من تطبيق متابعة الإنترنت</b>\nتم الربط بنجاح مع البوت الخاص بك!`;
+        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(testMsg)}&parse_mode=HTML`;
+
+        fetch(endpoint)
+            .then(res => res.json())
+            .then(data => {
+                if (data.ok) {
+                    showToast("وصلت رسالة الاختبار إلى تيليجرام بنجاح!");
+                } else {
+                    alert(`فشل الإرسال: ${data.description || 'تأكد من صحة التوكن وأنك بدأت المحادثة مع البوت بالضغط على Start'}`);
+                }
+            })
+            .catch(() => {
+                sendTelegramAlert(testMsg);
+                showToast("تم إرسال الطلب، تحقق من تيليجرام");
+            });
+    }
+
+    function togglePaymentStatus() {
+        const line = getActiveLine();
+        if (!line) return;
+        line.isPaid = !line.isPaid;
+        
+        delete sentAlertsMap[line.id];
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        persistData();
+        checkAutoRenewalForLine(line);
+        renderStaticDetails();
+        showToast(line.isPaid ? "تم تفعيل دفع الاشتراك وإلغاء التنبيه" : "تم إلغاء تفعيل الدفع");
+    }
+
+    function getCurrentLiveBalance(line) {
+        if (!line.dailyManual || line.dailyManual <= 0) return Number(line.baseBalance) || 0;
+        const perSecondRate = Number(line.dailyManual) / SECONDS_IN_DAY;
+        const elapsed = (Date.now() - (line.lastSyncTime || Date.now())) / 1000;
+        return Math.max(0, Number(line.baseBalance) - (elapsed * perSecondRate));
+    }
+
+    function stepDailyRate(amount) {
+        const line = getActiveLine();
+        if (!line) return;
+        line.baseBalance = getCurrentLiveBalance(line);
+        line.lastSyncTime = Date.now();
+
+        let newRate = Number(((Number(line.dailyManual) || 5) + amount).toFixed(1));
+        if (newRate < 0.1) newRate = 0.1;
+
+        line.dailyManual = newRate;
+        sortLinesDynamically();
+        persistData();
+        buildTableStructure();
+        renderStaticDetails();
+        showToast(`تم ضبط السحب اليومي: ${newRate} GB/يوم`);
+    }
+
+    function promptEditDailyRate() {
+        const line = getActiveLine();
+        if (!line) return;
+        const current = line.dailyManual || 5;
+        const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", current);
+        if (val !== null) {
+            const parsed = parseFloat(val);
+            if (!isNaN(parsed) && parsed > 0) {
+                line.baseBalance = getCurrentLiveBalance(line);
+                line.lastSyncTime = Date.now();
+                line.dailyManual = Number(parsed.toFixed(2));
+                sortLinesDynamically();
+                persistData();
+                buildTableStructure();
+                renderStaticDetails();
+                showToast(`تم ضبط السحب اليومي: ${line.dailyManual} GB/يوم`);
+            } else {
+                alert("يرجى إدخال رقم صحيح أكبر من صفر.");
+            }
+        }
+    }
+
+    function calculateRemainingDays(targetDate) {
+        if (!targetDate) return 0;
+        const parts = targetDate.split('-');
+        if (parts.length !== 3) return 0;
+
+        const now = new Date();
+        const todayZero = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1;
+        const d = parseInt(parts[2], 10);
+        const expZero = new Date(y, m, d, 0, 0, 0, 0);
+
+        const diffDays = Math.round((expZero.getTime() - todayZero.getTime()) / (1000 * 60 * 60 * 24));
+        return Math.max(0, diffDays);
+    }
+
+    function checkAutoRenewalForLine(line) {
+        const diffDays = calculateRemainingDays(line.expiryDate);
+        if (diffDays <= 0 && line.isPaid) {
+            const currentRemaining = getCurrentLiveBalance(line);
+            line.baseBalance = Number((currentRemaining + Number(line.monthlyPackage)).toFixed(3));
+            line.lastSyncTime = Date.now();
+            
+            const parts = line.expiryDate.split('-');
+            const y = parseInt(parts[0], 10);
+            const m = parseInt(parts[1], 10) - 1;
+            const d = parseInt(parts[2], 10);
+            const expDateObj = new Date(y, m, d);
+            expDateObj.setDate(expDateObj.getDate() + 30);
+            
+            const nextY = expDateObj.getFullYear();
+            const nextM = String(expDateObj.getMonth() + 1).padStart(2, '0');
+            const nextD = String(expDateObj.getDate()).padStart(2, '0');
+            line.expiryDate = `${nextY}-${nextM}-${nextD}`;
+            
+            line.isPaid = false;
+            
+            delete sentAlertsMap[line.id];
+            localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+            if (!line.history) line.history = [];
+            line.history.unshift({
+                type: 'renewal',
+                title: 'تجديد الباقة الشهرية الأساسية',
+                amount: line.monthlyPackage,
+                date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            });
+
+            persistData();
+            buildTableStructure();
+            renderStaticDetails();
+            showToast(`تم تجديد باقة ${line.name} وتقديم التاريخ 30 يوماً`);
+            sendTelegramAlert(`🎉 <b>تم تجديد الباقة بنجاح!</b>\nالخط: <b>${line.name}</b> ${line.note ? '('+line.note+')' : ''}\nتمت إضافة باقة الشهر الجديد (${line.monthlyPackage} GB).\nتاريخ الانتهاء الجديد: ${line.expiryDate}`);
+        }
+    }
+
+    function checkLiveAlertsSystem() {
+        const breachedLines = [];
+
+        allLines.forEach((line) => {
+            const liveBal = getCurrentLiveBalance(line);
+            const daysLeft = calculateRemainingDays(line.expiryDate);
+
+            const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
+            const isDaysBreach = daysLeft <= (Number(line.alertDays) || 0);
+            const isBreached = !line.isPaid && (isGbBreach || isDaysBreach);
+
+            if (!isBreached && sentAlertsMap[line.id]) {
+                delete sentAlertsMap[line.id];
+                localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+            }
+
+            if (isBreached) {
+                breachedLines.push({
+                    id: line.id,
+                    line: line,
+                    balance: liveBal,
+                    daysLeft: daysLeft,
+                    isGbBreach: isGbBreach,
+                    isDaysBreach: isDaysBreach
+                });
+
+                if (canSendLiveAlerts && !sentAlertsMap[line.id]) {
+                    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+                    let alertDetails = [];
+                    if (isGbBreach) alertDetails.push(`⚠️ رصيد منخفض: <b>${liveBal.toFixed(2)} GB</b> (حد الأمان: ${line.alertGB} GB)`);
+                    if (isDaysBreach) alertDetails.push(`⏳ اقترب موعد التجديد: باقي <b>${daysLeft} يوم</b> (الحد: ${line.alertDays} أيام)`);
+
+                    const fullMsg = `🚨 <b>تنبيه استهلاك خط الإنترنت!</b>\nالخط: <b>${line.name}</b> ${line.note ? '('+line.note+')' : ''}\n${alertDetails.join('\n')}`;
+                    sendTelegramAlert(fullMsg);
+                    
+                    sentAlertsMap[line.id] = Date.now();
+                    localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+                }
+            }
+        });
+
+        const alertHub = document.getElementById('alertHubSection');
+        const alertContainer = document.getElementById('alertLinesContainer');
+        const alertCountTxt = document.getElementById('alertHubCount');
+
+        if (breachedLines.length > 0) {
+            alertHub.classList.add('active');
+            alertCountTxt.innerText = `${breachedLines.length} خطوط تحتاج انتباهك`;
+            alertContainer.innerHTML = '';
+
+            breachedLines.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'alert-line-item';
+                div.onclick = () => onSwitchLine(item.id);
+
+                let tags = '';
+                if (item.isGbBreach) tags += `<span class="alert-tag gb">رصيد منخفض (${item.balance.toFixed(2)})</span>`;
+                if (item.isDaysBreach) tags += `<span class="alert-tag days">اقترب الانتهاء (${item.daysLeft} يوم)</span>`;
+
+                div.innerHTML = `
+                    <div style="font-weight:700; font-size:13px;">${item.line.name} ${item.line.note ? '<span style="font-size:11px; color:#94a3b8;">('+item.line.note+')</span>' : ''}</div>
+                    <div style="display:flex; gap:6px;">${tags}</div>
+                `;
+                alertContainer.appendChild(div);
+            });
+        } else {
+            alertHub.classList.remove('active');
+        }
+    }
+
+    function openHistoryModal() {
+        const line = getActiveLine();
+        if (!line) return;
+        document.getElementById('historyModalLineName').innerText = `خط: ${line.name} ${line.note ? '('+line.note+')' : ''}`;
+        renderHistoryList(line);
+        document.getElementById('historyModalOverlay').classList.add('active');
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyModalOverlay').classList.remove('active');
+    }
+
+    function renderHistoryList(line) {
+        const container = document.getElementById('historyListContainer');
+        container.innerHTML = '';
+
+        if (!line.history || line.history.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 12px; padding: 20px;">لا توجد عمليات شحن مسجلة لهذا الخط بعد.</div>`;
+            return;
+        }
+
+        line.history.forEach(item => {
+            const div = document.createElement('div');
+            div.className = `history-item ${item.type}`;
+            div.innerHTML = `
+                <div>
+                    <div style="font-size: 13px; font-weight: 700; color: ${item.type === 'extra' ? 'var(--accent-cyan)' : 'var(--success)'};">${item.title}</div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${item.date}</div>
+                </div>
+                <div class="mono" style="font-size: 14px; font-weight: 800; color: #fff;">+${item.amount} GB</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function clearLineHistory() {
+        const line = getActiveLine();
+        if (!line) return;
+        if (confirm("هل تريد بالتأكيد مسح سجل الشحن لهذا الخط؟")) {
+            line.history = [];
+            persistData();
+            renderHistoryList(line);
+            showToast("تم مسح السجل بنجاح");
+        }
+    }
+
+    function openSettingsModal() {
+        document.getElementById('tgBotTokenInput').value = tgSettings.botToken || "";
+        document.getElementById('tgChatIdInput').value = tgSettings.chatId || "";
+        document.getElementById('firebaseUrlInput').value = cloudSettings.firebaseUrl || "";
+        document.getElementById('backupDataArea').value = "";
+        document.getElementById('settingsModalOverlay').classList.add('active');
+    }
+
+    function closeSettingsModal() {
+        document.getElementById('settingsModalOverlay').classList.remove('active');
+    }
+
+    function openExtraQuotaModal() {
+        const line = getActiveLine();
+        if (!line) return;
+        document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name} ${line.note ? '('+line.note+')' : ''}`;
+        document.getElementById('quickExtraInput').value = '';
+        document.getElementById('extraQuotaModalOverlay').classList.add('active');
+    }
+
+    function closeExtraQuotaModal() {
+        document.getElementById('extraQuotaModalOverlay').classList.remove('active');
+    }
+
+    function applyQuickExtraQuota(e) {
+        e.preventDefault();
+        const line = getActiveLine();
+        if (!line) return;
+        const addedGB = parseFloat(document.getElementById('quickExtraInput').value) || 0;
+
+        if (addedGB <= 0) {
+            alert("يرجى إدخال عدد جيجابايت صحيح أكبر من صفر.");
+            return;
+        }
+
+        const currentLiveBal = getCurrentLiveBalance(line);
+        line.baseBalance = Number((currentLiveBal + addedGB).toFixed(3));
+        line.lastSyncTime = Date.now();
+        
+        delete sentAlertsMap[line.id];
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        if (!line.history) line.history = [];
+        line.history.unshift({
+            type: 'extra',
+            title: 'شحن كوتة إضافية',
+            amount: addedGB,
+            date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        });
+
+        persistData();
+        closeExtraQuotaModal();
+        renderStaticDetails();
+        showToast(`تمت إضافة ${addedGB} GB وتسجيلها بالسجل`);
+        sendTelegramAlert(`➕ <b>تمت إضافة كوتة إضافية</b>\nالخط: <b>${line.name}</b> ${line.note ? '('+line.note+')' : ''}\nتمت إضافة: ${addedGB} GB\nالرصيد الجديد: ${line.baseBalance.toFixed(2)} GB`);
+    }
+
+    function openEditModal() {
+        const line = getActiveLine();
+        if (!line) return;
+        document.getElementById('formIndexKey').value = line.id;
+        document.getElementById('modalHeading').innerText = `تعديل بيانات: ${line.name}`;
+
+        const currentLiveBal = getCurrentLiveBalance(line);
+        document.getElementById('inputLineName').value = line.name;
+        document.getElementById('inputWeServiceNumber').value = line.weServiceNumber || "";
+        document.getElementById('inputLineNote').value = line.note || "";
+        document.getElementById('inputCurrentBalance').value = currentLiveBal.toFixed(2);
+        document.getElementById('inputDailyManual').value = line.dailyManual;
+        document.getElementById('inputMonthlyPackage').value = line.monthlyPackage;
+        document.getElementById('inputAlertGB').value = line.alertGB;
+        document.getElementById('inputAlertDays').value = line.alertDays;
+        document.getElementById('inputExpiryDate').value = line.expiryDate;
+
+        document.getElementById('appModalOverlay').classList.add('active');
+    }
+
+    function openAddModal() {
+        document.getElementById('formIndexKey').value = "-1";
+        document.getElementById('modalHeading').innerText = "إضافة خط جديد";
+        document.getElementById('lineDataForm').reset();
+        document.getElementById('inputWeServiceNumber').value = "";
+        document.getElementById('inputAlertGB').value = 15;
+        document.getElementById('inputAlertDays').value = 5;
+        document.getElementById('inputDailyManual').value = 5;
+        document.getElementById('inputExpiryDate').value = getOffsetDate(30);
+        document.getElementById('appModalOverlay').classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('appModalOverlay').classList.remove('active');
+    }
+
+    function saveLineData(e) {
+        e.preventDefault();
+        const editId = document.getElementById('formIndexKey').value;
+        const enteredBalance = parseFloat(document.getElementById('inputCurrentBalance').value);
+
+        if (editId !== "-1") {
+            const line = allLines.find(l => l.id === editId);
+            if (line) {
+                line.name = document.getElementById('inputLineName').value.trim();
+                line.weServiceNumber = document.getElementById('inputWeServiceNumber').value.trim();
+                line.note = document.getElementById('inputLineNote').value.trim();
+                line.baseBalance = enteredBalance;
+                line.dailyManual = parseFloat(document.getElementById('inputDailyManual').value);
+                line.monthlyPackage = parseFloat(document.getElementById('inputMonthlyPackage').value);
+                line.alertGB = parseFloat(document.getElementById('inputAlertGB').value);
+                line.alertDays = parseInt(document.getElementById('inputAlertDays').value);
+                line.expiryDate = document.getElementById('inputExpiryDate').value;
+                line.lastSyncTime = Date.now();
+                
+                delete sentAlertsMap[line.id];
+                localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+            }
+        } else {
+            const newLine = {
+                id: `line_${Date.now()}`,
+                name: document.getElementById('inputLineName').value.trim(),
+                weServiceNumber: document.getElementById('inputWeServiceNumber').value.trim(),
+                note: document.getElementById('inputLineNote').value.trim(),
+                baseBalance: enteredBalance,
+                dailyManual: parseFloat(document.getElementById('inputDailyManual').value),
+                monthlyPackage: parseFloat(document.getElementById('inputMonthlyPackage').value),
+                alertGB: parseFloat(document.getElementById('inputAlertGB').value),
+                alertDays: parseInt(document.getElementById('inputAlertDays').value),
+                expiryDate: document.getElementById('inputExpiryDate').value,
+                lastSyncTime: Date.now(),
+                isPaid: false,
+                history: []
+            };
+            allLines.push(newLine);
+            activeLineId = newLine.id;
+        }
+
+        sortLinesDynamically();
+        persistData();
+        closeModal();
+        buildTableStructure();
+        renderStaticDetails();
+        showToast("تم حفظ بيانات الخط بنجاح");
+    }
+
+    function buildTableStructure() {
+        const tbody = document.getElementById('allLinesTableBody');
+        tbody.innerHTML = '';
+        allLines.forEach((line) => {
+            const daysLeft = calculateRemainingDays(line.expiryDate);
+            const liveBal = getCurrentLiveBalance(line);
+            const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
+            const isDaysBreach = daysLeft <= (Number(line.alertDays) || 0);
+            const isBreached = !line.isPaid && (isGbBreach || isDaysBreach);
+
+            const tr = document.createElement('tr');
+            tr.onclick = () => onSwitchLine(line.id);
+            tr.innerHTML = `
+                <td>
+                    <strong>${line.name}</strong>
+                    ${line.note ? `<div style="font-size: 11px; color: #94a3b8;">${line.note}</div>` : ''}
+                </td>
+                <td class="mono" id="tableBal-${line.id}" style="color: ${isGbBreach ? '#f87171' : '#34d399'}; font-weight: 700; font-size: 14px;">${liveBal.toFixed(3)}</td>
+                <td class="mono" style="color: #38bdf8; font-weight: 700; font-size: 14px;">${line.dailyManual}</td>
+                <td class="mono" style="color: ${isDaysBreach ? '#f87171' : '#f8fafc'}; font-weight: 700;">${daysLeft} يوم</td>
+                <td><span class="status-pill ${line.isPaid ? 'safe' : 'paid-pending'}">${line.isPaid ? 'مدفوع' : 'غير مدفوع'}</span></td>
+                <td><span class="status-pill ${isBreached ? 'danger' : 'safe'}">${isBreached ? '⚠️ تنبيه' : 'مستقر'}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function tickLiveStats() {
+        if (allLines.length === 0) return;
+        
+        allLines.forEach(l => checkAutoRenewalForLine(l));
+        
+        const line = getActiveLine();
+        if (line) {
+            const liveBalance = getCurrentLiveBalance(line);
+            document.getElementById('liveBalanceDisplay').innerText = liveBalance.toFixed(3);
+            
+            const totalCap = Math.max(Number(line.monthlyPackage) || 200, liveBalance);
+            const percent = Math.min(100, Math.max(0, (liveBalance / totalCap) * 100));
+            document.getElementById('percentageText').innerText = `${percent.toFixed(2)}%`;
+            document.getElementById('progressFillBar').style.width = `${percent}%`;
+        }
+
+        checkLiveAlertsSystem();
+
+        allLines.forEach((item) => {
+            const cell = document.getElementById(`tableBal-${item.id}`);
+            if (cell) {
+                const bal = getCurrentLiveBalance(item);
+                cell.innerText = bal.toFixed(3);
+            }
+        });
+    }
+
+    function renderStaticDetails() {
+        const line = getActiveLine();
+        if (!line) return;
+        const daysLeft = calculateRemainingDays(line.expiryDate);
+
+        document.getElementById('headerTitle').innerText = line.name;
+        const noteEl = document.getElementById('headerNote');
+        if (line.note && line.note.trim() !== '') {
+            noteEl.innerText = line.note;
+            noteEl.style.display = 'flex';
+        } else {
+            noteEl.style.display = 'none';
+        }
+
+        const counterEl = document.getElementById('totalLinesCounter');
+        if (counterEl) {
+            counterEl.innerText = allLines.length;
+        }
+        
+        const daysBadge = document.getElementById('daysBadge');
+        daysBadge.innerText = `باقي ${daysLeft} يوم`;
+        
+        if (line.isPaid || daysLeft > line.alertDays) {
+            daysBadge.style.background = 'rgba(16, 185, 129, 0.12)';
+            daysBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+            daysBadge.style.color = '#34d399';
+        } else {
+            daysBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+            daysBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
+            daysBadge.style.color = '#f87171';
+        }
+
+        const payBtn = document.getElementById('paySubscriptionBtn');
+        const payLabel = document.getElementById('payBtnLabel');
+        const payBadge = document.getElementById('paymentStatusBadge');
+
+        if (line.isPaid) {
+            payBtn.classList.add('paid');
+            payLabel.innerText = "تم الدفع بنجاح";
+            payBadge.style.display = "inline-flex";
+        } else {
+            payBtn.classList.remove('paid');
+            payLabel.innerText = "دفع الاشتراك";
+            payBadge.style.display = "none";
+        }
+
+        document.getElementById('monthlyTotalDisplay').innerText = `الباقة: ${line.monthlyPackage} GB`;
+        document.getElementById('dailyBurnDisplay').innerText = `السحب: ${line.dailyManual} GB/يوم`;
+        document.getElementById('alertGBDisplay').innerText = `حد الجيجات: ${line.alertGB} GB`;
+        document.getElementById('alertDaysDisplay').innerText = `حد الأيام: ${line.alertDays} أيام`;
+        document.getElementById('expiryDateDisplay').innerText = `الانتهاء: ${line.expiryDate}`;
+
+        // تحديث نص زر البحث ليظهر الخط الحالي
+        const searchBtnLabel = document.getElementById('searchTriggerLabel');
+        if (searchBtnLabel) {
+            searchBtnLabel.innerText = (line.weServiceNumber || line.name) + (line.note ? ` (${line.note})` : '');
+        }
+
+        // تحديث البادج الجديد المضاف في المنتصف برقم الخدمة أو اسم الخط
+        const heroBadge = document.getElementById('heroLineBadge');
+        if (heroBadge) {
+            heroBadge.innerText = line.weServiceNumber || line.name || "------";
+        }
+
+        tickLiveStats();
+    }
+
+    // دوال البحث السريع
+    function openSearchModal() {
+        document.getElementById('searchLinesModalOverlay').classList.add('active');
+        const input = document.getElementById('linesSearchQuickInput');
+        input.value = '';
+        renderQuickSearchResults('');
+        setTimeout(() => input.focus(), 50);
+    }
+
+    function closeSearchModal() {
+        document.getElementById('searchLinesModalOverlay').classList.remove('active');
+    }
+
+    function renderQuickSearchResults(query) {
+        const container = document.getElementById('quickSearchResultsList');
+        const q = (query || '').trim().toLowerCase();
+        
+        const matched = allLines.filter(l => {
+            if (!q) return true;
+            return (l.name && l.name.toLowerCase().includes(q)) ||
+                   (l.weServiceNumber && String(l.weServiceNumber).includes(q)) ||
+                   (l.note && l.note.toLowerCase().includes(q));
+        });
+
+        if (matched.length === 0) {
+            container.innerHTML = `<div style="text-align:center; color:var(--text-secondary); font-size:12px; padding:20px;">لا توجد خطوط مطابقة للبحث</div>`;
+            return;
+        }
+
+        container.innerHTML = matched.map(m => `
+            <div class="history-item" onclick="selectLineFromSearch('${m.id}')" style="cursor: pointer; ${m.id === activeLineId ? 'border-right: 3px solid var(--accent); background: rgba(37,99,235,0.1);' : ''}">
+                <div>
+                    <div style="font-size: 13px; font-weight: 700; color: #fff;">
+                        ${m.weServiceNumber || m.name} ${m.note ? `<span style="font-size:11px; color:#94a3b8;">(${m.note})</span>` : ''}
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${m.name}</div>
+                </div>
+                <div class="mono" style="font-size: 12px; font-weight: 700; color: #38bdf8;">
+                    ${getCurrentLiveBalance(m).toFixed(1)} GB
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function selectLineFromSearch(lineId) {
+        closeSearchModal();
+        onSwitchLine(lineId);
+    }
+
+    function onSwitchLine(lineId) {
+        activeLineId = lineId;
+        renderStaticDetails();
+    }
+
+    function onDeleteLine() {
+        if (allLines.length <= 1) {
+            alert("لا يمكن حذف الخط الأخير في التطبيق.");
+            return;
+        }
+        const line = getActiveLine();
+        if (!line) return;
+        if (confirm(`هل أنت متأكد من حذف الخط (${line.name})؟`)) {
+            allLines = allLines.filter(l => l.id !== line.id);
+            activeLineId = allLines[0].id;
+            persistData();
+            buildTableStructure();
+            renderStaticDetails();
+            showToast("تم حذف الخط بنجاح");
+        }
+    }
+
+    buildTableStructure();
+    renderStaticDetails();
+    setInterval(tickLiveStats, 1000);
+
+    // المزامنة الفورية من Firebase كل 5 ثوانٍ
+    setInterval(syncFromCloud, 5000);
+</script>
+
+</body>
+</html>
