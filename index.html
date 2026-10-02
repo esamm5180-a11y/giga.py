@@ -1,4 +1,4 @@
-ÿ<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -2035,6 +2035,11 @@
 
     // المزامنة الفورية من Firebase كل 5 ثوانٍ
     setInterval(syncFromCloud, 5000);
+    // تحديث ومزامنة تلقائية في الخلفية كل 30 ثانية
+setInterval(function() {
+    loadInitialData();
+}, 30000);
+
 </script>
 
 </body>
