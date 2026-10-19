@@ -10,31 +10,29 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-body: #060714;
-            --surface-1: #0d1226;
-            --surface-2: #161e3d;
-            --surface-glass: rgba(13, 18, 38, 0.85);
-            --surface-inner: rgba(7, 10, 24, 0.75);
-            --accent: #6366f1;
-            --accent-cyan: #38bdf8;
-            --accent-glow: rgba(99, 102, 241, 0.35);
-            --accent-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-            --danger: #f43f5e;
-            --danger-bg: rgba(244, 63, 94, 0.12);
-            --danger-glow: rgba(244, 63, 94, 0.35);
+            --bg-body: #030712;
+            --surface-card: #0b1120;
+            --surface-elevated: #111827;
+            --surface-inner: #070d18;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            --accent-cyan: #06b6d4;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
             --warning: #f59e0b;
             --success: #10b981;
             --success-bg: rgba(16, 185, 129, 0.12);
-            --success-glow: rgba(16, 185, 129, 0.35);
+            --success-glow: rgba(16, 185, 129, 0.3);
             --telegram: #0284c7;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --border: rgba(255, 255, 255, 0.08);
-            --border-hover: rgba(99, 102, 241, 0.45);
-            --radius-xl: 22px;
-            --radius-md: 14px;
-            --radius-sm: 9px;
-            --shadow-xl: 0 20px 45px -10px rgba(0, 0, 0, 0.75);
+            --border-hover: rgba(56, 189, 248, 0.35);
+            --radius-xl: 18px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-xl: 0 16px 36px -10px rgba(0, 0, 0, 0.8);
         }
 
         * {
@@ -52,33 +50,29 @@
         body {
             background-color: var(--bg-body);
             background-image: 
-                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
-                radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.12) 0px, transparent 50%),
-                radial-gradient(at 50% 30%, rgba(15, 23, 42, 0.8) 0px, transparent 100%);
+                radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.12) 0px, transparent 45%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 45%);
             color: var(--text-primary);
             padding: 16px;
             min-height: 100vh;
         }
 
         .app-container {
-            max-width: 860px;
+            max-width: 840px;
             margin: 0 auto;
         }
 
         header {
-            background: var(--surface-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: var(--surface-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-xl);
-            padding: 16px 18px;
+            padding: 16px;
             margin-bottom: 16px;
             box-shadow: var(--shadow-xl);
             display: flex;
             flex-direction: column;
             gap: 12px;
             position: relative;
-            overflow: hidden;
         }
 
         header::before {
@@ -88,7 +82,7 @@
             left: 0;
             right: 0;
             height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), #a855f7, transparent);
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
         }
 
         .header-top {
@@ -107,14 +101,14 @@
             width: 44px;
             height: 44px;
             background: var(--accent-gradient);
-            box-shadow: 0 6px 18px var(--accent-glow);
-            border-radius: 14px;
+            box-shadow: 0 4px 14px var(--accent-glow);
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
 
         .brand-meta {
@@ -125,14 +119,14 @@
 
         .brand-meta h1 {
             font-size: 19px;
-            font-weight: 900;
+            font-weight: 800;
             color: #ffffff;
             letter-spacing: 0.3px;
         }
 
         .brand-note-pill {
             font-size: 11.5px;
-            color: #a5b4fc;
+            color: var(--accent);
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -150,7 +144,7 @@
         }
 
         .brand-lines-counter span {
-            color: #818cf8;
+            color: var(--accent);
         }
 
         .header-controls {
@@ -184,7 +178,7 @@
 
         .btn-search-trigger:hover {
             border-color: var(--border-hover);
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .btn {
@@ -242,14 +236,14 @@
         }
 
         .btn-extra {
-            background: rgba(99, 102, 241, 0.15);
-            color: #a5b4fc;
-            border: 1px solid rgba(99, 102, 241, 0.35);
+            background: rgba(2, 132, 199, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(2, 132, 199, 0.35);
         }
 
         .btn-extra:hover {
-            background: rgba(99, 102, 241, 0.25);
-            border-color: #a5b4fc;
+            background: rgba(2, 132, 199, 0.25);
+            border-color: var(--accent);
         }
 
         .btn-history {
@@ -259,13 +253,13 @@
         }
 
         .btn-history:hover {
-            background: rgba(245, 158, 11, 0.22);
+            background: rgba(245, 158, 11, 0.2);
         }
 
         .btn-accent {
             background: var(--accent-gradient);
             color: white;
-            box-shadow: 0 4px 14px var(--accent-glow);
+            box-shadow: 0 4px 12px var(--accent-glow);
             border: 1px solid rgba(255, 255, 255, 0.15);
             flex: 1.4;
         }
@@ -291,14 +285,14 @@
 
         .btn-action-icon.danger:hover {
             color: var(--danger);
-            border-color: rgba(244, 63, 94, 0.4);
+            border-color: rgba(239, 68, 68, 0.4);
             background: var(--danger-bg);
         }
 
         .alert-hub {
             display: none;
             background: var(--danger-bg);
-            border: 1px solid rgba(244, 63, 94, 0.35);
+            border: 1px solid rgba(239, 68, 68, 0.35);
             border-radius: var(--radius-md);
             padding: 12px 14px;
             margin-bottom: 16px;
@@ -316,7 +310,7 @@
         }
 
         .alert-hub-header h4 {
-            color: #fda4af;
+            color: #fca5a5;
             font-size: 12.5px;
             font-weight: 800;
             display: flex;
@@ -331,8 +325,8 @@
         }
 
         .alert-line-item {
-            background: rgba(6, 8, 20, 0.7);
-            border: 1px solid rgba(244, 63, 94, 0.25);
+            background: rgba(3, 7, 18, 0.7);
+            border: 1px solid rgba(239, 68, 68, 0.25);
             border-radius: var(--radius-sm);
             padding: 8px 12px;
             display: flex;
@@ -343,20 +337,20 @@
         }
 
         .alert-line-item:hover {
-            background: rgba(6, 8, 20, 0.95);
+            background: rgba(3, 7, 18, 0.95);
             border-color: var(--danger);
         }
 
         .alert-tag {
             font-size: 10.5px;
             padding: 2px 6px;
-            border-radius: 5px;
+            border-radius: 4px;
             font-weight: 800;
         }
 
         .alert-tag.gb {
-            background: rgba(244, 63, 94, 0.25);
-            color: #fecdd3;
+            background: rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
         }
 
         .alert-tag.days {
@@ -365,9 +359,7 @@
         }
 
         .hero-card {
-            background: var(--surface-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: var(--surface-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-xl);
             padding: 20px 22px;
@@ -392,7 +384,7 @@
             font-size: 11px;
             font-weight: 800;
             padding: 4px 10px;
-            border-radius: 30px;
+            border-radius: 20px;
             display: inline-flex;
             align-items: center;
             gap: 6px;
@@ -403,7 +395,7 @@
             height: 7px;
             background: var(--success);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--success);
+            box-shadow: 0 0 8px var(--success);
             animation: pulse-dot 1.2s infinite;
         }
 
@@ -431,12 +423,12 @@
             font-weight: 900;
             color: #ffffff;
             letter-spacing: -0.5px;
-            text-shadow: 0 0 20px rgba(99, 102, 241, 0.35);
+            text-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
         }
 
         .hero-balance .unit {
             font-size: 15px;
-            color: #818cf8;
+            color: var(--accent);
             font-weight: 800;
         }
 
@@ -444,7 +436,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            min-width: 130px;
+            min-width: 125px;
         }
 
         .hero-side-actions .btn {
@@ -471,16 +463,15 @@
             border-radius: 100px;
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 1px;
         }
 
         .progress-bar-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, #6366f1 0%, #a855f7 100%);
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
             border-radius: 100px;
             transition: width 0.3s ease;
-            box-shadow: 0 0 12px rgba(124, 58, 237, 0.4);
+            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
         }
 
         .hero-details-container {
@@ -530,19 +521,17 @@
 
         .clickable-burn {
             cursor: pointer;
-            border-bottom: 1px dashed rgba(129, 140, 248, 0.5);
+            border-bottom: 1px dashed rgba(56, 189, 248, 0.5);
             color: #e2e8f0;
             transition: color 0.2s;
         }
 
         .clickable-burn:hover {
-            color: #a5b4fc;
+            color: var(--accent);
         }
 
         .all-lines-card {
-            background: var(--surface-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: var(--surface-card);
             border: 1px solid var(--border);
             border-radius: var(--radius-xl);
             padding: 18px 20px;
@@ -569,9 +558,9 @@
         }
 
         .sort-toggle-badge {
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.35);
-            color: #a5b4fc;
+            background: rgba(2, 132, 199, 0.15);
+            border: 1px solid rgba(2, 132, 199, 0.35);
+            color: var(--accent);
             font-size: 11px;
             font-weight: 800;
             padding: 4px 8px;
@@ -583,7 +572,7 @@
         }
 
         .sort-toggle-badge:hover {
-            background: rgba(99, 102, 241, 0.25);
+            background: rgba(2, 132, 199, 0.25);
         }
 
         .sort-selector-bar {
@@ -608,7 +597,7 @@
             font-size: 11px;
             font-weight: 800;
             padding: 7px 4px;
-            border-radius: 7px;
+            border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s;
             text-align: center;
@@ -668,22 +657,21 @@
 
         .status-pill.danger {
             background: var(--danger-bg);
-            color: #fb7185;
-            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .status-pill.paid-pending {
-            background: rgba(99, 102, 241, 0.15);
-            color: #a5b4fc;
-            border: 1px solid rgba(99, 102, 241, 0.35);
+            background: rgba(2, 132, 199, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(2, 132, 199, 0.35);
         }
 
         .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
             display: none;
             align-items: center;
             justify-content: center;
@@ -696,7 +684,7 @@
         }
 
         .app-modal {
-            background: #0d1226;
+            background: #0b1120;
             border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 20px;
             width: 100%;
@@ -704,7 +692,7 @@
             max-height: 92vh;
             overflow-y: auto;
             padding: 22px 20px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
         }
 
         .modal-avatar-wrap {
@@ -715,17 +703,16 @@
         }
 
         .modal-avatar {
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             background: var(--surface-inner);
-            border: 1px solid rgba(99, 102, 241, 0.4);
+            border: 1px solid rgba(56, 189, 248, 0.35);
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #a5b4fc;
+            color: var(--accent);
             font-size: 22px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
         }
 
         .modal-close-btn {
@@ -766,7 +753,7 @@
         .form-input {
             width: 100%;
             background: var(--surface-inner);
-            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 10px;
             padding: 10px 12px;
             font-size: 13px;
@@ -777,8 +764,8 @@
 
         .form-input:focus {
             border-color: var(--accent);
-            background: rgba(7, 10, 24, 0.95);
-            box-shadow: 0 0 12px var(--accent-glow);
+            background: #080e1a;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .form-dual-row {
@@ -798,7 +785,7 @@
             font-size: 13.5px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 6px 18px var(--accent-glow);
+            box-shadow: 0 4px 14px var(--accent-glow);
             margin-top: 6px;
             transition: all 0.2s ease;
         }
@@ -818,7 +805,7 @@
         .settings-section-title {
             font-size: 12.5px;
             font-weight: 800;
-            color: #a5b4fc;
+            color: var(--accent);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -846,7 +833,7 @@
         }
 
         .history-item.extra {
-            border-right: 3px solid #818cf8;
+            border-right: 3px solid var(--accent);
         }
 
         .history-item.renewal {
@@ -858,14 +845,14 @@
             bottom: 24px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: #0d1226;
+            background: #0f172a;
             color: #fff;
             border: 1px solid var(--accent);
             padding: 10px 20px;
             border-radius: 30px;
             font-size: 12.5px;
             font-weight: 800;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             gap: 8px;
@@ -905,7 +892,7 @@
             <div class="control-row">
                 <button type="button" class="btn-search-trigger" id="lineSearchTriggerBtn" onclick="openSearchModal()" title="انقر للبحث واختيار خط">
                     <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
-                        <i class="fa-solid fa-magnifying-glass" style="color: #818cf8; font-size: 12px;"></i>
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--accent); font-size: 12px;"></i>
                         <span id="searchTriggerLabel" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">اختر الخط...</span>
                     </div>
                     <span style="font-size: 10px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary);">بحث</span>
@@ -951,7 +938,7 @@
                 <span class="live-chip"><span class="live-dot"></span> مباشر بالثانية</span>
             </div>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <span class="live-chip mono" id="heroLineBadge" style="background: rgba(99, 102, 241, 0.15); color: #a5b4fc; border-color: rgba(99, 102, 241, 0.4); font-weight: 800;">
+                <span class="live-chip mono" id="heroLineBadge" style="background: rgba(2, 132, 199, 0.15); color: var(--accent); border-color: rgba(2, 132, 199, 0.35); font-weight: 800;">
                     ------
                 </span>
 
@@ -985,7 +972,7 @@
         <div class="progress-container">
             <div class="progress-header">
                 <span>نسبة الرصيد المتبقي</span>
-                <strong class="mono" id="percentageText" style="color: #a5b4fc;">0.00%</strong>
+                <strong class="mono" id="percentageText" style="color: var(--accent);">0.00%</strong>
             </div>
             <div class="progress-bar-bg">
                 <div class="progress-bar-fill" id="progressFillBar"></div>
@@ -1131,7 +1118,7 @@
 
             <div style="display: flex; gap: 8px; margin-bottom: 10px;">
                 <button type="button" class="btn btn-flex btn-pay" onclick="copyBackupToClipboard()">
-                    <i class="fa-solid fa-copy" style="color: var(--accent-cyan);"></i> نسخ البيانات
+                    <i class="fa-solid fa-copy" style="color: var(--accent);"></i> نسخ البيانات
                 </button>
                 <button type="button" class="btn btn-flex btn-pay" onclick="applyRestoreFromInput()">
                     <i class="fa-solid fa-paste" style="color: var(--success);"></i> استعادة المكتوب
@@ -1212,7 +1199,7 @@
             </div>
 
             <div class="form-row">
-                <label style="color: #818cf8;">رقم خط الأرضي في WE للربط الآلي (اختياري)</label>
+                <label style="color: var(--accent);">رقم خط الأرضي في WE للربط الآلي (اختياري)</label>
                 <input type="text" id="inputWeServiceNumber" class="form-input mono" placeholder="مثال: 040208xxxx كود المحافظة + الرقم">
             </div>
 
@@ -1222,8 +1209,8 @@
             </div>
 
             <div class="form-row">
-                <label style="color: #a5b4fc; font-weight: 800;">الرصيد الفعلي المتبقي (GB)</label>
-                <input type="number" step="any" id="inputCurrentBalance" class="form-input" style="border-color: rgba(99, 102, 241, 0.4);" placeholder="مثال: 185.5" required>
+                <label style="color: var(--accent); font-weight: 800;">الرصيد الفعلي المتبقي (GB)</label>
+                <input type="number" step="any" id="inputCurrentBalance" class="form-input" style="border-color: rgba(56, 189, 248, 0.4);" placeholder="مثال: 185.5" required>
             </div>
 
             <div class="form-row">
@@ -1799,7 +1786,7 @@
             div.className = `history-item ${item.type}`;
             div.innerHTML = `
                 <div>
-                    <div style="font-size: 13px; font-weight: 700; color: ${item.type === 'extra' ? 'var(--accent-cyan)' : 'var(--success)'};">${item.title}</div>
+                    <div style="font-size: 13px; font-weight: 700; color: ${item.type === 'extra' ? 'var(--accent)' : 'var(--success)'};">${item.title}</div>
                     <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${item.date}</div>
                 </div>
                 <div class="mono" style="font-size: 14px; font-weight: 800; color: #fff;">+${item.amount} GB</div>
@@ -1980,7 +1967,7 @@
                     ${line.note ? `<div style="font-size: 11px; color: #94a3b8;">${line.note}</div>` : ''}
                 </td>
                 <td class="mono" id="tableBal-${line.id}" style="color: ${isGbBreach ? '#f87171' : '#34d399'}; font-weight: 700; font-size: 14px;">${liveBal.toFixed(3)}</td>
-                <td class="mono" style="color: #818cf8; font-weight: 700; font-size: 14px;">${line.dailyManual}</td>
+                <td class="mono" style="color: var(--accent); font-weight: 700; font-size: 14px;">${line.dailyManual}</td>
                 <td class="mono" style="color: ${isDaysBreach ? '#f87171' : '#f8fafc'}; font-weight: 700;">${daysLeft} يوم</td>
                 <td><span class="status-pill ${line.isPaid ? 'safe' : 'paid-pending'}">${line.isPaid ? 'مدفوع' : 'غير مدفوع'}</span></td>
                 <td><span class="status-pill ${isBreached ? 'danger' : 'safe'}">${isBreached ? '⚠️ تنبيه' : 'مستقر'}</span></td>
@@ -2039,11 +2026,11 @@
         daysBadge.innerText = `باقي ${daysLeft} يوم`;
         
         if (line.isPaid || daysLeft > line.alertDays) {
-            daysBadge.style.background = 'rgba(16, 185, 129, 0.12)';
+            daysBadge.style.background = 'var(--success-bg)';
             daysBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
             daysBadge.style.color = '#34d399';
         } else {
-            daysBadge.style.background = 'rgba(239, 68, 68, 0.15)';
+            daysBadge.style.background = 'var(--danger-bg)';
             daysBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
             daysBadge.style.color = '#f87171';
         }
@@ -2110,14 +2097,14 @@
         }
 
         container.innerHTML = matched.map(m => `
-            <div class="history-item" onclick="selectLineFromSearch('${m.id}')" style="cursor: pointer; ${m.id === activeLineId ? 'border-right: 3px solid var(--accent); background: rgba(99,102,241,0.1);' : ''}">
+            <div class="history-item" onclick="selectLineFromSearch('${m.id}')" style="cursor: pointer; ${m.id === activeLineId ? 'border-right: 3px solid var(--accent); background: rgba(2,132,199,0.1);' : ''}">
                 <div>
                     <div style="font-size: 13px; font-weight: 700; color: #fff;">
                         ${m.weServiceNumber || m.name} ${m.note ? `<span style="font-size:11px; color:#94a3b8;">(${m.note})</span>` : ''}
                     </div>
                     <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${m.name}</div>
                 </div>
-                <div class="mono" style="font-size: 12px; font-weight: 700; color: #818cf8;">
+                <div class="mono" style="font-size: 12px; font-weight: 700; color: var(--accent);">
                     ${getCurrentLiveBalance(m).toFixed(1)} GB
                 </div>
             </div>
@@ -2194,7 +2181,7 @@
         banner.style.left = "12px";
         banner.style.right = "12px";
         banner.style.zIndex = "999999";
-        banner.style.backgroundColor = "#4f46e5";
+        banner.style.backgroundColor = "#0284c7";
         banner.style.color = "#ffffff";
         banner.style.padding = "10px 14px";
         banner.style.borderRadius = "14px";
@@ -2210,7 +2197,7 @@
                 <i class="fas fa-sparkles text-amber-300 text-base"></i>
                 <span>تحديث برمجي جديد متوفر!</span>
             </div>
-            <button id="btnApplyUpdate" style="background: #ffffff; color: #4f46e5; border: none; padding: 5px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+            <button id="btnApplyUpdate" style="background: #ffffff; color: #0284c7; border: none; padding: 5px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
                 تحديث الآن
             </button>
         `;
