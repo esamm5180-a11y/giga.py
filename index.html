@@ -359,11 +359,18 @@
             50% { transform: scale(1.4); opacity: 0.5; }
         }
 
+        .hero-middle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin: 6px 0 10px 0;
+        }
+
         .hero-balance {
             display: flex;
             align-items: baseline;
             gap: 8px;
-            margin: 6px 0 10px 0;
         }
 
         .hero-balance .number {
@@ -377,6 +384,19 @@
             font-size: 15px;
             color: #94a3b8;
             font-weight: 700;
+        }
+
+        .hero-side-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 130px;
+        }
+
+        .hero-side-actions .btn {
+            padding: 8px 12px;
+            font-size: 12px;
+            width: 100%;
         }
 
         .progress-container {
@@ -809,16 +829,6 @@
             </div>
 
             <div class="control-row">
-                <button class="btn btn-pay btn-flex" id="paySubscriptionBtn" onclick="togglePaymentStatus()">
-                    <i class="fa-solid fa-circle-check"></i> <span id="payBtnLabel">دفع الاشتراك</span>
-                </button>
-
-                <button class="btn btn-extra btn-flex" onclick="openExtraQuotaModal()" title="إضافة كوتة">
-                    <i class="fa-solid fa-plus-circle"></i> <span>كوتة إضافية</span>
-                </button>
-            </div>
-
-            <div class="control-row">
                 <button class="btn btn-accent" onclick="openAddModal()">
                     <i class="fa-solid fa-plus"></i> إضافة خط
                 </button>
@@ -861,9 +871,23 @@
         </div>
 
         <div style="color: var(--text-secondary); font-size: 12px;">الرصيد الحي المتبقي</div>
-        <div class="hero-balance">
-            <span class="number mono" id="liveBalanceDisplay">0.000</span>
-            <span class="unit">GB</span>
+        
+        <div class="hero-middle-container">
+            <div class="hero-balance">
+                <span class="number mono" id="liveBalanceDisplay">0.000</span>
+                <span class="unit">GB</span>
+            </div>
+
+            <!-- أزرار كوتة إضافية ودفع الاشتراك بجانب الرصيد -->
+            <div class="hero-side-actions">
+                <button class="btn btn-extra" onclick="openExtraQuotaModal()" title="إضافة كوتة">
+                    <i class="fa-solid fa-plus-circle"></i> <span>كوتة إضافية</span>
+                </button>
+
+                <button class="btn btn-pay" id="paySubscriptionBtn" onclick="togglePaymentStatus()">
+                    <i class="fa-solid fa-circle-check"></i> <span id="payBtnLabel">دفع الاشتراك</span>
+                </button>
+            </div>
         </div>
 
         <div class="progress-container">
