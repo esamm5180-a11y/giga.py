@@ -1410,22 +1410,7 @@
     function changeSortMode(mode) {
         currentSortMode = mode;
         ['burn', 'gb', 'date'].forEach(m => {
-            const el = document.getElementById(`tab-${m}`);
-            if (el) el.classList.toggle('active', m === mode);
-        });
-
-        const labels = {
-            'burn': 'الأعلى سحباً',
-            'gb': 'قرب انتهاء الجيجات',
-            'date': 'قرب انتهاء التاريخ'
-        };
-        document.getElementById('sortModeLabel').innerText = labels[mode];
-
-        sortLinesDynamically();
-        persistData();
-        buildTableStructure();
-        renderStaticDetails();
-        showToast(`تم الترتيب حسب: ${labels[mode]}`);
+            const el = document.getElementById(`tab-${m}`); if (el) el.classList.toggle('active', m === mode); });  const labels = { 'burn': 'الأعلى سحباً', 'gb': 'قرب انتهاء الجيجات', 'date': 'قرب انتهاء التاريخ' }; document.getElementById('sortModeLabel').innerText = labels[mode];  sortLinesDynamically(); persistData(); buildTableStructure(); renderStaticDetails(); showToast(`تم الترتيب حسب: ${labels[mode]}`);
     }
 
     function sortLinesDynamically() {
@@ -1440,18 +1425,7 @@
 
     function syncToCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
-        const url = `${fireUrl}/net_tracker_data.json`;
-        
-        fetch(url, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(allLines)
-        }).catch(err => console.error("Cloud sync push error:", err));
-    }
-
-    function syncFromCloud() {
-        const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
-        const url = `${fireUrl}/net_tracker_data.json?nocache=` + Date.now();
+        const url = `${fireUrl}/net_tracker_data.json`;  fetch(url, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(allLines) }).catch(err => console.error("Cloud sync push error:", err)); }  function syncFromCloud() { const fireUrl = (cloudSettings.firebaseUrl \vert{}\vert{} DEFAULT_FIREBASE_URL).trim().replace(/\/$/, ""); const url = `${fireUrl}/net_tracker_data.json?nocache=` + Date.now();
 
         fetch(url)
             .then(res => res.json())
@@ -1583,11 +1557,7 @@
 
     function sendTelegramAlert(message) {
         if (!tgSettings.botToken || !tgSettings.chatId) return;
-        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(message)}&parse_mode=HTML`;
-        
-        fetch(endpoint, { mode: 'no-cors' }).catch(() => {
-            const img = new Image();
-            img.src = endpoint + `&t=${Date.now()}`;
+        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(message)}&parse_mode=HTML`;  fetch(endpoint, { mode: 'no-cors' }).catch(() => { const img = new Image(); img.src = endpoint + `&t=${Date.now()}`;
         });
     }
 
@@ -1599,15 +1569,7 @@
         }
         showToast("جارٍ إرسال رسالة الاختبار...");
         const testMsg = `🔔 <b>اختبار التنبيهات من تطبيق متابعة الإنترنت</b>\nتم الربط بنجاح مع البوت الخاص بك!`;
-        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(testMsg)}&parse_mode=HTML`;
-
-        fetch(endpoint)
-            .then(res => res.json())
-            .then(data => {
-                if (data.ok) {
-                    showToast("وصلت رسالة الاختبار إلى تيليجرام بنجاح!");
-                } else {
-                    alert(`فشل الإرسال: ${data.description || 'تأكد من صحة التوكن وأنك بدأت المحادثة مع البوت بالضغط على Start'}`);
+        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(testMsg)}&parse_mode=HTML`;  fetch(endpoint) .then(res => res.json()) .then(data => { if (data.ok) { showToast("وصلت رسالة الاختبار إلى تيليجرام بنجاح!"); } else { alert(`فشل الإرسال: ${data.description || 'تأكد من صحة التوكن وأنك بدأت المحادثة مع البوت بالضغط على Start'}`);
                 }
             })
             .catch(() => {
@@ -1661,25 +1623,7 @@
         persistData();
         buildTableStructure();
         renderStaticDetails();
-        showToast(`تم ضبط السحب اليومي: ${newRate} GB/يوم`);
-    }
-
-    function promptEditDailyRate() {
-        const line = getActiveLine();
-        if (!line) return;
-        const current = line.dailyManual || 5;
-        const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", current);
-        if (val !== null) {
-            const parsed = parseFloat(val);
-            if (!isNaN(parsed) && parsed > 0) {
-                line.baseBalance = getCurrentLiveBalance(line);
-                line.lastSyncTime = Date.now();
-                line.dailyManual = Number(parsed.toFixed(2));
-                sortLinesDynamically();
-                persistData();
-                buildTableStructure();
-                renderStaticDetails();
-                showToast(`تم ضبط السحب اليومي: ${line.dailyManual} GB/يوم`);
+        showToast(`تم ضبط السحب اليومي: ${newRate} GB/يوم`); }  function promptEditDailyRate() { const line = getActiveLine(); if (!line) return; const current = line.dailyManual \vert{}\vert{} 5; const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", current); if (val !== null) { const parsed = parseFloat(val); if (!isNaN(parsed) && parsed > 0) { line.baseBalance = getCurrentLiveBalance(line); line.lastSyncTime = Date.now(); line.dailyManual = Number(parsed.toFixed(2)); sortLinesDynamically(); persistData(); buildTableStructure(); renderStaticDetails(); showToast(`تم ضبط السحب اليومي: ${line.dailyManual} GB/يوم`);
             } else {
                 alert("يرجى إدخال رقم صحيح أكبر من صفر.");
             }
@@ -1720,36 +1664,5 @@
             const nextY = expDateObj.getFullYear();
             const nextM = String(expDateObj.getMonth() + 1).padStart(2, '0');
             const nextD = String(expDateObj.getDate()).padStart(2, '0');
-            line.expiryDate = `${nextY}-${nextM}-${nextD}`;
-            
-            line.isPaid = false;
-            
-            delete sentAlertsMap[line.id];
-            localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
-
-            if (!line.history) line.history = [];
-            line.history.unshift({
-                type: 'renewal',
-                title: 'تجديد الباقة الشهرية الأساسية',
-                amount: line.monthlyPackage,
-                date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-            });
-
-            persistData();
-            buildTableStructure();
-            renderStaticDetails();
-            showToast(`تم تجديد باقة ${line.name} وتقديم التاريخ 30 يوماً`);
-            sendTelegramAlert(`🎉 <b>تم تجديد الباقة بنجاح!</b>\nالخط: <b>${line.name}</b> ${line.note ? '('+line.note+')' : ''}\nتمت إضافة باقة الشهر الجديد (${line.monthlyPackage} GB).\nتاريخ الانتهاء الجديد: ${line.expiryDate}`);
-        }
-    }
-
-    function checkLiveAlertsSystem() {
-        const breachedLines = [];
-
-        allLines.forEach((line) => {
-            const liveBal = getCurrentLiveBalance(line);
-            const daysLeft = calculateRemainingDays(line.expiryDate);
-
-            const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
-            const isDaysBreach = daysLeft <= (Number(line.alertDays) || 0);
-            const isBreached = !line.isPaid && (isGbBreach || isDaysBreach
+            line.expiryDate = `${nextY}-${nextM}-${nextD}`;  line.isPaid = false;  delete sentAlertsMap[line.id]; localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));  if (!line.history) line.history = []; line.history.unshift({ type: 'renewal', title: 'تجديد الباقة الشهرية الأساسية', amount: line.monthlyPackage, date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) });  persistData(); buildTableStructure(); renderStaticDetails(); showToast(`تم تجديد باقة ${line.name} وتقديم التاريخ 30 يوماً`);
+            sendTelegramAlert(`🎉 <b>تم تجديد الباقة بنجاح!</b>\nالخط: <b>${line.name}</b>${line.note ?
