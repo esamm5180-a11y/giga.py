@@ -1,4 +1,4 @@
-Balaha.Net<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -782,7 +782,6 @@ Balaha.Net<!DOCTYPE html>
                 <div class="brand-meta">
                     <h1 id="headerTitle">--</h1>
                     <div class="brand-note-pill" id="headerNote">--</div>
-                    <!-- عداد إجمالي عدد الخطوط المسجلة -->
                     <div class="brand-lines-counter">
                         إجمالي الخطوط: <span id="totalLinesCounter" class="mono">0</span>
                     </div>
@@ -792,7 +791,6 @@ Balaha.Net<!DOCTYPE html>
 
         <div class="header-controls">
             <div class="control-row">
-                <!-- زر البحث مكان السهم لعرض الخط وفتح البحث السريع -->
                 <button type="button" class="btn-search-trigger" id="lineSearchTriggerBtn" onclick="openSearchModal()" title="انقر للبحث واختيار خط">
                     <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
                         <i class="fa-solid fa-magnifying-glass" style="color: var(--accent-cyan); font-size: 12px;"></i>
@@ -851,7 +849,6 @@ Balaha.Net<!DOCTYPE html>
                 <span class="live-chip"><span class="live-dot"></span> مباشر بالثانية</span>
             </div>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <!-- البادج الجديد المضاف لرقم الخط في المنتصف -->
                 <span class="live-chip mono" id="heroLineBadge" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8; border-color: rgba(56, 189, 248, 0.35); font-weight: 800;">
                     ------
                 </span>
@@ -997,7 +994,7 @@ Balaha.Net<!DOCTYPE html>
                 <i class="fa-solid fa-cloud-arrow-up" style="color: var(--accent-cyan);"></i> المزامنة الفورية بين الهواتف (سحابياً)
             </div>
             <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
-                ضع رابط قاعدة بيانات Firebase المجانية هنا على أي هاتف لربطها فوراً:
+                رابط قاعدة بيانات Firebase المرتبطة بالتطبيق تلقائياً:
             </p>
             <div class="form-row">
                 <label>رابط قاعدة بيانات Firebase URL</label>
@@ -1153,6 +1150,7 @@ Balaha.Net<!DOCTYPE html>
     const SECONDS_IN_DAY = 86400;
     const PRIMARY_STORAGE_KEY = 'WE_NET_TRACKER_MASTER_DATA';
     const SENT_ALERTS_KEY = 'NET_TRACKER_SENT_ALERTS_MAP';
+    const DEFAULT_FIREBASE_URL = "https://my-net-tracker-default-rtdb.firebaseio.com";
 
     let canSendLiveAlerts = false;
     setTimeout(() => {
@@ -1250,8 +1248,9 @@ Balaha.Net<!DOCTYPE html>
     };
 
     let cloudSettings = JSON.parse(localStorage.getItem('pro_net_cloud_settings')) || {
-        firebaseUrl: ""
+        firebaseUrl: DEFAULT_FIREBASE_URL
     };
+    if (!cloudSettings.firebaseUrl) cloudSettings.firebaseUrl = DEFAULT_FIREBASE_URL;
 
     function getActiveLine() {
         return allLines.find(l => l.id === activeLineId) || allLines[0] || null;
@@ -1294,9 +1293,8 @@ Balaha.Net<!DOCTYPE html>
     }
 
     function syncToCloud() {
-        if (!cloudSettings.firebaseUrl) return;
-        const cleanUrl = cloudSettings.firebaseUrl.trim().replace(/\/$/, "");
-        const url = `${cleanUrl}/net_tracker_data.json`;
+        const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
+        const url = `${fireUrl}/net_tracker_data.json`;
         
         fetch(url, {
             method: 'PUT',
@@ -1306,18 +1304,28 @@ Balaha.Net<!DOCTYPE html>
     }
 
     function syncFromCloud() {
-        if (!cloudSettings.firebaseUrl) return;
-        const cleanUrl = cloudSettings.firebaseUrl.trim().replace(/\/$/, "");
-        const url = `${cleanUrl}/net_tracker_data.json`;
+        const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
+        const url = `${fireUrl}/net_tracker_data.json?nocache=` + Date.now();
 
         fetch(url)
             .then(res => res.json())
             .then(data => {
-                if (Array.isArray(data) && data.length > 0) {
-                    const cloudString = JSON.stringify(data);
+                let parsedList = null;
+                if (Array.isArray(data)) {
+                    parsedList = data;
+                } else if (data && typeof data === 'object') {
+                    parsedList = data.lines && Array.isArray(data.lines) ? data.lines : Object.values(data);
+                }
+
+                if (parsedList && parsedList.length > 0) {
+                    const validData = parsedList.filter(l => l && typeof l === 'object' && l.name);
+                    if (validData.length === 0) return;
+
+                    const cloudString = JSON.stringify(validData);
                     const localString = JSON.stringify(allLines);
+
                     if (cloudString !== localString) {
-                        allLines = data.map((l, i) => ({
+                        allLines = validData.map((l, i) => ({
                             id: l.id || `cloud_${Date.now()}_${i}`,
                             name: l.name || "خط",
                             weServiceNumber: l.weServiceNumber || "",
@@ -1332,11 +1340,13 @@ Balaha.Net<!DOCTYPE html>
                             isPaid: Boolean(l.isPaid),
                             history: Array.isArray(l.history) ? l.history : []
                         }));
+
                         if (!allLines.some(l => l.id === activeLineId)) {
                             activeLineId = allLines[0]?.id || "";
                         }
+
                         sortLinesDynamically();
-                        persistData();
+                        localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
                         buildTableStructure();
                         renderStaticDetails();
                     }
@@ -1346,7 +1356,7 @@ Balaha.Net<!DOCTYPE html>
     }
 
     function saveCloudSettings() {
-        cloudSettings.firebaseUrl = document.getElementById('firebaseUrlInput').value.trim();
+        cloudSettings.firebaseUrl = document.getElementById('firebaseUrlInput').value.trim() || DEFAULT_FIREBASE_URL;
         localStorage.setItem('pro_net_cloud_settings', JSON.stringify(cloudSettings));
         showToast("✅ تم حفظ وتفعيل المزامنة السحابية بنجاح!");
         syncToCloud();
@@ -1358,7 +1368,6 @@ Balaha.Net<!DOCTYPE html>
     }
 
     sortLinesDynamically();
-    persistData();
 
     function copyBackupToClipboard() {
         const dataJson = JSON.stringify(allLines, null, 2);
@@ -1697,7 +1706,7 @@ Balaha.Net<!DOCTYPE html>
     function openSettingsModal() {
         document.getElementById('tgBotTokenInput').value = tgSettings.botToken || "";
         document.getElementById('tgChatIdInput').value = tgSettings.chatId || "";
-        document.getElementById('firebaseUrlInput').value = cloudSettings.firebaseUrl || "";
+        document.getElementById('firebaseUrlInput').value = cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL;
         document.getElementById('backupDataArea').value = "";
         document.getElementById('settingsModalOverlay').classList.add('active');
     }
@@ -1943,13 +1952,11 @@ Balaha.Net<!DOCTYPE html>
         document.getElementById('alertDaysDisplay').innerText = `حد الأيام: ${line.alertDays} أيام`;
         document.getElementById('expiryDateDisplay').innerText = `الانتهاء: ${line.expiryDate}`;
 
-        // تحديث نص زر البحث ليظهر الخط الحالي
         const searchBtnLabel = document.getElementById('searchTriggerLabel');
         if (searchBtnLabel) {
             searchBtnLabel.innerText = (line.weServiceNumber || line.name) + (line.note ? ` (${line.note})` : '');
         }
 
-        // تحديث البادج الجديد المضاف في المنتصف برقم الخدمة أو اسم الخط
         const heroBadge = document.getElementById('heroLineBadge');
         if (heroBadge) {
             heroBadge.innerText = line.weServiceNumber || line.name || "------";
@@ -1958,7 +1965,6 @@ Balaha.Net<!DOCTYPE html>
         tickLiveStats();
     }
 
-    // دوال البحث السريع
     function openSearchModal() {
         document.getElementById('searchLinesModalOverlay').classList.add('active');
         const input = document.getElementById('linesSearchQuickInput');
@@ -2029,84 +2035,80 @@ Balaha.Net<!DOCTYPE html>
         }
     }
 
+    // بناء الواجهة عند البدء
     buildTableStructure();
     renderStaticDetails();
     setInterval(tickLiveStats, 1000);
 
-    // المزامنة الفورية من Firebase كل 5 ثوانٍ
-    setInterval(syncFromCloud, 5000);
-    // تحديث ومزامنة تلقائية في الخلفية كل 30 ثانية
-setInterval(function() {
-    loadInitialData();
-}, 30000);
-// نظام الكشف عن التحديثات البرمجية للكود عبر GitHub
-let lastKnownCommit = "";
+    // سحب أحدث بيانات حية من Firebase فور الفتح ثم دورياً كل 4 ثوانٍ
+    syncFromCloud();
+    setInterval(syncFromCloud, 4000);
 
-function checkForCodeUpdates() {
-    fetch("https://api.github.com/repos/esamm5180-a11y/giga.py/commits/main", {
-        headers: { "Accept": "application/vnd.github.v3+json" }
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (!data || !data.sha) return;
-        
-        const currentCommit = data.sha;
+    // نظام الكشف عن التحديثات البرمجية للكود عبر GitHub
+    let lastKnownCommit = "";
 
-        if (!lastKnownCommit) {
-            lastKnownCommit = localStorage.getItem("app_commit_version") || currentCommit;
-            localStorage.setItem("app_commit_version", lastKnownCommit);
-        }
+    function checkForCodeUpdates() {
+        fetch("https://api.github.com/repos/esamm5180-a11y/giga.py/commits/main", {
+            headers: { "Accept": "application/vnd.github.v3+json" }
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (!data || !data.sha) return;
+            const currentCommit = data.sha;
 
-        if (currentCommit !== lastKnownCommit) {
-            showCodeUpdateAlert(currentCommit);
-        }
-    })
-    .catch(err => console.log("فحص التحديث البرمجي:", err));
-}
+            if (!lastKnownCommit) {
+                lastKnownCommit = localStorage.getItem("app_commit_version") || currentCommit;
+                localStorage.setItem("app_commit_version", lastKnownCommit);
+            }
 
-function showCodeUpdateAlert(newCommitSha) {
-    if (document.getElementById("codeUpdateBanner")) return;
+            if (currentCommit !== lastKnownCommit) {
+                showCodeUpdateAlert(currentCommit);
+            }
+        })
+        .catch(err => console.log("فحص التحديث البرمجي:", err));
+    }
 
-    const banner = document.createElement("div");
-    banner.id = "codeUpdateBanner";
-    // تم ضبط الموضع ليكون في أعلى الشاشة بدلاً من الأسفل
-    banner.style.position = "fixed";
-    banner.style.top = "12px";
-    banner.style.left = "12px";
-    banner.style.right = "12px";
-    banner.style.zIndex = "999999";
-    banner.style.backgroundColor = "#0284c7";
-    banner.style.color = "#ffffff";
-    banner.style.padding = "10px 14px";
-    banner.style.borderRadius = "14px";
-    banner.style.boxShadow = "0 6px 20px rgba(0,0,0,0.5)";
-    banner.style.display = "flex";
-    banner.style.alignItems = "center";
-    banner.style.justifyContent = "space-between";
-    banner.style.fontSize = "12px";
-    banner.style.fontWeight = "bold";
+    function showCodeUpdateAlert(newCommitSha) {
+        if (document.getElementById("codeUpdateBanner")) return;
 
-    banner.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 8px;">
-            <i class="fas fa-sparkles text-amber-300 text-base"></i>
-            <span>تحديث برمجي جديد متوفر!</span>
-        </div>
-        <button id="btnApplyUpdate" style="background: #ffffff; color: #0284c7; border: none; padding: 5px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-            تحديث الآن
-        </button>
-    `;
+        const banner = document.createElement("div");
+        banner.id = "codeUpdateBanner";
+        banner.style.position = "fixed";
+        banner.style.top = "12px";
+        banner.style.left = "12px";
+        banner.style.right = "12px";
+        banner.style.zIndex = "999999";
+        banner.style.backgroundColor = "#0284c7";
+        banner.style.color = "#ffffff";
+        banner.style.padding = "10px 14px";
+        banner.style.borderRadius = "14px";
+        banner.style.boxShadow = "0 6px 20px rgba(0,0,0,0.5)";
+        banner.style.display = "flex";
+        banner.style.alignItems = "center";
+        banner.style.justifyContent = "space-between";
+        banner.style.fontSize = "12px";
+        banner.style.fontWeight = "bold";
 
-    document.body.appendChild(banner);
+        banner.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <i class="fas fa-sparkles text-amber-300 text-base"></i>
+                <span>تحديث برمجي جديد متوفر!</span>
+            </div>
+            <button id="btnApplyUpdate" style="background: #ffffff; color: #0284c7; border: none; padding: 5px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                تحديث الآن
+            </button>
+        `;
 
-    document.getElementById("btnApplyUpdate").onclick = function() {
-        localStorage.setItem("app_commit_version", newCommitSha);
-        window.location.reload(true);
-    };
-}
+        document.body.appendChild(banner);
 
-// فحص كل دقيقة
-setInterval(checkForCodeUpdates, 60000);
+        document.getElementById("btnApplyUpdate").onclick = function() {
+            localStorage.setItem("app_commit_version", newCommitSha);
+            window.location.reload(true);
+        };
+    }
 
+    checkForCodeUpdates();
+    setInterval(checkForCodeUpdates, 60000);
 </script>
 
 </body>
