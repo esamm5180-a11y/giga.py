@@ -577,7 +577,7 @@
 
         .sort-selector-bar {
             display: none;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
             gap: 6px;
             background: var(--surface-inner);
             border: 1px solid var(--border);
@@ -753,7 +753,7 @@
         .form-input {
             width: 100%;
             background: var(--surface-inner);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
             border-radius: 10px;
             padding: 10px 12px;
             font-size: 13px;
@@ -1020,6 +1020,10 @@
             <button type="button" class="sort-tab-btn" id="tab-date" onclick="changeSortMode('date')">
                 <i class="fa-solid fa-calendar-xmark"></i> قرب انتهاء التاريخ
             </button>
+            <!-- التبويب الجديد لفلترة الخطوط غير المدفوعة فقط -->
+            <button type="button" class="sort-tab-btn" id="tab-unpaid" onclick="changeSortMode('unpaid')">
+                <i class="fa-solid fa-clock"></i> غير مدفوع فقط
+            </button>
         </div>
 
         <div style="overflow-x: auto;">
@@ -1167,7 +1171,8 @@
         <form onsubmit="applyQuickExtraQuota(event)">
             <div class="form-row">
                 <label>حدد حجم الكوتة الإضافية (GB)</label>
-                <input type="number" step="any" id="quickExtraInput" class="form-input" placeholder="مثال: 20 أو 50 أو 100" required autofocus>
+                <!-- القيمة الافتراضية الثابتة 2000 جيجا مع إمكانية تعديلها -->
+                <input type="number" step="any" id="quickExtraInput" value="2000" class="form-input" placeholder="2000" required autofocus>
             </div>
             <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
                 * سيتم إضافة هذه الجيجابايت فوراً وتدوينها داخل سجل الخط.
@@ -1366,7 +1371,7 @@
 
     function changeSortMode(mode) {
         currentSortMode = mode;
-        ['burn', 'gb', 'date'].forEach(m => {
+        ['burn', 'gb', 'date', 'unpaid'].forEach(m => {
             const el = document.getElementById(`tab-${m}`);
             if (el) el.classList.toggle('active', m === mode);
         });
@@ -1374,7 +1379,8 @@
         const labels = {
             'burn': 'الأعلى سحباً',
             'gb': 'قرب انتهاء الجيجات',
-            'date': 'قرب انتهاء التاريخ'
+            'date': 'قرب انتهاء التاريخ',
+            'unpaid': 'غير مدفوع فقط'
         };
         document.getElementById('sortModeLabel').innerText = labels[mode];
 
@@ -1393,6 +1399,7 @@
         } else if (currentSortMode === 'date') {
             allLines.sort((a, b) => calculateRemainingDays(a.expiryDate) - calculateRemainingDays(b.expiryDate));
         }
+        // في حال اختيار unpaid لا يغير الترتيب الأصلي ولكن يقوم بتصفية العرض داخل الجدول
     }
 
     function syncToCloud() {
@@ -1583,6 +1590,7 @@
 
         persistData();
         checkAutoRenewalForLine(line);
+        buildTableStructure();
         renderStaticDetails();
         showToast(line.isPaid ? "تم تفعيل دفع الاشتراك وإلغاء التنبيه" : "تم إلغاء تفعيل الدفع");
     }
@@ -1822,7 +1830,7 @@
         const line = getActiveLine();
         if (!line) return;
         document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name} ${line.note ? '('+line.note+')' : ''}`;
-        document.getElementById('quickExtraInput').value = '';
+        document.getElementById('quickExtraInput').value = '2000';
         document.getElementById('extraQuotaModalOverlay').classList.add('active');
     }
 
@@ -1952,7 +1960,18 @@
     function buildTableStructure() {
         const tbody = document.getElementById('allLinesTableBody');
         tbody.innerHTML = '';
-        allLines.forEach((line) => {
+        
+        // تصفية الخطوط إذا تم تفعيل فلتر "غير مدفوع فقط"
+        const displayLines = currentSortMode === 'unpaid' 
+            ? allLines.filter(l => !l.isPaid) 
+            : allLines;
+
+        if (displayLines.length === 0 && currentSortMode === 'unpaid') {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--success); padding: 18px; font-weight: 800;">🎉 جميع الخطوط مدفوعة ومسددة بالكامل!</td></tr>`;
+            return;
+        }
+
+        displayLines.forEach((line) => {
             const daysLeft = calculateRemainingDays(line.expiryDate);
             const liveBal = getCurrentLiveBalance(line);
             const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
