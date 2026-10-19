@@ -1578,4 +1578,79 @@
         if (!line) return;
         line.isPaid = !line.isPaid;
         
-        
+        delete sentAlertsMap[line.id];
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        persistData();
+        checkAutoRenewalForLine(line);
+        buildTableStructure();
+        renderStaticDetails();
+        showToast(line.isPaid ? "تم تفعيل دفع الاشتراك وإلغاء التنبيه" : "تم إلغاء تفعيل الدفع");
+    }
+
+    function getCurrentLiveBalance(line) {
+        if (!line.dailyManual || line.dailyManual <= 0) return Number(line.baseBalance) || 0;
+        const perSecondRate = Number(line.dailyManual) / SECONDS_IN_DAY;
+        const elapsed = (Date.now() - (line.lastSyncTime || Date.now())) / 1000;
+        return Math.max(0, Number(line.baseBalance) - (elapsed * perSecondRate));
+    }
+
+    function stepDailyRate(amount) {
+        const line = getActiveLine();
+        if (!line) return;
+        line.baseBalance = getCurrentLiveBalance(line);
+        line.lastSyncTime = Date.now();
+
+        let newRate = Number(((Number(line.dailyManual) || 5) + amount).toFixed(1));
+        if (newRate < 0.1) newRate = 0.1;
+
+        line.dailyManual = newRate;
+        sortLinesDynamically();
+        persistData();
+        buildTableStructure();
+        renderStaticDetails();
+        showToast(`تم ضبط السحب اليومي: ${newRate} GB/يوم`);
+    }
+
+    function promptEditDailyRate() {
+        const line = getActiveLine();
+        if (!line) return;
+        const current = line.dailyManual || 5;
+        const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", current);
+        if (val !== null) {
+            const parsed = parseFloat(val);
+            if (!isNaN(parsed) && parsed > 0) {
+                line.baseBalance = getCurrentLiveBalance(line);
+                line.lastSyncTime = Date.now();
+                line.dailyManual = Number(parsed.toFixed(2));
+                sortLinesDynamically();
+                persistData();
+                buildTableStructure();
+                renderStaticDetails();
+                showToast(`تم ضبط السحب اليومي: ${line.dailyManual} GB/يوم`);
+            } else {
+                alert("يرجى إدخال رقم صحيح أكبر من صفر.");
+            }
+        }
+    }
+
+    function calculateRemainingDays(targetDate) {
+        if (!targetDate) return 0;
+        const parts = targetDate.split('-');
+        if (parts.length !== 3) return 0;
+
+        const now = new Date();
+        const todayZero = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
+
+        const y = parseInt(parts[0], 10);
+        const m = parseInt(parts[1], 10) - 1;
+        const d = parseInt(parts[2], 10);
+        const expZero = new Date(y, m, d, 0, 0, 0, 0);
+
+        const diffDays = Math.round((expZero.getTime() - todayZero.getTime()) / (1000 * 60 * 60 * 24));
+        return Math.max(0, diffDays);
+    }
+
+    function checkAutoRenewalForLine(line) {
+        const diffDays = calculateRemainingDays(line.expiryDate);
+        if (diffDays <= 0
