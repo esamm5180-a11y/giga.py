@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#00ffcc">
+    <meta name="theme-color" content="#00ffcc">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>منصة إدارة ومتابعة خطوط الإنترنت</title>
@@ -438,13 +438,31 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            min-width: 125px;
+            min-width: 140px;
         }
 
         .hero-side-actions .btn {
             padding: 8px 12px;
             font-size: 12px;
             width: 100%;
+        }
+
+        /* خانة العنوان فوق زر كوتة إضافية */
+        .card-address-badge {
+            background: rgba(2, 132, 199, 0.14);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 8px;
+            padding: 6px 10px;
+            color: var(--accent);
+            font-size: 12px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .progress-container {
@@ -959,8 +977,13 @@
                 <span class="unit">GB</span>
             </div>
 
-            <!-- أزرار كوتة إضافية ودفع الاشتراك بجانب الرصيد -->
+            <!-- أزرار الجانب: العنوان يظهر هنا مباشرة فوق زر كوتة إضافية -->
             <div class="hero-side-actions">
+                <div class="card-address-badge" id="heroCardAddressBox" title="عنوان الخط">
+                    <i class="fa-solid fa-location-dot" style="font-size: 11px;"></i>
+                    <span id="heroCardAddressText">العنوان</span>
+                </div>
+
                 <button class="btn btn-extra" onclick="openExtraQuotaModal()" title="إضافة كوتة">
                     <i class="fa-solid fa-plus-circle"></i> <span>كوتة إضافية</span>
                 </button>
@@ -1029,6 +1052,7 @@
                 <thead>
                     <tr>
                         <th>الخط</th>
+                        <th>العنوان</th>
                         <th>الرصيد الحي (GB)</th>
                         <th>السحب (GB/يوم)</th>
                         <th>الأيام المتبقية</th>
@@ -1056,7 +1080,7 @@
         <h3 style="text-align: center; font-size: 15px; margin-bottom: 12px; font-weight: 800;">البحث واختيار الخط</h3>
 
         <div class="form-row">
-            <input type="text" id="linesSearchQuickInput" class="form-input" placeholder="اكتب اسم الخط أو رقم الخدمة..." oninput="renderQuickSearchResults(this.value)">
+            <input type="text" id="linesSearchQuickInput" class="form-input" placeholder="اكتب اسم الخط أو العنوان أو الرقم..." oninput="renderQuickSearchResults(this.value)">
         </div>
 
         <div id="quickSearchResultsList" class="history-list" style="max-height: 240px;">
@@ -1181,10 +1205,11 @@
     </div>
 </div>
 
+<!-- نافذة إضافة وتعديل الخط -->
 <div class="modal-overlay" id="appModalOverlay">
     <div class="app-modal">
         <div class="modal-avatar-wrap">
-            <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-avatar">
                 <i class="fa-solid fa-pen-to-square"></i>
             </div>
@@ -1197,7 +1222,15 @@
 
             <div class="form-row">
                 <label>رقم / اسم الخط داخل التطبيق</label>
-                <input type="text" id="inputLineName" class="form-input" placeholder="مثال: البيت أو 040208 أو الخط 1" required>
+                <input type="text" id="inputLineName" class="form-input" placeholder="مثال: 2080744 أو خط البيت" required>
+            </div>
+
+            <!-- حقل العنوان المطلوب -->
+            <div class="form-row">
+                <label style="color: var(--accent); font-weight: 800;">
+                    <i class="fa-solid fa-location-dot"></i> العنوان / موقع الخط
+                </label>
+                <input type="text" id="inputLineAddress" class="form-input" placeholder="مثال: شقة 4 عمارة الأمل أو الدور الأرضي">
             </div>
 
             <div class="form-row">
@@ -1206,7 +1239,7 @@
             </div>
 
             <div class="form-row">
-                <label style="color: #cbd5e1;">ملاحظات / وصف إضافي (اختياري)</label>
+                <label style="color: #cbd5e1;">ملاحظات إضافية (اختياري)</label>
                 <input type="text" id="inputLineNote" class="form-input" placeholder="مثال: راوتر الدور الثاني...">
             </div>
 
@@ -1293,6 +1326,7 @@
             id: "line_default_1",
             name: "040208",
             weServiceNumber: "",
+            address: "المنزل الرئيسي",
             note: "البيت",
             baseBalance: 140.0,
             dailyManual: 5.0,
@@ -1325,6 +1359,7 @@
                             id: l.id || `line_${Date.now()}_${i}`,
                             name: l.name || "خط غير معروف",
                             weServiceNumber: l.weServiceNumber || "",
+                            address: l.address || l.note || "",
                             note: l.note || "",
                             baseBalance: Number(l.baseBalance) || 0,
                             dailyManual: Number(l.dailyManual) || 5,
@@ -1434,6 +1469,7 @@
                             id: l.id || `cloud_${Date.now()}_${i}`,
                             name: l.name || "خط",
                             weServiceNumber: l.weServiceNumber || "",
+                            address: l.address || l.note || "",
                             note: l.note || "",
                             baseBalance: Number(l.baseBalance) || 0,
                             dailyManual: Number(l.dailyManual) || 5,
@@ -1507,6 +1543,7 @@
                     id: l.id || `restored_${Date.now()}_${i}`,
                     name: l.name || "خط",
                     weServiceNumber: l.weServiceNumber || "",
+                    address: l.address || l.note || "",
                     note: l.note || "",
                     baseBalance: Number(l.baseBalance) || 0,
                     dailyManual: Number(l.dailyManual) || 5,
@@ -1689,7 +1726,7 @@
             buildTableStructure();
             renderStaticDetails();
             showToast(`تم تجديد باقة ${line.name} وتقديم التاريخ 30 يوماً`);
-            sendTelegramAlert(`🎉 <b>تم تجديد الباقة بنجاح!</b>\nالخط: <b>${line.name}</b> ${line.note ? '('+line.note+')' : ''}\nتمت إضافة باقة الشهر الجديد (${line.monthlyPackage} GB).\nتاريخ الانتهاء الجديد: ${line.expiryDate}`);
+            sendTelegramAlert(`🎉 <b>تم تجديد الباقة بنجاح!</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\nتمت إضافة باقة الشهر الجديد (${line.monthlyPackage} GB).\nتاريخ الانتهاء الجديد: ${line.expiryDate}`);
         }
     }
 
@@ -1725,7 +1762,7 @@
                     if (isGbBreach) alertDetails.push(`⚠️ رصيد منخفض: <b>${liveBal.toFixed(2)} GB</b> (حد الأمان: ${line.alertGB} GB)`);
                     if (isDaysBreach) alertDetails.push(`⏳ اقترب موعد التجديد: باقي <b>${daysLeft} يوم</b> (الحد: ${line.alertDays} أيام)`);
 
-                    const fullMsg = `🚨 <b>تنبيه استهلاك خط الإنترنت!</b>\nالخط: <b>${line.name}</b> ${line.note ? '('+line.note+')' : ''}\n${alertDetails.join('\n')}`;
+                    const fullMsg = `🚨 <b>تنبيه استهلاك خط الإنترنت!</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\n${alertDetails.join('\n')}`;
                     sendTelegramAlert(fullMsg);
                     
                     sentAlertsMap[line.id] = Date.now();
@@ -1753,7 +1790,7 @@
                 if (item.isDaysBreach) tags += `<span class="alert-tag days">اقترب الانتهاء (${item.daysLeft} يوم)</span>`;
 
                 div.innerHTML = `
-                    <div style="font-weight:700; font-size:13px;">${item.line.name} ${item.line.note ? '<span style="font-size:11px; color:#94a3b8;">('+item.line.note+')</span>' : ''}</div>
+                    <div style="font-weight:700; font-size:13px;">${item.line.name} ${item.line.address ? '<span style="font-size:11px; color:var(--accent);">['+item.line.address+']</span>' : ''}</div>
                     <div style="display:flex; gap:6px;">${tags}</div>
                 `;
                 alertContainer.appendChild(div);
@@ -1766,7 +1803,7 @@
     function openHistoryModal() {
         const line = getActiveLine();
         if (!line) return;
-        document.getElementById('historyModalLineName').innerText = `خط: ${line.name} ${line.note ? '('+line.note+')' : ''}`;
+        document.getElementById('historyModalLineName').innerText = `خط: ${line.name} ${line.address ? '['+line.address+']' : ''}`;
         renderHistoryList(line);
         document.getElementById('historyModalOverlay').classList.add('active');
     }
@@ -1824,7 +1861,7 @@
     function openExtraQuotaModal() {
         const line = getActiveLine();
         if (!line) return;
-        document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name} ${line.note ? '('+line.note+')' : ''}`;
+        document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name} ${line.address ? '['+line.address+']' : ''}`;
         document.getElementById('quickExtraInput').value = '2000';
         document.getElementById('extraQuotaModalOverlay').classList.add('active');
     }
@@ -1863,7 +1900,7 @@
         closeExtraQuotaModal();
         renderStaticDetails();
         showToast(`تمت إضافة ${addedGB} GB وتسجيلها بالسجل`);
-        sendTelegramAlert(`➕ <b>تمت إضافة كوتة إضافية</b>\nالخط: <b>${line.name}</b> ${line.note ? '('+line.note+')' : ''}\nتمت إضافة: ${addedGB} GB\nالرصيد الجديد: ${line.baseBalance.toFixed(2)} GB`);
+        sendTelegramAlert(`➕ <b>تمت إضافة كوتة إضافية</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\nتمت إضافة: ${addedGB} GB\nالرصيد الجديد: ${line.baseBalance.toFixed(2)} GB`);
     }
 
     function openEditModal() {
@@ -1874,6 +1911,7 @@
 
         const currentLiveBal = getCurrentLiveBalance(line);
         document.getElementById('inputLineName').value = line.name;
+        document.getElementById('inputLineAddress').value = line.address || line.note || "";
         document.getElementById('inputWeServiceNumber').value = line.weServiceNumber || "";
         document.getElementById('inputLineNote').value = line.note || "";
         document.getElementById('inputCurrentBalance').value = currentLiveBal.toFixed(2);
@@ -1890,6 +1928,7 @@
         document.getElementById('formIndexKey').value = "-1";
         document.getElementById('modalHeading').innerText = "إضافة خط جديد";
         document.getElementById('lineDataForm').reset();
+        document.getElementById('inputLineAddress').value = "";
         document.getElementById('inputWeServiceNumber').value = "";
         document.getElementById('inputAlertGB').value = 15;
         document.getElementById('inputAlertDays').value = 5;
@@ -1906,13 +1945,15 @@
         e.preventDefault();
         const editId = document.getElementById('formIndexKey').value;
         const enteredBalance = parseFloat(document.getElementById('inputCurrentBalance').value);
+        const enteredAddress = document.getElementById('inputLineAddress').value.trim();
 
         if (editId !== "-1") {
             const line = allLines.find(l => l.id === editId);
             if (line) {
                 line.name = document.getElementById('inputLineName').value.trim();
+                line.address = enteredAddress;
                 line.weServiceNumber = document.getElementById('inputWeServiceNumber').value.trim();
-                line.note = document.getElementById('inputLineNote').value.trim();
+                line.note = document.getElementById('inputLineNote').value.trim() || enteredAddress;
                 line.baseBalance = enteredBalance;
                 line.dailyManual = parseFloat(document.getElementById('inputDailyManual').value);
                 line.monthlyPackage = parseFloat(document.getElementById('inputMonthlyPackage').value);
@@ -1928,8 +1969,9 @@
             const newLine = {
                 id: `line_${Date.now()}`,
                 name: document.getElementById('inputLineName').value.trim(),
+                address: enteredAddress,
                 weServiceNumber: document.getElementById('inputWeServiceNumber').value.trim(),
-                note: document.getElementById('inputLineNote').value.trim(),
+                note: document.getElementById('inputLineNote').value.trim() || enteredAddress,
                 baseBalance: enteredBalance,
                 dailyManual: parseFloat(document.getElementById('inputDailyManual').value),
                 monthlyPackage: parseFloat(document.getElementById('inputMonthlyPackage').value),
@@ -1968,8 +2010,9 @@
             tr.innerHTML = `
                 <td>
                     <strong>${line.name}</strong>
-                    ${line.note ? `<div style="font-size: 11px; color: #94a3b8;">${line.note}</div>` : ''}
+                    ${line.weServiceNumber ? `<div style="font-size: 11px; color: #94a3b8;">${line.weServiceNumber}</div>` : ''}
                 </td>
+                <td style="color: var(--accent); font-weight: 700;">${line.address || line.note || '—'}</td>
                 <td class="mono" id="tableBal-${line.id}" style="color: ${isGbBreach ? '#f87171' : '#34d399'}; font-weight: 700; font-size: 14px;">${liveBal.toFixed(3)}</td>
                 <td class="mono" style="color: var(--accent); font-weight: 700; font-size: 14px;">${line.dailyManual}</td>
                 <td class="mono" style="color: ${isDaysBreach ? '#f87171' : '#f8fafc'}; font-weight: 700;">${daysLeft} يوم</td>
@@ -2013,9 +2056,17 @@
         const daysLeft = calculateRemainingDays(line.expiryDate);
 
         document.getElementById('headerTitle').innerText = line.name;
+        
+        // عرض العنوان في المكان المحدد فوق زر كوتة إضافية
+        const addrText = line.address || line.note || "بدون عنوان";
+        const cardAddrEl = document.getElementById('heroCardAddressText');
+        if (cardAddrEl) {
+            cardAddrEl.innerText = addrText;
+        }
+
         const noteEl = document.getElementById('headerNote');
-        if (line.note && line.note.trim() !== '') {
-            noteEl.innerText = line.note;
+        if (addrText && addrText !== "بدون عنوان") {
+            noteEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${addrText}`;
             noteEl.style.display = 'flex';
         } else {
             noteEl.style.display = 'none';
@@ -2061,7 +2112,7 @@
 
         const searchBtnLabel = document.getElementById('searchTriggerLabel');
         if (searchBtnLabel) {
-            searchBtnLabel.innerText = (line.weServiceNumber || line.name) + (line.note ? ` (${line.note})` : '');
+            searchBtnLabel.innerText = (line.weServiceNumber || line.name) + (line.address ? ` [${line.address}]` : '');
         }
 
         const heroBadge = document.getElementById('heroLineBadge');
@@ -2091,6 +2142,7 @@
         const matched = allLines.filter(l => {
             if (!q) return true;
             return (l.name && l.name.toLowerCase().includes(q)) ||
+                   (l.address && l.address.toLowerCase().includes(q)) ||
                    (l.weServiceNumber && String(l.weServiceNumber).includes(q)) ||
                    (l.note && l.note.toLowerCase().includes(q));
         });
@@ -2104,7 +2156,7 @@
             <div class="history-item" onclick="selectLineFromSearch('${m.id}')" style="cursor: pointer; ${m.id === activeLineId ? 'border-right: 3px solid var(--accent); background: rgba(2,132,199,0.1);' : ''}">
                 <div>
                     <div style="font-size: 13px; font-weight: 700; color: #fff;">
-                        ${m.weServiceNumber || m.name} ${m.note ? `<span style="font-size:11px; color:#94a3b8;">(${m.note})</span>` : ''}
+                        ${m.weServiceNumber || m.name} ${m.address ? `<span style="font-size:11px; color:var(--accent);">[${m.address}]</span>` : ''}
                     </div>
                     <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${m.name}</div>
                 </div>
@@ -2142,16 +2194,13 @@
         }
     }
 
-    // بناء الواجهة عند البدء
     buildTableStructure();
     renderStaticDetails();
     setInterval(tickLiveStats, 1000);
 
-    // سحب أحدث بيانات حية من Firebase فور الفتح ثم دورياً كل 4 ثوانٍ
     syncFromCloud();
     setInterval(syncFromCloud, 4000);
 
-    // نظام الكشف عن التحديثات البرمجية للكود عبر GitHub
     let lastKnownCommit = "";
 
     function checkForCodeUpdates() {
