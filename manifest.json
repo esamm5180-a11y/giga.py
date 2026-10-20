@@ -1,0 +1,15 @@
+{
+  "name": "Net Tracker",
+  "short_name": "NetTracker",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d1117",
+  "theme_color": "#00ffcc",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/900/900782.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
