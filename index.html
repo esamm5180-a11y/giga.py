@@ -418,18 +418,22 @@
             50% { transform: scale(1.4); opacity: 0.5; }
         }
 
+        /* ضبط الحاوية لموازاة المحتوى بدقة تامة */
         .hero-middle-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            margin: 8px 0 12px 0;
+            margin: 10px 0 14px 0;
+            width: 100%;
         }
 
         .hero-balance {
             display: flex;
             align-items: baseline;
             gap: 8px;
+            flex: 1;
+            min-width: 0;
         }
 
         .hero-balance .number {
@@ -446,31 +450,42 @@
             font-weight: 800;
         }
 
+        /* عمود أزرار الجانب متطابق ومحاذٍ لحافة الكارت الداخلية */
         .hero-side-actions {
             display: flex;
             flex-direction: column;
             gap: 8px;
-            min-width: 145px;
+            width: 135px;
+            min-width: 135px;
+            max-width: 135px;
+            margin: 0;
+            padding: 0;
         }
 
-        .hero-side-actions .btn {
-            padding: 8px 12px;
-            font-size: 12px;
-            width: 100%;
-        }
-
-        /* تنسيق بارز ومميز لإطار خانة العنوان */
-        .card-address-badge {
-            background: rgba(3, 105, 161, 0.22);
-            border: 1.5px solid #38bdf8;
-            border-radius: 10px;
-            padding: 8px 10px;
-            color: #f0f9ff;
-            font-size: 12.5px;
-            font-weight: 800;
+        .hero-side-actions .btn,
+        .hero-side-actions .card-address-badge {
+            width: 100% !important;
+            box-sizing: border-box !important;
+            margin: 0 !important;
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .hero-side-actions .btn {
+            padding: 9px 10px;
+            font-size: 12px;
+        }
+
+        /* تنسيق خانة العنوان لتكون متطابقة في المقاس مع الأزرار وبلا إزاحة */
+        .card-address-badge {
+            background: rgba(3, 105, 161, 0.22);
+            border: 1.5px solid #38bdf8;
+            border-radius: var(--radius-sm);
+            padding: 7px 10px;
+            color: #f0f9ff;
+            font-size: 12px;
+            font-weight: 800;
             gap: 6px;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -1002,7 +1017,7 @@
                 <span class="unit">GB</span>
             </div>
 
-            <!-- أزرار الجانب: العنوان يظهر هنا مباشرة فوق زر كوتة إضافية -->
+            <!-- أزرار الجانب: العنوان، كوتة إضافية، دفع الاشتراك بمحاذاة تامة مع الإطار -->
             <div class="hero-side-actions">
                 <div class="card-address-badge" id="heroCardAddressBox" title="عنوان الخط">
                     <i class="fa-solid fa-location-dot" style="font-size: 11px;"></i>
