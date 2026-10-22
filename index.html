@@ -31,7 +31,7 @@
             --text-secondary: #94a3b8;
             --border: rgba(255, 255, 255, 0.08);
             --border-hover: rgba(56, 189, 248, 0.35);
-            --radius-xl: 18px;
+            --radius-xl: 20px;
             --radius-md: 12px;
             --radius-sm: 8px;
             --shadow-xl: 0 16px 36px -10px rgba(0, 0, 0, 0.8);
@@ -64,13 +64,14 @@
             margin: 0 auto;
         }
 
+        /* تحسين الإطار الخارجي للكارت العلوي */
         header {
-            background: var(--surface-card);
-            border: 1px solid var(--border);
+            background: linear-gradient(180deg, #0e1726 0%, #080d1a 100%);
+            border: 1.5px solid rgba(56, 189, 248, 0.28);
             border-radius: var(--radius-xl);
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-xl);
+            padding: 18px;
+            margin-bottom: 20px;
+            box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.75), 0 0 15px rgba(56, 189, 248, 0.08);
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -80,9 +81,9 @@
         header::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
+            top: -1px;
+            left: 20px;
+            right: 20px;
             height: 2px;
             background: linear-gradient(90deg, transparent, var(--accent), transparent);
         }
@@ -297,7 +298,7 @@
             border: 1px solid rgba(239, 68, 68, 0.35);
             border-radius: var(--radius-md);
             padding: 12px 14px;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .alert-hub.active {
@@ -360,21 +361,32 @@
             color: #fde68a;
         }
 
+        /* تحسين وتحديد إطار كارت الرصيد الرئيسي */
         .hero-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-xl);
-            padding: 20px 22px;
-            margin-bottom: 16px;
-            box-shadow: var(--shadow-xl);
+            background: linear-gradient(180deg, #0e1726 0%, #070d18 100%);
+            border: 1.5px solid rgba(56, 189, 248, 0.32);
+            border-radius: 22px;
+            padding: 22px 20px;
+            margin-bottom: 22px;
+            box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.85), 0 0 20px rgba(56, 189, 248, 0.08);
             position: relative;
+        }
+
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
         }
 
         .hero-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             flex-wrap: wrap;
             gap: 8px;
         }
@@ -411,7 +423,7 @@
             justify-content: space-between;
             align-items: center;
             gap: 12px;
-            margin: 6px 0 10px 0;
+            margin: 8px 0 12px 0;
         }
 
         .hero-balance {
@@ -438,7 +450,7 @@
             display: flex;
             flex-direction: column;
             gap: 8px;
-            min-width: 140px;
+            min-width: 145px;
         }
 
         .hero-side-actions .btn {
@@ -447,14 +459,14 @@
             width: 100%;
         }
 
-        /* خانة العنوان فوق زر كوتة إضافية */
+        /* تنسيق بارز ومميز لإطار خانة العنوان */
         .card-address-badge {
-            background: rgba(2, 132, 199, 0.14);
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            border-radius: 8px;
-            padding: 6px 10px;
-            color: var(--accent);
-            font-size: 12px;
+            background: rgba(3, 105, 161, 0.22);
+            border: 1.5px solid #38bdf8;
+            border-radius: 10px;
+            padding: 8px 10px;
+            color: #f0f9ff;
+            font-size: 12.5px;
             font-weight: 800;
             display: flex;
             align-items: center;
@@ -463,10 +475,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.15);
         }
 
         .progress-container {
-            margin: 14px 0 12px 0;
+            margin: 16px 0 14px 0;
         }
 
         .progress-header {
@@ -495,11 +508,11 @@
         }
 
         .hero-details-container {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 12px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 14px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .details-line {
@@ -550,13 +563,25 @@
             color: var(--accent);
         }
 
+        /* تحسين إطار كارت جدول الخطوط بالكامل */
         .all-lines-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border);
+            background: linear-gradient(180deg, #0e1726 0%, #070d18 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius-xl);
-            padding: 18px 20px;
-            box-shadow: var(--shadow-xl);
-            margin-bottom: 16px;
+            padding: 20px;
+            box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.8);
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .all-lines-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         }
 
         .all-lines-header {
@@ -565,7 +590,7 @@
             align-items: center;
             cursor: pointer;
             user-select: none;
-            padding-bottom: 8px;
+            padding-bottom: 10px;
         }
 
         .all-lines-header h3 {
@@ -2058,14 +2083,14 @@
         document.getElementById('headerTitle').innerText = line.name;
         
         // عرض العنوان في المكان المحدد فوق زر كوتة إضافية
-        const addrText = line.address || line.note || "بدون عنوان";
+        const addrText = line.address || line.note || "العنوان";
         const cardAddrEl = document.getElementById('heroCardAddressText');
         if (cardAddrEl) {
             cardAddrEl.innerText = addrText;
         }
 
         const noteEl = document.getElementById('headerNote');
-        if (addrText && addrText !== "بدون عنوان") {
+        if (addrText && addrText !== "العنوان" && addrText !== "بدون عنوان") {
             noteEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${addrText}`;
             noteEl.style.display = 'flex';
         } else {
