@@ -207,7 +207,6 @@
             flex: 1;
         }
 
-        /* زر الإعدادات بإطار واضح */
         .btn-settings {
             background: rgba(17, 24, 39, 0.85);
             color: var(--text-primary);
@@ -222,7 +221,6 @@
             border-color: var(--accent);
         }
 
-        /* زر دفع الاشتراك بإطار محدد ومطابق للأزرار بالأعلى */
         .btn-pay {
             background: rgba(3, 105, 161, 0.12);
             color: #e2e8f0;
@@ -282,7 +280,6 @@
             filter: brightness(1.08);
         }
 
-        /* زرا التعديل والحذف بإطار واضح وصريح */
         .btn-action-icon {
             background: rgba(17, 24, 39, 0.85);
             color: var(--text-secondary);
@@ -934,6 +931,10 @@
             border-right: 3px solid var(--success);
         }
 
+        .history-item.payment {
+            border-right: 3px solid #38bdf8;
+        }
+
         .toast-notify {
             position: fixed;
             bottom: 24px;
@@ -992,7 +993,7 @@
                     <span style="font-size: 10px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary);">بحث</span>
                 </button>
 
-                <button class="btn btn-history" onclick="openHistoryModal()" title="سجل الشحن والتجديد">
+                <button class="btn btn-history" onclick="openHistoryModal()" title="سجل حركات جميع الخطوط">
                     <i class="fa-solid fa-clock-rotate-left"></i> <span>السجل</span>
                 </button>
 
@@ -1162,22 +1163,32 @@
     </div>
 </div>
 
+<!-- نافذة سجل الحركات العام لجميع الخطوط -->
 <div class="modal-overlay" id="historyModalOverlay">
-    <div class="app-modal" style="max-width: 440px;">
+    <div class="app-modal" style="max-width: 450px;">
         <div class="modal-avatar-wrap">
             <button class="modal-close-btn" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-avatar" style="color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">
                 <i class="fa-solid fa-clock-rotate-left"></i>
             </div>
         </div>
-        <h3 style="text-align: center; font-size: 15px; margin-bottom: 4px; font-weight: 800;">سجل الباقات والشحن</h3>
-        <p style="text-align: center; font-size: 12px; color: var(--text-secondary); margin-bottom: 14px;" id="historyModalLineName">--</p>
+        <h3 style="text-align: center; font-size: 15px; margin-bottom: 4px; font-weight: 800;">سجل الحركات العام (لكافة الخطوط)</h3>
+        <p style="text-align: center; font-size: 11.5px; color: var(--text-secondary); margin-bottom: 12px;">
+            تتبع الشحن، الكوتات الإضافية، والتجديدات التي تمت على جميع الخطوط
+        </p>
 
-        <div id="historyListContainer" class="history-list">
+        <!-- فلتر تصفية الخطوط داخل السجل -->
+        <div class="form-row" style="margin-bottom: 8px;">
+            <select id="historyFilterSelect" class="form-input" style="padding: 7px 10px; font-size: 12px;" onchange="renderGlobalHistoryList(this.value)">
+                <option value="ALL">عرض كل حركات الخطوط</option>
+            </select>
         </div>
 
-        <button type="button" class="btn btn-pay" style="width: 100%; margin-top: 14px; color: var(--danger);" onclick="clearLineHistory()">
-            <i class="fa-solid fa-trash"></i> مسح سجل هذا الخط
+        <div id="historyListContainer" class="history-list" style="max-height: 320px;">
+        </div>
+
+        <button type="button" class="btn btn-pay" style="width: 100%; margin-top: 14px; color: var(--danger); border-color: rgba(239, 68, 68, 0.4);" onclick="clearAllHistory()">
+            <i class="fa-solid fa-trash"></i> مسح سجل الحركات بالكامل
         </button>
     </div>
 </div>
@@ -1270,7 +1281,7 @@
                 <input type="number" step="any" id="quickExtraInput" value="2000" class="form-input" placeholder="2000" required autofocus>
             </div>
             <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
-                * سيتم إضافة هذه الجيجابايت فوراً وتدوينها داخل سجل الخط.
+                * سيتم إضافة هذه الجيجابايت فوراً وتدوينها داخل سجل الحركات العام.
             </p>
             <button type="submit" class="modal-submit-btn">
                 تنزيل الكوتة في الرصيد
@@ -1361,6 +1372,7 @@
 <script>
     const SECONDS_IN_DAY = 86400;
     const PRIMARY_STORAGE_KEY = 'WE_NET_TRACKER_MASTER_DATA';
+    const GLOBAL_HISTORY_KEY = 'WE_NET_TRACKER_GLOBAL_HISTORY';
     const SENT_ALERTS_KEY = 'NET_TRACKER_SENT_ALERTS_MAP';
     const DEFAULT_FIREBASE_URL = "https://my-net-tracker-default-rtdb.firebaseio.com";
 
@@ -1409,8 +1421,7 @@
             alertDays: 5,
             expiryDate: getOffsetDate(14),
             lastSyncTime: Date.now(),
-            isPaid: false,
-            history: []
+            isPaid: false
         }
     ];
 
@@ -1442,8 +1453,7 @@
                             alertDays: Number(l.alertDays) || 5,
                             expiryDate: l.expiryDate || getOffsetDate(30),
                             lastSyncTime: Number(l.lastSyncTime) || Date.now(),
-                            isPaid: Boolean(l.isPaid),
-                            history: Array.isArray(l.history) ? l.history : []
+                            isPaid: Boolean(l.isPaid)
                         }));
                     }
                 } catch (e) {}
@@ -1453,6 +1463,32 @@
     }
 
     let allLines = loadSavedLinesSafely();
+    let globalHistory = JSON.parse(localStorage.getItem(GLOBAL_HISTORY_KEY)) || [];
+
+    // تجميع أي سجلات قديمة من داخل كائنات الخطوط ودمجها بالسجل العام إن وُجدت
+    (function migrateOldHistories() {
+        let hasMigrated = false;
+        allLines.forEach(l => {
+            if (Array.isArray(l.history) && l.history.length > 0) {
+                l.history.forEach(item => {
+                    globalHistory.push({
+                        ...item,
+                        lineId: l.id,
+                        lineName: l.name,
+                        lineAddress: l.address || l.note || ""
+                    });
+                });
+                delete l.history;
+                hasMigrated = true;
+            }
+        });
+        if (hasMigrated) {
+            globalHistory.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+            localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
+            localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
+        }
+    })();
+
     let activeLineId = allLines[0]?.id || "";
     let currentSortMode = 'burn';
 
@@ -1508,20 +1544,27 @@
 
     function syncToCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
-        const url = `${fireUrl}/net_tracker_data.json`;
+        const urlLines = `${fireUrl}/net_tracker_data.json`;
+        const urlHistory = `${fireUrl}/net_tracker_history.json`;
         
-        fetch(url, {
+        fetch(urlLines, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(allLines)
-        }).catch(err => console.error("Cloud sync push error:", err));
+        }).catch(err => console.error("Cloud sync push lines error:", err));
+
+        fetch(urlHistory, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(globalHistory)
+        }).catch(err => console.error("Cloud sync push history error:", err));
     }
 
     function syncFromCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
-        const url = `${fireUrl}/net_tracker_data.json?nocache=` + Date.now();
-
-        fetch(url)
+        
+        // جلب الخطوط
+        fetch(`${fireUrl}/net_tracker_data.json?nocache=` + Date.now())
             .then(res => res.json())
             .then(data => {
                 let parsedList = null;
@@ -1552,8 +1595,7 @@
                             alertDays: Number(l.alertDays) || 5,
                             expiryDate: l.expiryDate || getOffsetDate(30),
                             lastSyncTime: Number(l.lastSyncTime) || Date.now(),
-                            isPaid: Boolean(l.isPaid),
-                            history: Array.isArray(l.history) ? l.history : []
+                            isPaid: Boolean(l.isPaid)
                         }));
 
                         if (!allLines.some(l => l.id === activeLineId)) {
@@ -1567,7 +1609,18 @@
                     }
                 }
             })
-            .catch(err => console.error("Cloud sync fetch error:", err));
+            .catch(err => console.error("Cloud sync fetch lines error:", err));
+
+        // جلب السجل العام
+        fetch(`${fireUrl}/net_tracker_history.json?nocache=` + Date.now())
+            .then(res => res.json())
+            .then(histData => {
+                if (Array.isArray(histData) && JSON.stringify(histData) !== JSON.stringify(globalHistory)) {
+                    globalHistory = histData;
+                    localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
+                }
+            })
+            .catch(() => {});
     }
 
     function saveCloudSettings() {
@@ -1579,19 +1632,24 @@
 
     function persistData() {
         localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
+        localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
         syncToCloud();
     }
 
     sortLinesDynamically();
 
     function copyBackupToClipboard() {
-        const dataJson = JSON.stringify(allLines, null, 2);
+        const fullBackup = {
+            lines: allLines,
+            history: globalHistory
+        };
+        const dataJson = JSON.stringify(fullBackup, null, 2);
         const area = document.getElementById('backupDataArea');
         area.value = dataJson;
         
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(dataJson).then(() => {
-                showToast("✅ تم نسخ كود البيانات للحافظة بنجاح!");
+                showToast("✅ تم نسخ كود البيانات مع السجل للحافظة!");
             }).catch(() => {
                 area.select();
                 showToast("تم إظهار الكود، يمكنك تحديده ونسخه");
@@ -1612,8 +1670,18 @@
 
         try {
             const parsed = JSON.parse(content);
-            if (Array.isArray(parsed) && parsed.length > 0) {
-                allLines = parsed.map((l, i) => ({
+            let linesToRestore = [];
+            let historyToRestore = [];
+
+            if (Array.isArray(parsed)) {
+                linesToRestore = parsed;
+            } else if (parsed && typeof parsed === 'object') {
+                linesToRestore = parsed.lines || [];
+                historyToRestore = parsed.history || [];
+            }
+
+            if (linesToRestore.length > 0) {
+                allLines = linesToRestore.map((l, i) => ({
                     id: l.id || `restored_${Date.now()}_${i}`,
                     name: l.name || "خط",
                     weServiceNumber: l.weServiceNumber || "",
@@ -1626,16 +1694,16 @@
                     alertDays: Number(l.alertDays) || 5,
                     expiryDate: l.expiryDate || getOffsetDate(30),
                     lastSyncTime: Number(l.lastSyncTime) || Date.now(),
-                    isPaid: Boolean(l.isPaid),
-                    history: Array.isArray(l.history) ? l.history : []
+                    isPaid: Boolean(l.isPaid)
                 }));
+                globalHistory = historyToRestore;
                 activeLineId = allLines[0].id;
                 sortLinesDynamically();
                 persistData();
                 buildTableStructure();
                 renderStaticDetails();
                 closeSettingsModal();
-                showToast("✅ تم استرجاع الخطوط والبيانات بنجاح!");
+                showToast("✅ تم استرجاع الخطوط وسجل الحركات بنجاح!");
             } else {
                 alert("الكود الملصق غير صالح، تأكد من نسخه بشكل كامل.");
             }
@@ -1693,6 +1761,19 @@
         
         delete sentAlertsMap[line.id];
         localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        // تسجيل حركة دفع الاشتراك بالسجل العام
+        if (line.isPaid) {
+            logGlobalActivity({
+                type: 'payment',
+                title: 'دفع اشتراك الباقة',
+                lineId: line.id,
+                lineName: line.name,
+                lineAddress: line.address || line.note || "",
+                amount: line.monthlyPackage,
+                desc: 'تم تسجيل دفع الاشتراك الشهري'
+            });
+        }
 
         persistData();
         checkAutoRenewalForLine(line);
@@ -1764,6 +1845,30 @@
         return Math.max(0, diffDays);
     }
 
+    // دالة موحدة لتسجيل أي حركة بالسجل العام
+    function logGlobalActivity({ type, title, lineId, lineName, lineAddress, amount, desc }) {
+        const now = new Date();
+        const dateStr = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        
+        globalHistory.unshift({
+            id: `act_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            timestamp: Date.now(),
+            type: type,
+            title: title,
+            lineId: lineId,
+            lineName: lineName,
+            lineAddress: lineAddress,
+            amount: amount,
+            desc: desc || '',
+            date: dateStr
+        });
+
+        // الاحتفاظ بآخر 200 حركة فقط لضمان خفة التطبيق
+        if (globalHistory.length > 200) {
+            globalHistory = globalHistory.slice(0, 200);
+        }
+    }
+
     function checkAutoRenewalForLine(line) {
         const diffDays = calculateRemainingDays(line.expiryDate);
         if (diffDays <= 0 && line.isPaid) {
@@ -1771,12 +1876,13 @@
             line.baseBalance = Number((currentRemaining + Number(line.monthlyPackage)).toFixed(3));
             line.lastSyncTime = Date.now();
             
+            // تقديم تاريخ التجديد شهراً تقويمياً دقيقاً
             const parts = line.expiryDate.split('-');
             const y = parseInt(parts[0], 10);
             const m = parseInt(parts[1], 10) - 1;
             const d = parseInt(parts[2], 10);
             const expDateObj = new Date(y, m, d);
-            expDateObj.setDate(expDateObj.getDate() + 30);
+            expDateObj.setMonth(expDateObj.getMonth() + 1);
             
             const nextY = expDateObj.getFullYear();
             const nextM = String(expDateObj.getMonth() + 1).padStart(2, '0');
@@ -1788,18 +1894,21 @@
             delete sentAlertsMap[line.id];
             localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
 
-            if (!line.history) line.history = [];
-            line.history.unshift({
+            // تسجيل التجديد بالسجل العام
+            logGlobalActivity({
                 type: 'renewal',
                 title: 'تجديد الباقة الشهرية الأساسية',
+                lineId: line.id,
+                lineName: line.name,
+                lineAddress: line.address || line.note || "",
                 amount: line.monthlyPackage,
-                date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                desc: `تم تقديم تاريخ التجديد إلى ${line.expiryDate}`
             });
 
             persistData();
             buildTableStructure();
             renderStaticDetails();
-            showToast(`تم تجديد باقة ${line.name} وتقديم التاريخ 30 يوماً`);
+            showToast(`تم تجديد باقة ${line.name} وتحديث التاريخ`);
             sendTelegramAlert(`🎉 <b>تم تجديد الباقة بنجاح!</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\nتمت إضافة باقة الشهر الجديد (${line.monthlyPackage} GB).\nتاريخ الانتهاء الجديد: ${line.expiryDate}`);
         }
     }
@@ -1875,10 +1984,8 @@
     }
 
     function openHistoryModal() {
-        const line = getActiveLine();
-        if (!line) return;
-        document.getElementById('historyModalLineName').innerText = `خط: ${line.name} ${line.address ? '['+line.address+']' : ''}`;
-        renderHistoryList(line);
+        populateHistoryFilter();
+        renderGlobalHistoryList('ALL');
         document.getElementById('historyModalOverlay').classList.add('active');
     }
 
@@ -1886,37 +1993,69 @@
         document.getElementById('historyModalOverlay').classList.remove('active');
     }
 
-    function renderHistoryList(line) {
+    function populateHistoryFilter() {
+        const select = document.getElementById('historyFilterSelect');
+        const activeLine = getActiveLine();
+        
+        let html = `<option value="ALL">عرض كل حركات الخطوط (${globalHistory.length})</option>`;
+        if (activeLine) {
+            html += `<option value="${activeLine.id}">الخط الحالي فقط (${activeLine.name})</option>`;
+        }
+        allLines.forEach(l => {
+            if (!activeLine || l.id !== activeLine.id) {
+                html += `<option value="${l.id}">${l.name} ${l.address ? '['+l.address+']' : ''}</option>`;
+            }
+        });
+        select.innerHTML = html;
+    }
+
+    function renderGlobalHistoryList(filterLineId = 'ALL') {
         const container = document.getElementById('historyListContainer');
         container.innerHTML = '';
 
-        if (!line.history || line.history.length === 0) {
-            container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 12px; padding: 20px;">لا توجد عمليات شحن مسجلة لهذا الخط بعد.</div>`;
+        const list = (filterLineId === 'ALL') 
+            ? globalHistory 
+            : globalHistory.filter(h => h.lineId === filterLineId);
+
+        if (!list || list.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 12px; padding: 24px;">لا توجد حركات مسجلة بالسجل بعد.</div>`;
             return;
         }
 
-        line.history.forEach(item => {
+        list.forEach(item => {
             const div = document.createElement('div');
             div.className = `history-item ${item.type}`;
+            
+            let badgeText = item.amount ? `+${item.amount} GB` : 'تم الدفع';
+            let titleColor = item.type === 'extra' ? 'var(--accent)' : (item.type === 'renewal' ? 'var(--success)' : '#38bdf8');
+
             div.innerHTML = `
-                <div>
-                    <div style="font-size: 13px; font-weight: 700; color: ${item.type === 'extra' ? 'var(--accent)' : 'var(--success)'};">${item.title}</div>
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${item.date}</div>
+                <div style="min-width: 0; flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                        <span style="font-size: 13px; font-weight: 800; color: ${titleColor};">${item.title}</span>
+                        <span style="font-size: 11px; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; color: #f8fafc; font-weight: 700;">
+                            ${item.lineName || 'خط'} ${item.lineAddress ? `(${item.lineAddress})` : ''}
+                        </span>
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 3px;">
+                        <i class="fa-regular fa-clock" style="font-size: 10px;"></i> ${item.date}
+                        ${item.desc ? ` • <span style="color:#cbd5e1;">${item.desc}</span>` : ''}
+                    </div>
                 </div>
-                <div class="mono" style="font-size: 14px; font-weight: 800; color: #fff;">+${item.amount} GB</div>
+                <div class="mono" style="font-size: 13px; font-weight: 800; color: #fff; white-space: nowrap; margin-right: 8px;">
+                    ${badgeText}
+                </div>
             `;
             container.appendChild(div);
         });
     }
 
-    function clearLineHistory() {
-        const line = getActiveLine();
-        if (!line) return;
-        if (confirm("هل تريد بالتأكيد مسح سجل الشحن لهذا الخط؟")) {
-            line.history = [];
+    function clearAllHistory() {
+        if (confirm("هل تريد بالتأكيد مسح سجل الحركات بالكامل لكل الخطوط؟")) {
+            globalHistory = [];
             persistData();
-            renderHistoryList(line);
-            showToast("تم مسح السجل بنجاح");
+            renderGlobalHistoryList('ALL');
+            showToast("تم مسح سجل الحركات بالكامل");
         }
     }
 
@@ -1962,18 +2101,21 @@
         delete sentAlertsMap[line.id];
         localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
 
-        if (!line.history) line.history = [];
-        line.history.unshift({
+        // تسجيل الكوتة الإضافية بالسجل العام الموحد
+        logGlobalActivity({
             type: 'extra',
             title: 'شحن كوتة إضافية',
+            lineId: line.id,
+            lineName: line.name,
+            lineAddress: line.address || line.note || "",
             amount: addedGB,
-            date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+            desc: `الرصيد بعد الشحن: ${line.baseBalance.toFixed(2)} GB`
         });
 
         persistData();
         closeExtraQuotaModal();
         renderStaticDetails();
-        showToast(`تمت إضافة ${addedGB} GB وتسجيلها بالسجل`);
+        showToast(`تمت إضافة ${addedGB} GB وتسجيلها بالسجل العام`);
         sendTelegramAlert(`➕ <b>تمت إضافة كوتة إضافية</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\nتمت إضافة: ${addedGB} GB\nالرصيد الجديد: ${line.baseBalance.toFixed(2)} GB`);
     }
 
@@ -2053,8 +2195,7 @@
                 alertDays: parseInt(document.getElementById('inputAlertDays').value),
                 expiryDate: document.getElementById('inputExpiryDate').value,
                 lastSyncTime: Date.now(),
-                isPaid: false,
-                history: []
+                isPaid: false
             };
             allLines.push(newLine);
             activeLineId = newLine.id;
