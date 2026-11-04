@@ -662,10 +662,6 @@
             transition: all 0.2s;
         }
 
-        .sort-toggle-badge:hover {
-            background: rgba(2, 132, 199, 0.25);
-        }
-
         .sort-selector-bar {
             display: none;
             grid-template-columns: 1fr 1fr 1fr;
@@ -719,10 +715,6 @@
             padding: 10px 12px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.04);
             font-size: 12.5px;
-        }
-
-        .lines-table tr {
-            transition: background 0.15s;
         }
 
         .lines-table tr:hover {
@@ -824,11 +816,6 @@
             transition: all 0.2s;
         }
 
-        .modal-close-btn:hover {
-            color: #fff;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
         .form-row {
             margin-bottom: 12px;
         }
@@ -881,26 +868,12 @@
             transition: all 0.2s ease;
         }
 
-        .modal-submit-btn:hover {
-            filter: brightness(1.08);
-        }
-
         .settings-section-card {
             background: var(--surface-inner);
             border: 1px solid var(--border);
             border-radius: var(--radius-md);
             padding: 14px;
             margin-bottom: 12px;
-        }
-
-        .settings-section-title {
-            font-size: 12.5px;
-            font-weight: 800;
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 8px;
         }
 
         .history-list {
@@ -920,20 +893,11 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.15s;
         }
 
-        .history-item.extra {
-            border-right: 3px solid var(--accent);
-        }
-
-        .history-item.renewal {
-            border-right: 3px solid var(--success);
-        }
-
-        .history-item.payment {
-            border-right: 3px solid #38bdf8;
-        }
+        .history-item.extra { border-right: 3px solid var(--accent); }
+        .history-item.renewal { border-right: 3px solid var(--success); }
+        .history-item.payment { border-right: 3px solid #38bdf8; }
 
         .toast-notify {
             position: fixed;
@@ -985,19 +949,19 @@
 
         <div class="header-controls">
             <div class="control-row">
-                <button type="button" class="btn-search-trigger" id="lineSearchTriggerBtn" onclick="openSearchModal()" title="انقر للبحث واختيار خط">
+                <button type="button" class="btn-search-trigger" id="lineSearchTriggerBtn" onclick="openSearchModal()">
                     <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
                         <i class="fa-solid fa-magnifying-glass" style="color: var(--accent); font-size: 12px;"></i>
-                        <span id="searchTriggerLabel" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">اختر الخط...</span>
+                        <span id="searchTriggerLabel">اختر الخط...</span>
                     </div>
                     <span style="font-size: 10px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary);">بحث</span>
                 </button>
 
-                <button class="btn btn-history" onclick="openHistoryModal()" title="سجل حركات جميع الخطوط">
+                <button class="btn btn-history" onclick="openHistoryModal()">
                     <i class="fa-solid fa-clock-rotate-left"></i> <span>السجل</span>
                 </button>
 
-                <button class="btn btn-settings" onclick="openSettingsModal()" title="إعدادات النظام والنسخ الاحتياطي والمزامنة السحابية">
+                <button class="btn btn-settings" onclick="openSettingsModal()">
                     <i class="fa-solid fa-gear"></i> <span>الإعدادات</span>
                 </button>
             </div>
@@ -1007,11 +971,11 @@
                     <i class="fa-solid fa-plus"></i> إضافة خط
                 </button>
 
-                <button class="btn btn-action-icon" onclick="openEditModal()" title="تعديل الخط">
+                <button class="btn btn-action-icon" onclick="openEditModal()">
                     <i class="fa-solid fa-pen-to-square"></i> <span>تعديل</span>
                 </button>
 
-                <button class="btn btn-action-icon danger" onclick="onDeleteLine()" title="حذف الخط">
+                <button class="btn btn-action-icon danger" onclick="onDeleteLine()">
                     <i class="fa-solid fa-trash"></i> <span>حذف</span>
                 </button>
             </div>
@@ -1023,8 +987,7 @@
             <h4><i class="fa-solid fa-triangle-exclamation"></i> خطوط تتطلب المتابعة فوراً:</h4>
             <span style="font-size: 11px; color: #fca5a5;" id="alertHubCount">0 خطوط</span>
         </div>
-        <div class="alert-lines-list" id="alertLinesContainer">
-        </div>
+        <div class="alert-lines-list" id="alertLinesContainer"></div>
     </div>
 
     <div class="hero-card">
@@ -1033,10 +996,7 @@
                 <span class="live-chip"><span class="live-dot"></span> مباشر بالثانية</span>
             </div>
             <div style="display: flex; gap: 8px; align-items: center;">
-                <span class="live-chip mono" id="heroLineBadge" style="background: rgba(2, 132, 199, 0.15); color: var(--accent); border-color: rgba(2, 132, 199, 0.35); font-weight: 800;">
-                    ------
-                </span>
-
+                <span class="live-chip mono" id="heroLineBadge" style="background: rgba(2, 132, 199, 0.15); color: var(--accent); border-color: rgba(2, 132, 199, 0.35); font-weight: 800;">------</span>
                 <span class="live-chip" id="paymentStatusBadge" style="display: none; background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">
                     <i class="fa-solid fa-check-double"></i> تم الدفع (جاهز للشهر الجديد)
                 </span>
@@ -1052,14 +1012,13 @@
                 <span class="unit">GB</span>
             </div>
 
-            <!-- أزرار الجانب: العنوان، كوتة إضافية، دفع الاشتراك -->
             <div class="hero-side-actions">
-                <div class="card-address-badge" id="heroCardAddressBox" title="عنوان الخط">
+                <div class="card-address-badge" id="heroCardAddressBox">
                     <i class="fa-solid fa-location-dot"></i>
                     <span id="heroCardAddressText">العنوان</span>
                 </div>
 
-                <button class="btn btn-extra" onclick="openExtraQuotaModal()" title="إضافة كوتة">
+                <button class="btn btn-extra" onclick="openExtraQuotaModal()">
                     <i class="fa-solid fa-plus-circle"></i> <span>كوتة إضافية</span>
                 </button>
 
@@ -1083,10 +1042,10 @@
             <div class="details-line">
                 <span id="monthlyTotalDisplay" style="font-weight: 800;">الباقة: 0 GB</span>
                 <span style="display: inline-flex; align-items: center; gap: 6px;">
-                    <span id="dailyBurnDisplay" class="clickable-burn" onclick="promptEditDailyRate()" title="اضغط لتعديل الرقم مباشرة">السحب: 0 GB/يوم</span>
+                    <span id="dailyBurnDisplay" class="clickable-burn" onclick="promptEditDailyRate()">السحب: 0 GB/يوم</span>
                     <span class="stepper-wrap">
-                        <button class="stepper-btn" onclick="stepDailyRate(-0.5)" title="إنقاص 0.5 GB">-</button>
-                        <button class="stepper-btn" onclick="stepDailyRate(+0.5)" title="زيادة 0.5 GB">+</button>
+                        <button class="stepper-btn" onclick="stepDailyRate(-0.5)">-</button>
+                        <button class="stepper-btn" onclick="stepDailyRate(+0.5)">+</button>
                     </span>
                 </span>
             </div>
@@ -1104,22 +1063,15 @@
                 <i class="fa-solid fa-list-check" style="color: var(--accent);"></i>
                 <span>حالة جميع الخطوط</span>
             </h3>
-            <div class="sort-toggle-badge" id="currentSortBadge">
-                <i class="fa-solid fa-arrow-down-wide-short"></i>
+            <div class="sort-toggle-badge">
                 <span id="sortModeLabel">الأعلى سحباً</span>
             </div>
         </div>
 
         <div class="sort-selector-bar" id="sortSelectorBar">
-            <button type="button" class="sort-tab-btn active" id="tab-burn" onclick="changeSortMode('burn')">
-                <i class="fa-solid fa-fire"></i> الأعلى سحباً
-            </button>
-            <button type="button" class="sort-tab-btn" id="tab-gb" onclick="changeSortMode('gb')">
-                <i class="fa-solid fa-chart-pie"></i> قرب انتهاء الجيجات
-            </button>
-            <button type="button" class="sort-tab-btn" id="tab-date" onclick="changeSortMode('date')">
-                <i class="fa-solid fa-calendar-xmark"></i> قرب انتهاء التاريخ
-            </button>
+            <button type="button" class="sort-tab-btn active" id="tab-burn" onclick="changeSortMode('burn')">الأعلى سحباً</button>
+            <button type="button" class="sort-tab-btn" id="tab-gb" onclick="changeSortMode('gb')">قرب انتهاء الجيجات</button>
+            <button type="button" class="sort-tab-btn" id="tab-date" onclick="changeSortMode('date')">قرب انتهاء التاريخ</button>
         </div>
 
         <div style="overflow-x: auto;">
@@ -1135,213 +1087,147 @@
                         <th>الحالة</th>
                     </tr>
                 </thead>
-                <tbody id="allLinesTableBody">
-                </tbody>
+                <tbody id="allLinesTableBody"></tbody>
             </table>
         </div>
     </div>
 
 </div>
 
-<!-- نافذة البحث السريع عن الخطوط -->
+<!-- البحث -->
 <div class="modal-overlay" id="searchLinesModalOverlay">
     <div class="app-modal" style="max-width: 400px;">
         <div class="modal-avatar-wrap">
             <button class="modal-close-btn" onclick="closeSearchModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-avatar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
+            <div class="modal-avatar"><i class="fa-solid fa-magnifying-glass"></i></div>
         </div>
         <h3 style="text-align: center; font-size: 15px; margin-bottom: 12px; font-weight: 800;">البحث واختيار الخط</h3>
-
         <div class="form-row">
             <input type="text" id="linesSearchQuickInput" class="form-input" placeholder="اكتب اسم الخط أو العنوان أو الرقم..." oninput="renderQuickSearchResults(this.value)">
         </div>
-
-        <div id="quickSearchResultsList" class="history-list" style="max-height: 240px;">
-        </div>
+        <div id="quickSearchResultsList" class="history-list"></div>
     </div>
 </div>
 
-<!-- نافذة سجل الحركات العام لجميع الخطوط -->
+<!-- السجل -->
 <div class="modal-overlay" id="historyModalOverlay">
     <div class="app-modal" style="max-width: 450px;">
         <div class="modal-avatar-wrap">
             <button class="modal-close-btn" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-avatar" style="color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">
-                <i class="fa-solid fa-clock-rotate-left"></i>
-            </div>
+            <div class="modal-avatar" style="color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);"><i class="fa-solid fa-clock-rotate-left"></i></div>
         </div>
         <h3 style="text-align: center; font-size: 15px; margin-bottom: 4px; font-weight: 800;">سجل الحركات العام (لكافة الخطوط)</h3>
-        <p style="text-align: center; font-size: 11.5px; color: var(--text-secondary); margin-bottom: 12px;">
-            تتبع الشحن، الكوتات الإضافية، والتجديدات التي تمت على جميع الخطوط
-        </p>
-
         <div class="form-row" style="margin-bottom: 8px;">
-            <select id="historyFilterSelect" class="form-input" style="padding: 7px 10px; font-size: 12px;" onchange="renderGlobalHistoryList(this.value)">
+            <select id="historyFilterSelect" class="form-input" onchange="renderGlobalHistoryList(this.value)">
                 <option value="ALL">عرض كل حركات الخطوط</option>
             </select>
         </div>
-
-        <div id="historyListContainer" class="history-list" style="max-height: 320px;">
-        </div>
-
+        <div id="historyListContainer" class="history-list"></div>
         <button type="button" class="btn btn-pay" style="width: 100%; margin-top: 14px; color: var(--danger); border-color: rgba(239, 68, 68, 0.4);" onclick="clearAllHistory()">
             <i class="fa-solid fa-trash"></i> مسح سجل الحركات بالكامل
         </button>
     </div>
 </div>
 
+<!-- الإعدادات -->
 <div class="modal-overlay" id="settingsModalOverlay">
     <div class="app-modal" style="max-width: 440px;">
         <div class="modal-avatar-wrap">
             <button class="modal-close-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-avatar">
-                <i class="fa-solid fa-gear"></i>
-            </div>
+            <div class="modal-avatar"><i class="fa-solid fa-gear"></i></div>
         </div>
-        <h3 style="text-align: center; font-size: 15px; margin-bottom: 14px; font-weight: 800;">إعدادات النظام والمزامنة</h3>
+        <h3 style="text-align: center; font-size: 15px; margin-bottom: 14px; font-weight: 800;">إعدادات السحابة والمزامنة</h3>
         
         <div class="settings-section-card">
-            <div class="settings-section-title">
-                <i class="fa-solid fa-cloud-arrow-up"></i> المزامنة الفورية بين الهواتف (سحابياً)
-            </div>
-            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
-                رابط قاعدة بيانات Firebase المرتبطة بالتطبيق تلقائياً:
-            </p>
             <div class="form-row">
                 <label>رابط قاعدة بيانات Firebase URL</label>
                 <input type="text" id="firebaseUrlInput" class="form-input mono" placeholder="https://xxx-default-rtdb.firebaseio.com">
             </div>
-            <button type="button" class="modal-submit-btn" style="background: var(--accent-gradient); padding: 10px;" onclick="saveCloudSettings()">
-                تفعيل وحفظ المزامنة السحابية
-            </button>
+            <button type="button" class="modal-submit-btn" onclick="saveCloudSettings()">حفظ رابط السحابة وتحديث البيانات</button>
         </div>
 
         <div class="settings-section-card">
-            <div class="settings-section-title">
-                <i class="fa-solid fa-database"></i> النسخ الاحتياطي للبيانات
-            </div>
-            <p style="font-size: 11px; color: var(--text-secondary); margin-bottom: 10px; line-height: 1.4;">
-                انسخ الكود واحفظه في ملاحظات هاتفك لضمان بقاء البيانات عند التحديث:
-            </p>
-
             <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                <button type="button" class="btn btn-flex btn-pay" onclick="copyBackupToClipboard()">
-                    <i class="fa-solid fa-copy" style="color: var(--accent);"></i> نسخ البيانات
-                </button>
-                <button type="button" class="btn btn-flex btn-pay" onclick="applyRestoreFromInput()">
-                    <i class="fa-solid fa-paste" style="color: var(--success);"></i> استعادة المكتوب
-                </button>
+                <button type="button" class="btn btn-flex btn-pay" onclick="copyBackupToClipboard()">نسخ البيانات</button>
+                <button type="button" class="btn btn-flex btn-pay" onclick="applyRestoreFromInput()">استعادة المكتوب</button>
             </div>
-
-            <textarea id="backupDataArea" class="form-input mono" rows="3" style="font-size: 11px; resize: vertical;" placeholder="اضغط 'نسخ البيانات' لعرض الكود هنا، أو الصق الكود هنا ثم اضغط 'استعادة المكتوب'"></textarea>
+            <textarea id="backupDataArea" class="form-input mono" rows="3" placeholder="كود النسخة الاحتياطية"></textarea>
         </div>
 
         <div class="settings-section-card">
-            <div class="settings-section-title">
-                <i class="fa-brands fa-telegram" style="color: var(--telegram); font-size: 16px;"></i> ربط تنبيهات تيليجرام
-            </div>
             <div class="form-row">
                 <label>توكن البوت (Bot Token)</label>
-                <input type="text" id="tgBotTokenInput" class="form-input mono" placeholder="123456789:ABCDefgh...">
+                <input type="text" id="tgBotTokenInput" class="form-input mono">
             </div>
             <div class="form-row">
                 <label>معرّف المحادثة (Chat ID)</label>
-                <input type="text" id="tgChatIdInput" class="form-input mono" placeholder="-100123456789">
+                <input type="text" id="tgChatIdInput" class="form-input mono">
             </div>
             <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <button type="button" class="btn btn-flex" style="background: var(--telegram); color: white;" onclick="saveTelegramSettings()">
-                    <i class="fa-solid fa-floppy-disk"></i> حفظ الربط
-                </button>
-                <button type="button" class="btn btn-flex btn-pay" onclick="testTelegramMessage()">
-                    <i class="fa-solid fa-paper-plane"></i> تجربة إرسال
-                </button>
+                <button type="button" class="btn btn-flex" style="background: var(--telegram); color: white;" onclick="saveTelegramSettings()">حفظ الربط</button>
+                <button type="button" class="btn btn-flex btn-pay" onclick="testTelegramMessage()">تجربة إرسال</button>
             </div>
         </div>
     </div>
 </div>
 
+<!-- كوتة إضافية -->
 <div class="modal-overlay" id="extraQuotaModalOverlay">
     <div class="app-modal" style="max-width: 380px;">
         <div class="modal-avatar-wrap">
             <button class="modal-close-btn" onclick="closeExtraQuotaModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-avatar">
-                <i class="fa-solid fa-plus-circle"></i>
-            </div>
+            <div class="modal-avatar"><i class="fa-solid fa-plus-circle"></i></div>
         </div>
-
         <h3 style="text-align: center; font-size: 15px; margin-bottom: 8px; font-weight: 800;">إضافة كوتة إضافية</h3>
         <p style="text-align: center; font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;" id="extraModalSubtitle">للخط الحالي</p>
-
         <form onsubmit="applyQuickExtraQuota(event)">
             <div class="form-row">
-                <label>حدد حجم الكوتة الإضافية (GB)</label>
-                <input type="number" step="any" id="quickExtraInput" value="2000" class="form-input" placeholder="2000" required autofocus>
+                <label>حجم الكوتة (GB)</label>
+                <input type="number" step="any" id="quickExtraInput" value="2000" class="form-input" required autofocus>
             </div>
-            <p style="font-size: 11px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
-                * سيتم إضافة هذه الجيجابايت فوراً وتدوينها داخل سجل الحركات العام.
-            </p>
-            <button type="submit" class="modal-submit-btn">
-                تنزيل الكوتة في الرصيد
-            </button>
+            <button type="submit" class="modal-submit-btn">تنزيل الكوتة وحفظها سحابياً</button>
         </form>
     </div>
 </div>
 
-<!-- نافذة إضافة وتعديل الخط -->
+<!-- إضافة وتعديل -->
 <div class="modal-overlay" id="appModalOverlay">
     <div class="app-modal">
         <div class="modal-avatar-wrap">
             <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
-            <div class="modal-avatar">
-                <i class="fa-solid fa-pen-to-square"></i>
-            </div>
+            <div class="modal-avatar"><i class="fa-solid fa-pen-to-square"></i></div>
         </div>
-
         <h3 id="modalHeading" style="text-align: center; font-size: 15px; margin-bottom: 16px; font-weight: 800;">تعديل بيانات الخط</h3>
-
         <form id="lineDataForm" onsubmit="saveLineData(event)">
             <input type="hidden" id="formIndexKey" value="-1">
-
             <div class="form-row">
-                <label>رقم / اسم الخط داخل التطبيق</label>
-                <input type="text" id="inputLineName" class="form-input" placeholder="مثال: 2080744 أو خط البيت" required>
+                <label>اسم الخط</label>
+                <input type="text" id="inputLineName" class="form-input" required>
             </div>
-
-            <!-- حقل العنوان -->
             <div class="form-row">
-                <label style="color: var(--accent); font-weight: 800;">
-                    <i class="fa-solid fa-location-dot"></i> العنوان / موقع الخط
-                </label>
-                <input type="text" id="inputLineAddress" class="form-input" placeholder="مثال: شقة 4 عمارة الأمل أو الدور الأرضي">
+                <label>العنوان</label>
+                <input type="text" id="inputLineAddress" class="form-input">
             </div>
-
             <div class="form-row">
-                <label style="color: var(--accent);">رقم خط الأرضي في WE للربط الآلي (اختياري)</label>
-                <input type="text" id="inputWeServiceNumber" class="form-input mono" placeholder="مثال: 040208xxxx كود المحافظة + الرقم">
+                <label>رقم WE</label>
+                <input type="text" id="inputWeServiceNumber" class="form-input mono">
             </div>
-
             <div class="form-row">
-                <label style="color: #cbd5e1;">ملاحظات إضافية (اختياري)</label>
-                <input type="text" id="inputLineNote" class="form-input" placeholder="مثال: راوتر الدور الثاني...">
+                <label>ملاحظات</label>
+                <input type="text" id="inputLineNote" class="form-input">
             </div>
-
             <div class="form-row">
-                <label style="color: var(--accent); font-weight: 800;">الرصيد الفعلي المتبقي (GB)</label>
-                <input type="number" step="any" id="inputCurrentBalance" class="form-input" style="border-color: rgba(56, 189, 248, 0.4);" placeholder="مثال: 185.5" required>
+                <label style="color: var(--accent); font-weight: 800;">الرصيد الفعلي (GB)</label>
+                <input type="number" step="any" id="inputCurrentBalance" class="form-input" required>
             </div>
-
             <div class="form-row">
-                <label>السحب اليومي المعتمد للعداد (GB/يوم)</label>
+                <label>السحب اليومي (GB/يوم)</label>
                 <input type="number" step="any" id="inputDailyManual" class="form-input" required>
             </div>
-
             <div class="form-row">
-                <label>الباقة الشهرية الأساسية (GB)</label>
+                <label>الباقة الشهرية (GB)</label>
                 <input type="number" step="any" id="inputMonthlyPackage" class="form-input" required>
             </div>
-
             <div class="form-dual-row">
                 <div>
                     <label>حد الجيجات (GB)</label>
@@ -1352,20 +1238,18 @@
                     <input type="number" id="inputAlertDays" class="form-input" min="1" max="30" required>
                 </div>
             </div>
-
             <div class="form-row">
-                <label>تاريخ انتهاء الاشتراك</label>
+                <label>تاريخ الانتهاء</label>
                 <input type="date" id="inputExpiryDate" class="form-input" required>
             </div>
-
-            <button type="submit" class="modal-submit-btn" id="modalSubmitBtn">حفظ الخط</button>
+            <button type="submit" class="modal-submit-btn" id="modalSubmitBtn">حفظ الخط ونشره للأجهزة</button>
         </form>
     </div>
 </div>
 
 <div class="toast-notify" id="toastBox">
     <i class="fa-solid fa-circle-check" id="toastIcon" style="color: var(--success); font-size: 15px;"></i>
-    <span id="toastMsg">تم التحديث بنجاح</span>
+    <span id="toastMsg">تم التحديث</span>
 </div>
 
 <script>
@@ -1376,9 +1260,7 @@
     const DEFAULT_FIREBASE_URL = "https://my-net-tracker-default-rtdb.firebaseio.com";
 
     let canSendLiveAlerts = false;
-    setTimeout(() => {
-        canSendLiveAlerts = true;
-    }, 5000);
+    setTimeout(() => { canSendLiveAlerts = true; }, 5000);
 
     let sentAlertsMap = JSON.parse(localStorage.getItem(SENT_ALERTS_KEY)) || {};
 
@@ -1386,13 +1268,8 @@
         const box = document.getElementById('toastBox');
         const icon = document.getElementById('toastIcon');
         document.getElementById('toastMsg').innerText = msg;
-        if (isError) {
-            icon.className = "fa-solid fa-circle-exclamation";
-            icon.style.color = "var(--danger)";
-        } else {
-            icon.className = "fa-solid fa-circle-check";
-            icon.style.color = "var(--success)";
-        }
+        icon.className = isError ? "fa-solid fa-circle-exclamation" : "fa-solid fa-circle-check";
+        icon.style.color = isError ? "var(--danger)" : "var(--success)";
         box.classList.add('show');
         setTimeout(() => box.classList.remove('show'), 3000);
     }
@@ -1400,104 +1277,41 @@
     function getOffsetDate(days) {
         const target = new Date();
         target.setDate(target.getDate() + days);
-        const y = target.getFullYear();
-        const m = String(target.getMonth() + 1).padStart(2, '0');
-        const d = String(target.getDate()).padStart(2, '0');
-        return `${y}-${m}-${d}`;
+        return `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
     }
 
-    const initialStorage = [
-        {
+    function loadSavedLinesSafely() {
+        const raw = localStorage.getItem(PRIMARY_STORAGE_KEY);
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            } catch (e) {}
+        }
+        return [{
             id: "line_default_1",
-            name: "040208",
-            weServiceNumber: "",
-            address: "المنزل الرئيسي",
+            name: "0402085503",
+            weServiceNumber: "0402085503",
+            address: "المنزل",
             note: "البيت",
-            baseBalance: 140.0,
+            baseBalance: 700.0,
             dailyManual: 5.0,
-            monthlyPackage: 200.0,
-            alertGB: 20.0,
+            monthlyPackage: 700.0,
+            alertGB: 50.0,
             alertDays: 5,
-            expiryDate: getOffsetDate(14),
+            expiryDate: getOffsetDate(25),
             lastSyncTime: Date.now(),
             isPaid: false
-        }
-    ];
-
-    function loadSavedLinesSafely() {
-        const legacyKeys = [
-            PRIMARY_STORAGE_KEY,
-            'pro_net_lines_stepper_reorder',
-            'pro_net_lines_live_alerts',
-            'pro_net_lines_settings_fixed',
-            'pro_net_tracker_saved_lines'
-        ];
-
-        for (const key of legacyKeys) {
-            const raw = localStorage.getItem(key);
-            if (raw) {
-                try {
-                    const parsed = JSON.parse(raw);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        return parsed.map((l, i) => ({
-                            id: l.id || `line_${Date.now()}_${i}`,
-                            name: l.name || "خط غير معروف",
-                            weServiceNumber: l.weServiceNumber || "",
-                            address: l.address || l.note || "",
-                            note: l.note || "",
-                            baseBalance: Number(l.baseBalance) || 0,
-                            dailyManual: Number(l.dailyManual) || 5,
-                            monthlyPackage: Number(l.monthlyPackage) || 200,
-                            alertGB: Number(l.alertGB) || 15,
-                            alertDays: Number(l.alertDays) || 5,
-                            expiryDate: l.expiryDate || getOffsetDate(30),
-                            lastSyncTime: Number(l.lastSyncTime) || Date.now(),
-                            isPaid: Boolean(l.isPaid)
-                        }));
-                    }
-                } catch (e) {}
-            }
-        }
-        return initialStorage;
+        }];
     }
 
     let allLines = loadSavedLinesSafely();
     let globalHistory = JSON.parse(localStorage.getItem(GLOBAL_HISTORY_KEY)) || [];
-
-    (function migrateOldHistories() {
-        let hasMigrated = false;
-        allLines.forEach(l => {
-            if (Array.isArray(l.history) && l.history.length > 0) {
-                l.history.forEach(item => {
-                    globalHistory.push({
-                        ...item,
-                        lineId: l.id,
-                        lineName: l.name,
-                        lineAddress: l.address || l.note || ""
-                    });
-                });
-                delete l.history;
-                hasMigrated = true;
-            }
-        });
-        if (hasMigrated) {
-            globalHistory.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-            localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
-            localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
-        }
-    })();
-
     let activeLineId = allLines[0]?.id || "";
     let currentSortMode = 'burn';
 
-    let tgSettings = JSON.parse(localStorage.getItem('pro_net_tg_settings')) || {
-        botToken: "",
-        chatId: ""
-    };
-
-    let cloudSettings = JSON.parse(localStorage.getItem('pro_net_cloud_settings')) || {
-        firebaseUrl: DEFAULT_FIREBASE_URL
-    };
+    let tgSettings = JSON.parse(localStorage.getItem('pro_net_tg_settings')) || { botToken: "", chatId: "" };
+    let cloudSettings = JSON.parse(localStorage.getItem('pro_net_cloud_settings')) || { firebaseUrl: DEFAULT_FIREBASE_URL };
     if (!cloudSettings.firebaseUrl) cloudSettings.firebaseUrl = DEFAULT_FIREBASE_URL;
 
     function getActiveLine() {
@@ -1505,29 +1319,18 @@
     }
 
     function toggleSortBar() {
-        const bar = document.getElementById('sortSelectorBar');
-        bar.classList.toggle('active');
+        document.getElementById('sortSelectorBar').classList.toggle('active');
     }
 
     function changeSortMode(mode) {
         currentSortMode = mode;
-        ['burn', 'gb', 'date'].forEach(m => {
-            const el = document.getElementById(`tab-${m}`);
-            if (el) el.classList.toggle('active', m === mode);
-        });
-
-        const labels = {
-            'burn': 'الأعلى سحباً',
-            'gb': 'قرب انتهاء الجيجات',
-            'date': 'قرب انتهاء التاريخ'
-        };
+        ['burn', 'gb', 'date'].forEach(m => document.getElementById(`tab-${m}`)?.classList.toggle('active', m === mode));
+        const labels = { 'burn': 'الأعلى سحباً', 'gb': 'قرب انتهاء الجيجات', 'date': 'قرب انتهاء التاريخ' };
         document.getElementById('sortModeLabel').innerText = labels[mode];
-
         sortLinesDynamically();
-        persistData();
+        persistData(false); // تعديل الترتيب محلياً فقط دون رفع للسحاب
         buildTableStructure();
         renderStaticDetails();
-        showToast(`تم الترتيب حسب: ${labels[mode]}`);
     }
 
     function sortLinesDynamically() {
@@ -1540,214 +1343,141 @@
         }
     }
 
+    /* الرفع للسحاب يتم بيدك أنت فقط عند التعديل/الإضافة/الدفع */
     function syncToCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
-        const urlLines = `${fireUrl}/net_tracker_data.json`;
-        const urlHistory = `${fireUrl}/net_tracker_history.json`;
         
-        fetch(urlLines, {
+        // حساب الرصيد الحي الفعلي لحظة الحفظ لضمان عدم وجود فارق زمني
+        const payload = allLines.map(l => ({
+            ...l,
+            baseBalance: Number(getCurrentLiveBalance(l).toFixed(3)),
+            lastSyncTime: Date.now()
+        }));
+
+        fetch(`${fireUrl}/net_tracker_data.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(allLines)
-        }).catch(err => console.error("Cloud sync push lines error:", err));
+            body: JSON.stringify(payload)
+        }).catch(err => console.error("Cloud push error:", err));
 
-        fetch(urlHistory, {
+        fetch(`${fireUrl}/net_tracker_history.json`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(globalHistory)
-        }).catch(err => console.error("Cloud sync push history error:", err));
+        }).catch(err => console.error("Cloud push history error:", err));
     }
 
+    /* السحب من السحاب (لجميع الأجهزة) دون أن يمسح أحد بيانات الآخر */
     function syncFromCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
         
         fetch(`${fireUrl}/net_tracker_data.json?nocache=` + Date.now())
             .then(res => res.json())
             .then(data => {
-                let parsedList = null;
-                if (Array.isArray(data)) {
-                    parsedList = data;
-                } else if (data && typeof data === 'object') {
-                    parsedList = data.lines && Array.isArray(data.lines) ? data.lines : Object.values(data);
-                }
+                if (data && (Array.isArray(data) || typeof data === 'object')) {
+                    const list = Array.isArray(data) ? data : Object.values(data);
+                    const valid = list.filter(l => l && l.name);
+                    
+                    if (valid.length > 0) {
+                        const cloudStr = JSON.stringify(valid);
+                        const localStr = JSON.stringify(allLines);
 
-                if (parsedList && parsedList.length > 0) {
-                    const validData = parsedList.filter(l => l && typeof l === 'object' && l.name);
-                    if (validData.length === 0) return;
+                        // التحديث يتم فقط إذا كانت بيانات السحاب تختلف عن المحلي
+                        if (cloudStr !== localStr) {
+                            allLines = valid.map(l => ({
+                                ...l,
+                                baseBalance: Number(l.baseBalance) || 0,
+                                dailyManual: Number(l.dailyManual) || 5,
+                                monthlyPackage: Number(l.monthlyPackage) || 700,
+                                alertGB: Number(l.alertGB) || 50,
+                                alertDays: Number(l.alertDays) || 5,
+                                lastSyncTime: Number(l.lastSyncTime) || Date.now(),
+                                isPaid: Boolean(l.isPaid)
+                            }));
 
-                    const cloudString = JSON.stringify(validData);
-                    const localString = JSON.stringify(allLines);
+                            if (!allLines.some(l => l.id === activeLineId)) {
+                                activeLineId = allLines[0].id;
+                            }
 
-                    if (cloudString !== localString) {
-                        allLines = validData.map((l, i) => ({
-                            id: l.id || `cloud_${Date.now()}_${i}`,
-                            name: l.name || "خط",
-                            weServiceNumber: l.weServiceNumber || "",
-                            address: l.address || l.note || "",
-                            note: l.note || "",
-                            baseBalance: Number(l.baseBalance) || 0,
-                            dailyManual: Number(l.dailyManual) || 5,
-                            monthlyPackage: Number(l.monthlyPackage) || 200,
-                            alertGB: Number(l.alertGB) || 15,
-                            alertDays: Number(l.alertDays) || 5,
-                            expiryDate: l.expiryDate || getOffsetDate(30),
-                            lastSyncTime: Number(l.lastSyncTime) || Date.now(),
-                            isPaid: Boolean(l.isPaid)
-                        }));
-
-                        if (!allLines.some(l => l.id === activeLineId)) {
-                            activeLineId = allLines[0]?.id || "";
+                            sortLinesDynamically();
+                            localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
+                            buildTableStructure();
+                            renderStaticDetails();
                         }
-
-                        sortLinesDynamically();
-                        localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
-                        buildTableStructure();
-                        renderStaticDetails();
                     }
                 }
             })
-            .catch(err => console.error("Cloud sync fetch lines error:", err));
+            .catch(err => console.error("Sync error:", err));
 
         fetch(`${fireUrl}/net_tracker_history.json?nocache=` + Date.now())
             .then(res => res.json())
-            .then(histData => {
-                if (Array.isArray(histData) && JSON.stringify(histData) !== JSON.stringify(globalHistory)) {
-                    globalHistory = histData;
+            .then(hist => {
+                if (Array.isArray(hist) && JSON.stringify(hist) !== JSON.stringify(globalHistory)) {
+                    globalHistory = hist;
                     localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
                 }
             })
             .catch(() => {});
     }
 
-    function saveCloudSettings() {
-        cloudSettings.firebaseUrl = document.getElementById('firebaseUrlInput').value.trim() || DEFAULT_FIREBASE_URL;
-        localStorage.setItem('pro_net_cloud_settings', JSON.stringify(cloudSettings));
-        showToast("✅ تم حفظ وتفعيل المزامنة السحابية بنجاح!");
-        syncToCloud();
-    }
-
-    function persistData() {
+    function persistData(uploadToCloud = false) {
         localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
         localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
-        syncToCloud();
+        if (uploadToCloud) {
+            syncToCloud();
+        }
     }
 
-    sortLinesDynamically();
-
     function copyBackupToClipboard() {
-        const fullBackup = {
-            lines: allLines,
-            history: globalHistory
-        };
-        const dataJson = JSON.stringify(fullBackup, null, 2);
+        const dataJson = JSON.stringify({ lines: allLines, history: globalHistory }, null, 2);
         const area = document.getElementById('backupDataArea');
         area.value = dataJson;
-        
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(dataJson).then(() => {
-                showToast("✅ تم نسخ كود البيانات مع السجل للحافظة!");
-            }).catch(() => {
-                area.select();
-                showToast("تم إظهار الكود، يمكنك تحديده ونسخه");
-            });
-        } else {
-            area.select();
-            showToast("تم إظهار الكود، يمكنك تحديده ونسخه");
-        }
+        if (navigator.clipboard) navigator.clipboard.writeText(dataJson);
+        showToast("✅ تم نسخ كود البيانات للحافظة!");
     }
 
     function applyRestoreFromInput() {
         const area = document.getElementById('backupDataArea');
         const content = area.value.trim();
-        if (!content) {
-            alert("يرجى لصق كود النسخة الاحتياطية داخل المربع أولاً.");
-            return;
-        }
-
+        if (!content) return alert("يرجى لصق الكود أولاً.");
         try {
             const parsed = JSON.parse(content);
-            let linesToRestore = [];
-            let historyToRestore = [];
-
-            if (Array.isArray(parsed)) {
-                linesToRestore = parsed;
-            } else if (parsed && typeof parsed === 'object') {
-                linesToRestore = parsed.lines || [];
-                historyToRestore = parsed.history || [];
-            }
-
-            if (linesToRestore.length > 0) {
-                allLines = linesToRestore.map((l, i) => ({
-                    id: l.id || `restored_${Date.now()}_${i}`,
-                    name: l.name || "خط",
-                    weServiceNumber: l.weServiceNumber || "",
-                    address: l.address || l.note || "",
-                    note: l.note || "",
-                    baseBalance: Number(l.baseBalance) || 0,
-                    dailyManual: Number(l.dailyManual) || 5,
-                    monthlyPackage: Number(l.monthlyPackage) || 200,
-                    alertGB: Number(l.alertGB) || 15,
-                    alertDays: Number(l.alertDays) || 5,
-                    expiryDate: l.expiryDate || getOffsetDate(30),
-                    lastSyncTime: Number(l.lastSyncTime) || Date.now(),
-                    isPaid: Boolean(l.isPaid)
-                }));
-                globalHistory = historyToRestore;
-                activeLineId = allLines[0].id;
-                sortLinesDynamically();
-                persistData();
-                buildTableStructure();
-                renderStaticDetails();
-                closeSettingsModal();
-                showToast("✅ تم استرجاع الخطوط وسجل الحركات بنجاح!");
-            } else {
-                alert("الكود الملصق غير صالح، تأكد من نسخه بشكل كامل.");
-            }
+            allLines = parsed.lines || parsed;
+            if (parsed.history) globalHistory = parsed.history;
+            activeLineId = allLines[0].id;
+            persistData(true);
+            buildTableStructure();
+            renderStaticDetails();
+            closeSettingsModal();
+            showToast("✅ تم استرجاع ونشر البيانات بنجاح!");
         } catch (e) {
-            alert("خطأ: النص المدخل ليس كود بيانات صالح.");
+            alert("خطأ: كود النسخة غير صالح.");
         }
+    }
+
+    function saveCloudSettings() {
+        cloudSettings.firebaseUrl = document.getElementById('firebaseUrlInput').value.trim() || DEFAULT_FIREBASE_URL;
+        localStorage.setItem('pro_net_cloud_settings', JSON.stringify(cloudSettings));
+        showToast("✅ تم حفظ رابط السحابة وتحديث البيانات!");
+        syncToCloud();
     }
 
     function saveTelegramSettings() {
         tgSettings.botToken = document.getElementById('tgBotTokenInput').value.trim();
         tgSettings.chatId = document.getElementById('tgChatIdInput').value.trim();
         localStorage.setItem('pro_net_tg_settings', JSON.stringify(tgSettings));
-        showToast("تم حفظ إعدادات تيليجرام بنجاح");
+        showToast("تم حفظ إعدادات تيليجرام");
     }
 
     function sendTelegramAlert(message) {
         if (!tgSettings.botToken || !tgSettings.chatId) return;
-        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(message)}&parse_mode=HTML`;
-        
-        fetch(endpoint, { mode: 'no-cors' }).catch(() => {
-            const img = new Image();
-            img.src = endpoint + `&t=${Date.now()}`;
-        });
+        fetch(`https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(message)}&parse_mode=HTML`, { mode: 'no-cors' }).catch(()=>{});
     }
 
     function testTelegramMessage() {
         saveTelegramSettings();
-        if (!tgSettings.botToken || !tgSettings.chatId) {
-            alert("يرجى إدخال توكن البوت والـ Chat ID أولاً.");
-            return;
-        }
-        showToast("جارٍ إرسال رسالة الاختبار...");
-        const testMsg = `🔔 <b>اختبار التنبيهات من تطبيق متابعة الإنترنت</b>\nتم الربط بنجاح مع البوت الخاص بك!`;
-        const endpoint = `https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(testMsg)}&parse_mode=HTML`;
-
-        fetch(endpoint)
-            .then(res => res.json())
-            .then(data => {
-                if (data.ok) {
-                    showToast("وصلت رسالة الاختبار إلى تيليجرام بنجاح!");
-                } else {
-                    alert(`فشل الإرسال: ${data.description || 'تأكد من صحة التوكن وأنك بدأت المحادثة مع البوت بالضغط على Start'}`);
-                }
-            })
-            .catch(() => {
-                sendTelegramAlert(testMsg);
-                showToast("تم إرسال الطلب، تحقق من تيليجرام");
-            });
+        sendTelegramAlert(`🔔 <b>رسالة اختبار من تطبيق متابعة الإنترنت</b>\nالربط سليم وجاهز للتنبيهات.`);
+        showToast("تم إرسال الطلب لتيليجرام");
     }
 
     function togglePaymentStatus() {
@@ -1755,7 +1485,6 @@
         if (!line) return;
         line.isPaid = !line.isPaid;
         
-        // عند تغيير حالة الدفع نحذف فقط تنبيه الأيام
         if (line.isPaid) {
             delete sentAlertsMap[`days_${line.id}`];
             logGlobalActivity({
@@ -1765,23 +1494,22 @@
                 lineName: line.name,
                 lineAddress: line.address || line.note || "",
                 amount: line.monthlyPackage,
-                desc: 'تم تسجيل دفع الاشتراك الشهري'
+                desc: 'تم تسجيل دفع الاشتراك'
             });
         }
         localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
 
-        persistData();
+        persistData(true); // رفع الحالة الجديدة للسحاب
         checkAutoRenewalForLine(line);
         buildTableStructure();
         renderStaticDetails();
-        showToast(line.isPaid ? "تم تفعيل دفع الاشتراك (إيقاف تنبيه موعد الشهر)" : "تم إلغاء تفعيل الدفع");
+        showToast(line.isPaid ? "تم تفعيل دفع الاشتراك" : "تم إلغاء تفعيل الدفع");
     }
 
     function getCurrentLiveBalance(line) {
         if (!line.dailyManual || line.dailyManual <= 0) return Number(line.baseBalance) || 0;
-        const perSecondRate = Number(line.dailyManual) / SECONDS_IN_DAY;
         const elapsed = (Date.now() - (line.lastSyncTime || Date.now())) / 1000;
-        return Math.max(0, Number(line.baseBalance) - (elapsed * perSecondRate));
+        return Math.max(0, Number(line.baseBalance) - (elapsed * (Number(line.dailyManual) / SECONDS_IN_DAY)));
     }
 
     function stepDailyRate(amount) {
@@ -1789,37 +1517,26 @@
         if (!line) return;
         line.baseBalance = getCurrentLiveBalance(line);
         line.lastSyncTime = Date.now();
-
-        let newRate = Number(((Number(line.dailyManual) || 5) + amount).toFixed(1));
-        if (newRate < 0.1) newRate = 0.1;
-
-        line.dailyManual = newRate;
+        line.dailyManual = Math.max(0.1, Number(((Number(line.dailyManual) || 5) + amount).toFixed(1)));
         sortLinesDynamically();
-        persistData();
+        persistData(true); // تحديث السحاب بمعدل السحب الجديد
         buildTableStructure();
         renderStaticDetails();
-        showToast(`تم ضبط السحب اليومي: ${newRate} GB/يوم`);
+        showToast(`السحب اليومي: ${line.dailyManual} GB/يوم`);
     }
 
     function promptEditDailyRate() {
         const line = getActiveLine();
         if (!line) return;
-        const current = line.dailyManual || 5;
-        const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", current);
-        if (val !== null) {
-            const parsed = parseFloat(val);
-            if (!isNaN(parsed) && parsed > 0) {
-                line.baseBalance = getCurrentLiveBalance(line);
-                line.lastSyncTime = Date.now();
-                line.dailyManual = Number(parsed.toFixed(2));
-                sortLinesDynamically();
-                persistData();
-                buildTableStructure();
-                renderStaticDetails();
-                showToast(`تم ضبط السحب اليومي: ${line.dailyManual} GB/يوم`);
-            } else {
-                alert("يرجى إدخال رقم صحيح أكبر من صفر.");
-            }
+        const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", line.dailyManual || 5);
+        if (val !== null && !isNaN(val) && Number(val) > 0) {
+            line.baseBalance = getCurrentLiveBalance(line);
+            line.lastSyncTime = Date.now();
+            line.dailyManual = Number(parseFloat(val).toFixed(2));
+            sortLinesDynamically();
+            persistData(true);
+            buildTableStructure();
+            renderStaticDetails();
         }
     }
 
@@ -1827,66 +1544,34 @@
         if (!targetDate) return 0;
         const parts = targetDate.split('-');
         if (parts.length !== 3) return 0;
-
+        const exp = new Date(parts[0], parts[1] - 1, parts[2]);
         const now = new Date();
-        const todayZero = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0, 0);
-
-        const y = parseInt(parts[0], 10);
-        const m = parseInt(parts[1], 10) - 1;
-        const d = parseInt(parts[2], 10);
-        const expZero = new Date(y, m, d, 0, 0, 0, 0);
-
-        const diffDays = Math.round((expZero.getTime() - todayZero.getTime()) / (1000 * 60 * 60 * 24));
-        return Math.max(0, diffDays);
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        return Math.max(0, Math.round((exp - today) / (1000 * 60 * 60 * 24)));
     }
 
     function logGlobalActivity({ type, title, lineId, lineName, lineAddress, amount, desc }) {
-        const now = new Date();
-        const dateStr = now.toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-        
         globalHistory.unshift({
-            id: `act_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+            id: `act_${Date.now()}`,
             timestamp: Date.now(),
-            type: type,
-            title: title,
-            lineId: lineId,
-            lineName: lineName,
-            lineAddress: lineAddress,
-            amount: amount,
-            desc: desc || '',
-            date: dateStr
+            type, title, lineId, lineName, lineAddress, amount, desc,
+            date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
         });
-
-        if (globalHistory.length > 200) {
-            globalHistory = globalHistory.slice(0, 200);
-        }
+        if (globalHistory.length > 200) globalHistory = globalHistory.slice(0, 200);
     }
 
     function checkAutoRenewalForLine(line) {
         const diffDays = calculateRemainingDays(line.expiryDate);
         if (diffDays <= 0 && line.isPaid) {
-            const currentRemaining = getCurrentLiveBalance(line);
-            line.baseBalance = Number((currentRemaining + Number(line.monthlyPackage)).toFixed(3));
+            line.baseBalance = Number((getCurrentLiveBalance(line) + Number(line.monthlyPackage)).toFixed(3));
             line.lastSyncTime = Date.now();
             
             const parts = line.expiryDate.split('-');
-            const y = parseInt(parts[0], 10);
-            const m = parseInt(parts[1], 10) - 1;
-            const d = parseInt(parts[2], 10);
-            const expDateObj = new Date(y, m, d);
+            const expDateObj = new Date(parts[0], parts[1] - 1, parts[2]);
             expDateObj.setMonth(expDateObj.getMonth() + 1);
-            
-            const nextY = expDateObj.getFullYear();
-            const nextM = String(expDateObj.getMonth() + 1).padStart(2, '0');
-            const nextD = String(expDateObj.getDate()).padStart(2, '0');
-            line.expiryDate = `${nextY}-${nextM}-${nextD}`;
-            
+            line.expiryDate = `${expDateObj.getFullYear()}-${String(expDateObj.getMonth() + 1).padStart(2, '0')}-${String(expDateObj.getDate()).padStart(2, '0')}`;
             line.isPaid = false;
             
-            delete sentAlertsMap[`gb_${line.id}`];
-            delete sentAlertsMap[`days_${line.id}`];
-            localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
-
             logGlobalActivity({
                 type: 'renewal',
                 title: 'تجديد الباقة الشهرية الأساسية',
@@ -1894,99 +1579,65 @@
                 lineName: line.name,
                 lineAddress: line.address || line.note || "",
                 amount: line.monthlyPackage,
-                desc: `تم تقديم موعد التجديد إلى ${line.expiryDate}`
+                desc: `التاريخ الجديد: ${line.expiryDate}`
             });
 
-            persistData();
+            persistData(true);
             buildTableStructure();
             renderStaticDetails();
-            showToast(`تم تجديد باقة ${line.name} وتحديث التاريخ`);
-            sendTelegramAlert(`🎉 <b>تم تجديد الباقة بنجاح!</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\nتمت إضافة باقة الشهر الجديد (${line.monthlyPackage} GB).\nتاريخ الانتهاء الجديد: ${line.expiryDate}`);
+            showToast(`تم تجديد باقة ${line.name}`);
         }
     }
 
-    /* النظام المفصول الذكي للتنبيهات */
     function checkLiveAlertsSystem() {
         const breachedLines = [];
-
         allLines.forEach((line) => {
             const liveBal = getCurrentLiveBalance(line);
             const daysLeft = calculateRemainingDays(line.expiryDate);
-
-            // 1. تنبيه الجيجابايت: ينبه دائماً بمجرد انخفاض الرصيد عن حد الأمان، سواء كان مدفوعاً أو لا
             const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
-
-            // 2. تنبيه الأيام: ينبه فقط إذا لم يتم الدفع
             const isDaysBreach = (!line.isPaid) && (daysLeft <= (Number(line.alertDays) || 0));
 
-            const isBreached = isGbBreach || isDaysBreach;
+            if (!isGbBreach && sentAlertsMap[`gb_${line.id}`]) delete sentAlertsMap[`gb_${line.id}`];
+            if (!isDaysBreach && sentAlertsMap[`days_${line.id}`]) delete sentAlertsMap[`days_${line.id}`];
 
-            // إعادة ضبط التنبيهات المنتهية
-            if (!isGbBreach && sentAlertsMap[`gb_${line.id}`]) {
-                delete sentAlertsMap[`gb_${line.id}`];
-            }
-            if (!isDaysBreach && sentAlertsMap[`days_${line.id}`]) {
-                delete sentAlertsMap[`days_${line.id}`];
-            }
-            localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
-
-            if (isBreached) {
-                breachedLines.push({
-                    id: line.id,
-                    line: line,
-                    balance: liveBal,
-                    daysLeft: daysLeft,
-                    isGbBreach: isGbBreach,
-                    isDaysBreach: isDaysBreach
-                });
-
+            if (isGbBreach || isDaysBreach) {
+                breachedLines.push({ id: line.id, line, balance: liveBal, daysLeft, isGbBreach, isDaysBreach });
                 if (canSendLiveAlerts) {
                     let needsAlert = false;
                     let alertDetails = [];
-
                     if (isGbBreach && !sentAlertsMap[`gb_${line.id}`]) {
-                        alertDetails.push(`⚠️ رصيد منخفض: <b>${liveBal.toFixed(2)} GB</b> (حد الأمان: ${line.alertGB} GB)`);
+                        alertDetails.push(`⚠️ رصيد منخفض: <b>${liveBal.toFixed(2)} GB</b> (الحد: ${line.alertGB} GB)`);
                         sentAlertsMap[`gb_${line.id}`] = Date.now();
                         needsAlert = true;
                     }
                     if (isDaysBreach && !sentAlertsMap[`days_${line.id}`]) {
-                        alertDetails.push(`⏳ موعد الفاتورة: باقي <b>${daysLeft} يوم</b> (لم يتم الدفع)`);
+                        alertDetails.push(`⏳ موعد الفاتورة: باقي <b>${daysLeft} يوم</b>`);
                         sentAlertsMap[`days_${line.id}`] = Date.now();
                         needsAlert = true;
                     }
-
                     if (needsAlert) {
-                        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-                        const fullMsg = `🚨 <b>تنبيه استهلاك خط الإنترنت!</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\n${alertDetails.join('\n')}`;
-                        sendTelegramAlert(fullMsg);
+                        sendTelegramAlert(`🚨 <b>تنبيه استهلاك خط إنترنت!</b>\nالخط: <b>${line.name}</b>\n${alertDetails.join('\n')}`);
                         localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
                     }
                 }
             }
         });
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
 
         const alertHub = document.getElementById('alertHubSection');
         const alertContainer = document.getElementById('alertLinesContainer');
-        const alertCountTxt = document.getElementById('alertHubCount');
-
         if (breachedLines.length > 0) {
             alertHub.classList.add('active');
-            alertCountTxt.innerText = `${breachedLines.length} خطوط تحتاج انتباهك`;
+            document.getElementById('alertHubCount').innerText = `${breachedLines.length} خطوط تحتاج انتباهك`;
             alertContainer.innerHTML = '';
-
             breachedLines.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'alert-line-item';
                 div.onclick = () => onSwitchLine(item.id);
-
                 let tags = '';
                 if (item.isGbBreach) tags += `<span class="alert-tag gb">رصيد منخفض (${item.balance.toFixed(2)})</span>`;
                 if (item.isDaysBreach) tags += `<span class="alert-tag days">اقترب موعد الدفع (${item.daysLeft} يوم)</span>`;
-
-                div.innerHTML = `
-                    <div style="font-weight:700; font-size:13px;">${item.line.name} ${item.line.address ? '<span style="font-size:11px; color:var(--accent);">['+item.line.address+']</span>' : ''}</div>
-                    <div style="display:flex; gap:6px;">${tags}</div>
-                `;
+                div.innerHTML = `<div style="font-weight:700; font-size:13px;">${item.line.name}</div><div style="display:flex; gap:6px;">${tags}</div>`;
                 alertContainer.appendChild(div);
             });
         } else {
@@ -1995,78 +1646,38 @@
     }
 
     function openHistoryModal() {
-        populateHistoryFilter();
+        const select = document.getElementById('historyFilterSelect');
+        select.innerHTML = `<option value="ALL">عرض كل حركات الخطوط (${globalHistory.length})</option>` + 
+            allLines.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
         renderGlobalHistoryList('ALL');
         document.getElementById('historyModalOverlay').classList.add('active');
     }
-
-    function closeHistoryModal() {
-        document.getElementById('historyModalOverlay').classList.remove('active');
-    }
-
-    function populateHistoryFilter() {
-        const select = document.getElementById('historyFilterSelect');
-        const activeLine = getActiveLine();
-        
-        let html = `<option value="ALL">عرض كل حركات الخطوط (${globalHistory.length})</option>`;
-        if (activeLine) {
-            html += `<option value="${activeLine.id}">الخط الحالي فقط (${activeLine.name})</option>`;
-        }
-        allLines.forEach(l => {
-            if (!activeLine || l.id !== activeLine.id) {
-                html += `<option value="${l.id}">${l.name} ${l.address ? '['+l.address+']' : ''}</option>`;
-            }
-        });
-        select.innerHTML = html;
-    }
+    function closeHistoryModal() { document.getElementById('historyModalOverlay').classList.remove('active'); }
 
     function renderGlobalHistoryList(filterLineId = 'ALL') {
         const container = document.getElementById('historyListContainer');
-        container.innerHTML = '';
-
-        const list = (filterLineId === 'ALL') 
-            ? globalHistory 
-            : globalHistory.filter(h => h.lineId === filterLineId);
-
+        const list = (filterLineId === 'ALL') ? globalHistory : globalHistory.filter(h => h.lineId === filterLineId);
         if (!list || list.length === 0) {
-            container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); font-size: 12px; padding: 24px;">لا توجد حركات مسجلة بالسجل بعد.</div>`;
+            container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 20px;">لا توجد حركات مسجلة بالسجل.</div>`;
             return;
         }
-
-        list.forEach(item => {
-            const div = document.createElement('div');
-            div.className = `history-item ${item.type}`;
-            
-            let badgeText = item.amount ? `+${item.amount} GB` : 'تم الدفع';
-            let titleColor = item.type === 'extra' ? 'var(--accent)' : (item.type === 'renewal' ? 'var(--success)' : '#38bdf8');
-
-            div.innerHTML = `
-                <div style="min-width: 0; flex: 1;">
-                    <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                        <span style="font-size: 13px; font-weight: 800; color: ${titleColor};">${item.title}</span>
-                        <span style="font-size: 11px; background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; color: #f8fafc; font-weight: 700;">
-                            ${item.lineName || 'خط'} ${item.lineAddress ? `(${item.lineAddress})` : ''}
-                        </span>
-                    </div>
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 3px;">
-                        <i class="fa-regular fa-clock" style="font-size: 10px;"></i> ${item.date}
-                        ${item.desc ? ` • <span style="color:#cbd5e1;">${item.desc}</span>` : ''}
-                    </div>
+        container.innerHTML = list.map(item => `
+            <div class="history-item ${item.type}">
+                <div>
+                    <div style="font-size: 13px; font-weight: 800; color: #38bdf8;">${item.title} <span style="font-size:11px; color:#fff;">[${item.lineName}]</span></div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">${item.date} ${item.desc ? '• ' + item.desc : ''}</div>
                 </div>
-                <div class="mono" style="font-size: 13px; font-weight: 800; color: #fff; white-space: nowrap; margin-right: 8px;">
-                    ${badgeText}
-                </div>
-            `;
-            container.appendChild(div);
-        });
+                <div class="mono" style="font-size: 13px; font-weight: 800; color: #fff;">${item.amount ? '+' + item.amount + ' GB' : 'تم الدفع'}</div>
+            </div>
+        `).join('');
     }
 
     function clearAllHistory() {
-        if (confirm("هل تريد بالتأكيد مسح سجل الحركات بالكامل لكل الخطوط؟")) {
+        if (confirm("مسح السجل بالكامل؟")) {
             globalHistory = [];
-            persistData();
+            persistData(true);
             renderGlobalHistoryList('ALL');
-            showToast("تم مسح سجل الحركات بالكامل");
+            showToast("تم مسح السجل بالكامل");
         }
     }
 
@@ -2074,41 +1685,25 @@
         document.getElementById('tgBotTokenInput').value = tgSettings.botToken || "";
         document.getElementById('tgChatIdInput').value = tgSettings.chatId || "";
         document.getElementById('firebaseUrlInput').value = cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL;
-        document.getElementById('backupDataArea').value = "";
         document.getElementById('settingsModalOverlay').classList.add('active');
     }
-
-    function closeSettingsModal() {
-        document.getElementById('settingsModalOverlay').classList.remove('active');
-    }
+    function closeSettingsModal() { document.getElementById('settingsModalOverlay').classList.remove('active'); }
 
     function openExtraQuotaModal() {
         const line = getActiveLine();
         if (!line) return;
-        document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name} ${line.address ? '['+line.address+']' : ''}`;
-        document.getElementById('quickExtraInput').value = '2000';
+        document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name}`;
         document.getElementById('extraQuotaModalOverlay').classList.add('active');
     }
-
-    function closeExtraQuotaModal() {
-        document.getElementById('extraQuotaModalOverlay').classList.remove('active');
-    }
+    function closeExtraQuotaModal() { document.getElementById('extraQuotaModalOverlay').classList.remove('active'); }
 
     function applyQuickExtraQuota(e) {
         e.preventDefault();
         const line = getActiveLine();
-        if (!line) return;
         const addedGB = parseFloat(document.getElementById('quickExtraInput').value) || 0;
-
-        if (addedGB <= 0) {
-            alert("يرجى إدخال عدد جيجابايت صحيح أكبر من صفر.");
-            return;
-        }
-
-        const currentLiveBal = getCurrentLiveBalance(line);
-        line.baseBalance = Number((currentLiveBal + addedGB).toFixed(3));
+        if (addedGB <= 0) return alert("أدخل رقماً صحيحاً.");
+        line.baseBalance = Number((getCurrentLiveBalance(line) + addedGB).toFixed(3));
         line.lastSyncTime = Date.now();
-        
         delete sentAlertsMap[`gb_${line.id}`];
         localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
 
@@ -2122,11 +1717,10 @@
             desc: `الرصيد بعد الشحن: ${line.baseBalance.toFixed(2)} GB`
         });
 
-        persistData();
+        persistData(true); // رفع الكوتة للسحاب لجميع الأجهزة فوراً
         closeExtraQuotaModal();
         renderStaticDetails();
-        showToast(`تمت إضافة ${addedGB} GB وتسجيلها بالسجل العام`);
-        sendTelegramAlert(`➕ <b>تمت إضافة كوتة إضافية</b>\nالخط: <b>${line.name}</b> ${line.address ? '['+line.address+']' : ''}\nتمت إضافة: ${addedGB} GB\nالرصيد الجديد: ${line.baseBalance.toFixed(2)} GB`);
+        showToast(`تمت إضافة ${addedGB} GB ونشرها لجميع الأجهزة`);
     }
 
     function openEditModal() {
@@ -2134,19 +1728,16 @@
         if (!line) return;
         document.getElementById('formIndexKey').value = line.id;
         document.getElementById('modalHeading').innerText = `تعديل بيانات: ${line.name}`;
-
-        const currentLiveBal = getCurrentLiveBalance(line);
         document.getElementById('inputLineName').value = line.name;
-        document.getElementById('inputLineAddress').value = line.address || line.note || "";
+        document.getElementById('inputLineAddress').value = line.address || "";
         document.getElementById('inputWeServiceNumber').value = line.weServiceNumber || "";
         document.getElementById('inputLineNote').value = line.note || "";
-        document.getElementById('inputCurrentBalance').value = currentLiveBal.toFixed(2);
+        document.getElementById('inputCurrentBalance').value = getCurrentLiveBalance(line).toFixed(2);
         document.getElementById('inputDailyManual').value = line.dailyManual;
         document.getElementById('inputMonthlyPackage').value = line.monthlyPackage;
         document.getElementById('inputAlertGB').value = line.alertGB;
         document.getElementById('inputAlertDays').value = line.alertDays;
         document.getElementById('inputExpiryDate').value = line.expiryDate;
-
         document.getElementById('appModalOverlay').classList.add('active');
     }
 
@@ -2154,32 +1745,27 @@
         document.getElementById('formIndexKey').value = "-1";
         document.getElementById('modalHeading').innerText = "إضافة خط جديد";
         document.getElementById('lineDataForm').reset();
-        document.getElementById('inputLineAddress').value = "";
-        document.getElementById('inputWeServiceNumber').value = "";
-        document.getElementById('inputAlertGB').value = 15;
-        document.getElementById('inputAlertDays').value = 5;
+        document.getElementById('inputCurrentBalance').value = 700;
         document.getElementById('inputDailyManual').value = 5;
+        document.getElementById('inputMonthlyPackage').value = 700;
+        document.getElementById('inputAlertGB').value = 50;
+        document.getElementById('inputAlertDays').value = 5;
         document.getElementById('inputExpiryDate').value = getOffsetDate(30);
         document.getElementById('appModalOverlay').classList.add('active');
     }
-
-    function closeModal() {
-        document.getElementById('appModalOverlay').classList.remove('active');
-    }
+    function closeModal() { document.getElementById('appModalOverlay').classList.remove('active'); }
 
     function saveLineData(e) {
         e.preventDefault();
         const editId = document.getElementById('formIndexKey').value;
         const enteredBalance = parseFloat(document.getElementById('inputCurrentBalance').value);
-        const enteredAddress = document.getElementById('inputLineAddress').value.trim();
-
         if (editId !== "-1") {
             const line = allLines.find(l => l.id === editId);
             if (line) {
                 line.name = document.getElementById('inputLineName').value.trim();
-                line.address = enteredAddress;
+                line.address = document.getElementById('inputLineAddress').value.trim();
                 line.weServiceNumber = document.getElementById('inputWeServiceNumber').value.trim();
-                line.note = document.getElementById('inputLineNote').value.trim() || enteredAddress;
+                line.note = document.getElementById('inputLineNote').value.trim();
                 line.baseBalance = enteredBalance;
                 line.dailyManual = parseFloat(document.getElementById('inputDailyManual').value);
                 line.monthlyPackage = parseFloat(document.getElementById('inputMonthlyPackage').value);
@@ -2187,18 +1773,16 @@
                 line.alertDays = parseInt(document.getElementById('inputAlertDays').value);
                 line.expiryDate = document.getElementById('inputExpiryDate').value;
                 line.lastSyncTime = Date.now();
-                
                 delete sentAlertsMap[`gb_${line.id}`];
                 delete sentAlertsMap[`days_${line.id}`];
-                localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
             }
         } else {
             const newLine = {
                 id: `line_${Date.now()}`,
                 name: document.getElementById('inputLineName').value.trim(),
-                address: enteredAddress,
+                address: document.getElementById('inputLineAddress').value.trim(),
                 weServiceNumber: document.getElementById('inputWeServiceNumber').value.trim(),
-                note: document.getElementById('inputLineNote').value.trim() || enteredAddress,
+                note: document.getElementById('inputLineNote').value.trim(),
                 baseBalance: enteredBalance,
                 dailyManual: parseFloat(document.getElementById('inputDailyManual').value),
                 monthlyPackage: parseFloat(document.getElementById('inputMonthlyPackage').value),
@@ -2211,70 +1795,53 @@
             allLines.push(newLine);
             activeLineId = newLine.id;
         }
-
         sortLinesDynamically();
-        persistData();
+        persistData(true); // الرفع للسحاب يتم فوراً عند الحفظ اليدوي فقط
         closeModal();
         buildTableStructure();
         renderStaticDetails();
-        showToast("تم حفظ بيانات الخط بنجاح");
+        showToast("✅ تم الحفظ ونشر البيانات للأجهزة سحابياً");
     }
 
     function buildTableStructure() {
         const tbody = document.getElementById('allLinesTableBody');
-        tbody.innerHTML = '';
-
-        allLines.forEach((line) => {
+        tbody.innerHTML = allLines.map(line => {
             const daysLeft = calculateRemainingDays(line.expiryDate);
             const liveBal = getCurrentLiveBalance(line);
-            
-            // فحص منفصل
             const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
             const isDaysBreach = (!line.isPaid) && (daysLeft <= (Number(line.alertDays) || 0));
             const isBreached = isGbBreach || isDaysBreach;
 
-            const tr = document.createElement('tr');
-            tr.onclick = () => onSwitchLine(line.id);
-            tr.innerHTML = `
-                <td>
-                    <strong>${line.name}</strong>
-                    ${line.weServiceNumber ? `<div style="font-size: 11px; color: #94a3b8;">${line.weServiceNumber}</div>` : ''}
-                </td>
-                <td style="color: var(--accent); font-weight: 700;">${line.address || line.note || '—'}</td>
-                <td class="mono" id="tableBal-${line.id}" style="color: ${isGbBreach ? '#f87171' : '#34d399'}; font-weight: 700; font-size: 14px;">${liveBal.toFixed(3)}</td>
-                <td class="mono" style="color: var(--accent); font-weight: 700; font-size: 14px;">${line.dailyManual}</td>
-                <td class="mono" style="color: ${isDaysBreach ? '#f87171' : '#f8fafc'}; font-weight: 700;">${daysLeft} يوم</td>
-                <td><span class="status-pill ${line.isPaid ? 'safe' : 'paid-pending'}">${line.isPaid ? 'مدفوع' : 'غير مدفوع'}</span></td>
-                <td><span class="status-pill ${isBreached ? 'danger' : 'safe'}">${isBreached ? (isGbBreach ? '⚠️ كوتة منخفضة' : '⚠️ موعد الدفع') : 'مستقر'}</span></td>
+            return `
+                <tr onclick="onSwitchLine('${line.id}')">
+                    <td><strong>${line.name}</strong></td>
+                    <td style="color: var(--accent); font-weight: 700;">${line.address || line.note || '—'}</td>
+                    <td class="mono" id="tableBal-${line.id}" style="color: ${isGbBreach ? '#f87171' : '#34d399'}; font-weight: 700;">${liveBal.toFixed(3)}</td>
+                    <td class="mono" style="color: var(--accent); font-weight: 700;">${line.dailyManual}</td>
+                    <td class="mono" style="color: ${isDaysBreach ? '#f87171' : '#f8fafc'}; font-weight: 700;">${daysLeft} يوم</td>
+                    <td><span class="status-pill ${line.isPaid ? 'safe' : 'paid-pending'}">${line.isPaid ? 'مدفوع' : 'غير مدفوع'}</span></td>
+                    <td><span class="status-pill ${isBreached ? 'danger' : 'safe'}">${isBreached ? '⚠️ تنبيه' : 'مستقر'}</span></td>
+                </tr>
             `;
-            tbody.appendChild(tr);
-        });
+        }).join('');
     }
 
     function tickLiveStats() {
         if (allLines.length === 0) return;
-        
         allLines.forEach(l => checkAutoRenewalForLine(l));
-        
         const line = getActiveLine();
         if (line) {
             const liveBalance = getCurrentLiveBalance(line);
             document.getElementById('liveBalanceDisplay').innerText = liveBalance.toFixed(3);
-            
-            const totalCap = Math.max(Number(line.monthlyPackage) || 200, liveBalance);
+            const totalCap = Math.max(Number(line.monthlyPackage) || 700, liveBalance);
             const percent = Math.min(100, Math.max(0, (liveBalance / totalCap) * 100));
             document.getElementById('percentageText').innerText = `${percent.toFixed(2)}%`;
             document.getElementById('progressFillBar').style.width = `${percent}%`;
         }
-
         checkLiveAlertsSystem();
-
-        allLines.forEach((item) => {
+        allLines.forEach(item => {
             const cell = document.getElementById(`tableBal-${item.id}`);
-            if (cell) {
-                const bal = getCurrentLiveBalance(item);
-                cell.innerText = bal.toFixed(3);
-            }
+            if (cell) cell.innerText = getCurrentLiveBalance(item).toFixed(3);
         });
     }
 
@@ -2282,70 +1849,28 @@
         const line = getActiveLine();
         if (!line) return;
         const daysLeft = calculateRemainingDays(line.expiryDate);
-
         document.getElementById('headerTitle').innerText = line.name;
-        
-        const addrText = line.address || line.note || "العنوان";
-        const cardAddrEl = document.getElementById('heroCardAddressText');
-        if (cardAddrEl) {
-            cardAddrEl.innerText = addrText;
-        }
-
-        const noteEl = document.getElementById('headerNote');
-        if (addrText && addrText !== "العنوان" && addrText !== "بدون عنوان") {
-            noteEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${addrText}`;
-            noteEl.style.display = 'flex';
-        } else {
-            noteEl.style.display = 'none';
-        }
-
-        const counterEl = document.getElementById('totalLinesCounter');
-        if (counterEl) {
-            counterEl.innerText = allLines.length;
-        }
+        document.getElementById('heroCardAddressText').innerText = line.address || line.note || "العنوان";
+        document.getElementById('totalLinesCounter').innerText = allLines.length;
         
         const daysBadge = document.getElementById('daysBadge');
         daysBadge.innerText = `باقي ${daysLeft} يوم`;
-        
-        if (line.isPaid || daysLeft > line.alertDays) {
-            daysBadge.style.background = 'var(--success-bg)';
-            daysBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
-            daysBadge.style.color = '#34d399';
-        } else {
-            daysBadge.style.background = 'var(--danger-bg)';
-            daysBadge.style.borderColor = 'rgba(239, 68, 68, 0.4)';
-            daysBadge.style.color = '#f87171';
-        }
+        daysBadge.style.color = (line.isPaid || daysLeft > line.alertDays) ? '#34d399' : '#f87171';
 
         const payBtn = document.getElementById('paySubscriptionBtn');
         const payLabel = document.getElementById('payBtnLabel');
         const payBadge = document.getElementById('paymentStatusBadge');
-
-        if (line.isPaid) {
-            payBtn.classList.add('paid');
-            payLabel.innerText = "تم الدفع بنجاح";
-            payBadge.style.display = "inline-flex";
-        } else {
-            payBtn.classList.remove('paid');
-            payLabel.innerText = "دفع الاشتراك";
-            payBadge.style.display = "none";
-        }
+        payBtn.classList.toggle('paid', line.isPaid);
+        payLabel.innerText = line.isPaid ? "تم الدفع بنجاح" : "دفع الاشتراك";
+        payBadge.style.display = line.isPaid ? "inline-flex" : "none";
 
         document.getElementById('monthlyTotalDisplay').innerText = `الباقة: ${line.monthlyPackage} GB`;
         document.getElementById('dailyBurnDisplay').innerText = `السحب: ${line.dailyManual} GB/يوم`;
         document.getElementById('alertGBDisplay').innerText = `حد الجيجات: ${line.alertGB} GB`;
         document.getElementById('alertDaysDisplay').innerText = `حد الأيام: ${line.alertDays} أيام`;
         document.getElementById('expiryDateDisplay').innerText = `الانتهاء: ${line.expiryDate}`;
-
-        const searchBtnLabel = document.getElementById('searchTriggerLabel');
-        if (searchBtnLabel) {
-            searchBtnLabel.innerText = (line.weServiceNumber || line.name) + (line.address ? ` [${line.address}]` : '');
-        }
-
-        const heroBadge = document.getElementById('heroLineBadge');
-        if (heroBadge) {
-            heroBadge.innerText = line.weServiceNumber || line.name || "------";
-        }
+        document.getElementById('searchTriggerLabel').innerText = (line.weServiceNumber || line.name) + (line.address ? ` [${line.address}]` : '');
+        document.getElementById('heroLineBadge').innerText = line.weServiceNumber || line.name || "------";
 
         tickLiveStats();
     }
@@ -2357,67 +1882,32 @@
         renderQuickSearchResults('');
         setTimeout(() => input.focus(), 50);
     }
-
-    function closeSearchModal() {
-        document.getElementById('searchLinesModalOverlay').classList.remove('active');
-    }
+    function closeSearchModal() { document.getElementById('searchLinesModalOverlay').classList.remove('active'); }
 
     function renderQuickSearchResults(query) {
-        const container = document.getElementById('quickSearchResultsList');
         const q = (query || '').trim().toLowerCase();
-        
-        const matched = allLines.filter(l => {
-            if (!q) return true;
-            return (l.name && l.name.toLowerCase().includes(q)) ||
-                   (l.address && l.address.toLowerCase().includes(q)) ||
-                   (l.weServiceNumber && String(l.weServiceNumber).includes(q)) ||
-                   (l.note && l.note.toLowerCase().includes(q));
-        });
-
-        if (matched.length === 0) {
-            container.innerHTML = `<div style="text-align:center; color:var(--text-secondary); font-size:12px; padding:20px;">لا توجد خطوط مطابقة للبحث</div>`;
-            return;
-        }
-
-        container.innerHTML = matched.map(m => `
-            <div class="history-item" onclick="selectLineFromSearch('${m.id}')" style="cursor: pointer; ${m.id === activeLineId ? 'border-right: 3px solid var(--accent); background: rgba(2,132,199,0.1);' : ''}">
-                <div>
-                    <div style="font-size: 13px; font-weight: 700; color: #fff;">
-                        ${m.weServiceNumber || m.name} ${m.address ? `<span style="font-size:11px; color:var(--accent);">[${m.address}]</span>` : ''}
-                    </div>
-                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">${m.name}</div>
-                </div>
-                <div class="mono" style="font-size: 12px; font-weight: 700; color: var(--accent);">
-                    ${getCurrentLiveBalance(m).toFixed(1)} GB
-                </div>
+        const matched = allLines.filter(l => !q || l.name.toLowerCase().includes(q) || (l.address && l.address.toLowerCase().includes(q)));
+        document.getElementById('quickSearchResultsList').innerHTML = matched.map(m => `
+            <div class="history-item" onclick="selectLineFromSearch('${m.id}')" style="cursor: pointer;">
+                <div><strong>${m.name}</strong> ${m.address ? `[${m.address}]` : ''}</div>
+                <div class="mono" style="color:var(--accent);">${getCurrentLiveBalance(m).toFixed(1)} GB</div>
             </div>
         `).join('');
     }
 
-    function selectLineFromSearch(lineId) {
-        closeSearchModal();
-        onSwitchLine(lineId);
-    }
-
-    function onSwitchLine(lineId) {
-        activeLineId = lineId;
-        renderStaticDetails();
-    }
+    function selectLineFromSearch(lineId) { closeSearchModal(); onSwitchLine(lineId); }
+    function onSwitchLine(lineId) { activeLineId = lineId; renderStaticDetails(); }
 
     function onDeleteLine() {
-        if (allLines.length <= 1) {
-            alert("لا يمكن حذف الخط الأخير في التطبيق.");
-            return;
-        }
+        if (allLines.length <= 1) return alert("لا يمكن حذف الخط الأخير.");
         const line = getActiveLine();
-        if (!line) return;
-        if (confirm(`هل أنت متأكد من حذف الخط (${line.name})؟`)) {
+        if (confirm(`حذف الخط (${line.name})؟`)) {
             allLines = allLines.filter(l => l.id !== line.id);
             activeLineId = allLines[0].id;
-            persistData();
+            persistData(true);
             buildTableStructure();
             renderStaticDetails();
-            showToast("تم حذف الخط بنجاح");
+            showToast("تم حذف الخط");
         }
     }
 
@@ -2425,80 +1915,9 @@
     renderStaticDetails();
     setInterval(tickLiveStats, 1000);
 
+    // سحب المزامنة كل 4 ثوانٍ دون رفع أي شيء
     syncFromCloud();
     setInterval(syncFromCloud, 4000);
-
-    let lastKnownCommit = "";
-
-    function checkForCodeUpdates() {
-        fetch("https://api.github.com/repos/esamm5180-a11y/giga.py/commits/main", {
-            headers: { "Accept": "application/vnd.github.v3+json" }
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (!data || !data.sha) return;
-            const currentCommit = data.sha;
-
-            if (!lastKnownCommit) {
-                lastKnownCommit = localStorage.getItem("app_commit_version") || currentCommit;
-                localStorage.setItem("app_commit_version", lastKnownCommit);
-            }
-
-            if (currentCommit !== lastKnownCommit) {
-                showCodeUpdateAlert(currentCommit);
-            }
-        })
-        .catch(err => console.log("فحص التحديث البرمجي:", err));
-    }
-
-    function showCodeUpdateAlert(newCommitSha) {
-        if (document.getElementById("codeUpdateBanner")) return;
-
-        const banner = document.createElement("div");
-        banner.id = "codeUpdateBanner";
-        banner.style.position = "fixed";
-        banner.style.top = "12px";
-        banner.style.left = "12px";
-        banner.style.right = "12px";
-        banner.style.zIndex = "999999";
-        banner.style.backgroundColor = "#0284c7";
-        banner.style.color = "#ffffff";
-        banner.style.padding = "10px 14px";
-        banner.style.borderRadius = "14px";
-        banner.style.boxShadow = "0 6px 20px rgba(0,0,0,0.5)";
-        banner.style.display = "flex";
-        banner.style.alignItems = "center";
-        banner.style.justifyContent = "space-between";
-        banner.style.fontSize = "12px";
-        banner.style.fontWeight = "bold";
-
-        banner.innerHTML = `
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <i class="fas fa-sparkles text-amber-300 text-base"></i>
-                <span>تحديث برمجي جديد متوفر!</span>
-            </div>
-            <button id="btnApplyUpdate" style="background: #ffffff; color: #0284c7; border: none; padding: 5px 12px; border-radius: 8px; font-weight: bold; cursor: pointer;">
-                تحديث الآن
-            </button>
-        `;
-
-        document.body.appendChild(banner);
-
-        document.getElementById("btnApplyUpdate").onclick = function() {
-            localStorage.setItem("app_commit_version", newCommitSha);
-            window.location.reload(true);
-        };
-    }
-
-    checkForCodeUpdates();
-    setInterval(checkForCodeUpdates, 60000);
-</script>
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js').catch(() => {});
-    });
-  }
 </script>
 </body>
 </html>
