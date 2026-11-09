@@ -1,620 +1,1874 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>نظام متابعة الأعطال</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: 'Cairo', sans-serif;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-    }
-    body {
-      background-color: #f8fafc;
-      color: #0f172a;
-      min-height: 100vh;
-      padding-bottom: 30px;
-    }
-    .hidden { display: none !important; }
-    .container { width: 100%; max-width: 480px; margin: 0 auto; padding: 12px; }
-    
-    .card {
-      background: #ffffff;
-      border-radius: 14px;
-      padding: 12px;
-      margin-bottom: 12px;
-      border: 1.5px solid #cbd5e1;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-    }
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0284c7">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة إدارة ومتابعة خطوط الإنترنت</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #030712;
+            --surface-card: #0b1120;
+            --surface-elevated: #111827;
+            --surface-inner: #070d18;
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --accent-gradient: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            --accent-cyan: #06b6d4;
+            --danger: #ef4444;
+            --danger-bg: rgba(239, 68, 68, 0.12);
+            --warning: #f59e0b;
+            --success: #10b981;
+            --success-bg: rgba(16, 185, 129, 0.12);
+            --success-glow: rgba(16, 185, 129, 0.3);
+            --telegram: #0284c7;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(56, 189, 248, 0.35);
+            --radius-xl: 20px;
+            --radius-md: 12px;
+            --radius-sm: 8px;
+            --shadow-xl: 0 16px 36px -10px rgba(0, 0, 0, 0.8);
+        }
 
-    .input-control {
-      width: 100%;
-      padding: 8px 12px;
-      border-radius: 10px;
-      border: 1.5px solid #cbd5e1;
-      font-size: 12px;
-      font-weight: 700;
-      outline: none;
-      background: #ffffff;
-      color: #0f172a;
-      margin-bottom: 8px;
-    }
-    .input-control:focus {
-      border-color: #2563eb;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', system-ui, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    .btn {
-      width: 100%;
-      padding: 9px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: 800;
-      border: none;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      text-decoration: none;
-    }
-    .btn-primary { background: #2563eb; color: #ffffff; }
-    .btn-success { background: #10b981; color: #ffffff; }
-    .btn-warning { background: #f59e0b; color: #ffffff; }
-    .btn-danger { background: #ef4444; color: #ffffff; }
-    .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .mono {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
 
-    .header {
-      background: #ffffff;
-      border-bottom: 1px solid #e2e8f0;
-      padding: 10px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
-    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+        body {
+            background-color: var(--bg-body);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(2, 132, 199, 0.12) 0px, transparent 45%),
+                radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.08) 0px, transparent 45%);
+            color: var(--text-primary);
+            padding: 14px;
+            min-height: 100vh;
+        }
 
-    .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; display: inline-block; }
-    .badge-pending { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
-    .badge-assigned { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
-    .badge-done { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
-    .badge-postponed { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+        .app-container {
+            max-width: 840px;
+            margin: 0 auto;
+        }
 
-    .stat-tab {
-      border-radius: 10px;
-      padding: 8px 4px;
-      text-align: center;
-      cursor: pointer;
-      border: 1px solid transparent;
-    }
-    .stat-pending { background: #fffbeb; border-color: #fde68a; }
-    .stat-assigned { background: #eff6ff; border-color: #bfdbfe; }
-    .stat-postponed { background: #fff7ed; border-color: #fed7aa; }
-    .stat-done { background: #ecfdf5; border-color: #a7f3d0; }
+        header {
+            background: linear-gradient(180deg, #0e1726 0%, #080d1a 100%);
+            border: 1.5px solid rgba(56, 189, 248, 0.28);
+            border-radius: var(--radius-xl);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 14px 32px -8px rgba(0, 0, 0, 0.75), 0 0 15px rgba(56, 189, 248, 0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+        }
 
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.45);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 12px;
-      z-index: 999;
-    }
-    .modal-content {
-      background: #ffffff;
-      width: 100%;
-      max-width: 400px;
-      border-radius: 14px;
-      padding: 14px;
-    }
-  </style>
+        header::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--accent-gradient);
+            box-shadow: 0 4px 14px var(--accent-glow);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .brand-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .brand-meta h1 {
+            font-size: 19px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 0.3px;
+        }
+
+        .brand-note-pill {
+            font-size: 11.5px;
+            color: var(--accent);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .brand-lines-counter {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-top: 1px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .brand-lines-counter span {
+            color: var(--accent);
+        }
+
+        .role-pill {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .role-pill.admin {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .role-pill.viewer {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
+        .header-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-search-trigger {
+            background: var(--surface-inner);
+            color: var(--text-primary);
+            border: 1.5px solid rgba(56, 189, 248, 0.35);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            flex: 1.3;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        .btn-search-trigger:hover {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.08);
+        }
+
+        .btn {
+            border: none;
+            outline: none;
+            padding: 8px 10px;
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
+        }
+
+        .btn-flex {
+            flex: 1;
+        }
+
+        .btn-settings {
+            background: rgba(17, 24, 39, 0.85);
+            color: var(--text-primary);
+            border: 1.5px solid rgba(56, 189, 248, 0.38);
+            border-radius: var(--radius-sm);
+            flex: 0.9;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-pay {
+            background: rgba(3, 105, 161, 0.12);
+            color: #e2e8f0;
+            border: 1.5px solid rgba(56, 189, 248, 0.45);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-pay.paid {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            color: #ffffff !important;
+            border-color: #34d399 !important;
+            box-shadow: 0 4px 14px var(--success-glow) !important;
+        }
+
+        .btn-extra {
+            background: rgba(2, 132, 199, 0.18);
+            color: var(--accent);
+            border: 1.5px solid rgba(56, 189, 248, 0.55);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-history {
+            background: rgba(245, 158, 11, 0.12);
+            color: #fbbf24;
+            border: 1.5px solid rgba(245, 158, 11, 0.45);
+            border-radius: var(--radius-sm);
+        }
+
+        .btn-accent {
+            background: var(--accent-gradient);
+            color: white;
+            box-shadow: 0 4px 12px var(--accent-glow);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            border-radius: var(--radius-sm);
+            flex: 1.4;
+        }
+
+        .btn-action-icon {
+            background: rgba(17, 24, 39, 0.85);
+            color: var(--text-secondary);
+            border: 1.5px solid rgba(56, 189, 248, 0.38);
+            border-radius: var(--radius-sm);
+            padding: 0 10px;
+            font-size: 12px;
+            flex: 0.8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-action-icon.danger {
+            border-color: rgba(239, 68, 68, 0.45);
+        }
+
+        .alert-hub {
+            display: none;
+            background: var(--danger-bg);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+            margin-bottom: 16px;
+        }
+
+        .alert-hub.active {
+            display: block;
+        }
+
+        .alert-hub-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .alert-hub-header h4 {
+            color: #fca5a5;
+            font-size: 12.5px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .alert-lines-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .alert-line-item {
+            background: rgba(3, 7, 18, 0.7);
+            border: 1px solid rgba(239, 68, 68, 0.25);
+            border-radius: var(--radius-sm);
+            padding: 8px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .alert-tag {
+            font-size: 10.5px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 800;
+        }
+
+        .alert-tag.gb {
+            background: rgba(239, 68, 68, 0.25);
+            color: #fca5a5;
+        }
+
+        .alert-tag.days {
+            background: rgba(245, 158, 11, 0.25);
+            color: #fde68a;
+        }
+
+        .hero-card {
+            background: linear-gradient(180deg, #0e1726 0%, #070d18 100%);
+            border: 1.5px solid rgba(56, 189, 248, 0.32);
+            border-radius: 22px;
+            padding: 18px 16px;
+            margin-bottom: 18px;
+            box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.85), 0 0 20px rgba(56, 189, 248, 0.08);
+            position: relative;
+        }
+
+        .hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .live-chip {
+            background: var(--success-bg);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 9px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--success);
+            animation: pulse-dot 1.2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.4); opacity: 0.5; }
+        }
+
+        .hero-middle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0 10px 0;
+            width: 100%;
+        }
+
+        .hero-balance {
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+        }
+
+        .hero-balance .number {
+            font-size: 28px;
+            font-weight: 900;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 16px rgba(56, 189, 248, 0.3);
+            white-space: nowrap;
+        }
+
+        .hero-balance .unit {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: 800;
+            white-space: nowrap;
+            margin-right: 2px;
+        }
+
+        .hero-side-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 118px;
+            min-width: 118px;
+            max-width: 118px;
+            flex-shrink: 0;
+        }
+
+        .hero-side-actions .btn,
+        .hero-side-actions .card-address-badge {
+            width: 100% !important;
+            box-sizing: border-box !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px !important;
+            padding: 6px 8px !important;
+            font-size: 11px !important;
+            font-weight: 800 !important;
+        }
+
+        .card-address-badge {
+            background: rgba(3, 105, 161, 0.22);
+            border: 1.5px solid #38bdf8;
+            color: #f0f9ff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .progress-container {
+            margin: 14px 0 12px 0;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11.5px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .progress-bar-bg {
+            height: 8px;
+            background: var(--surface-inner);
+            border-radius: 100px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
+            border-radius: 100px;
+            transition: width 0.3s ease;
+        }
+
+        .hero-details-container {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .details-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .stepper-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stepper-btn {
+            background: var(--surface-inner);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #cbd5e1;
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .clickable-burn {
+            cursor: pointer;
+            border-bottom: 1px dashed rgba(56, 189, 248, 0.5);
+            color: #e2e8f0;
+        }
+
+        .all-lines-card {
+            background: linear-gradient(180deg, #0e1726 0%, #070d18 100%);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            border-radius: var(--radius-xl);
+            padding: 18px 16px;
+            margin-bottom: 24px;
+        }
+
+        .all-lines-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            padding-bottom: 10px;
+        }
+
+        .sort-toggle-badge {
+            background: rgba(2, 132, 199, 0.15);
+            border: 1px solid rgba(2, 132, 199, 0.35);
+            color: var(--accent);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .sort-selector-bar {
+            display: none;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            background: var(--surface-inner);
+            border-radius: var(--radius-md);
+            padding: 6px;
+            margin-bottom: 12px;
+        }
+
+        .sort-selector-bar.active {
+            display: grid;
+        }
+
+        .sort-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 7px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .sort-tab-btn.active {
+            background: var(--accent-gradient);
+            color: #ffffff;
+        }
+
+        .lines-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+        }
+
+        .lines-table th {
+            padding: 10px 12px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .lines-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 12.5px;
+        }
+
+        .lines-table tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+            cursor: pointer;
+        }
+
+        .status-pill {
+            padding: 3px 8px;
+            border-radius: 16px;
+            font-size: 10.5px;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-pill.safe {
+            background: var(--success-bg);
+            color: #34d399;
+        }
+
+        .status-pill.danger {
+            background: var(--danger-bg);
+            color: #f87171;
+        }
+
+        .status-pill.paid-pending {
+            background: rgba(2, 132, 199, 0.15);
+            color: var(--accent);
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .app-modal {
+            background: #0b1120;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 440px;
+            max-height: 92vh;
+            overflow-y: auto;
+            padding: 22px 20px;
+        }
+
+        .modal-avatar-wrap {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 14px;
+            position: relative;
+        }
+
+        .modal-avatar {
+            width: 48px;
+            height: 48px;
+            background: var(--surface-inner);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 22px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: -4px;
+            left: 0;
+            background: var(--surface-inner);
+            border: 1px solid var(--border);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .form-row {
+            margin-bottom: 12px;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #cbd5e1;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--surface-inner);
+            border: 1.5px solid rgba(255, 255, 255, 0.08);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #fff;
+            outline: none;
+        }
+
+        .form-dual-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .modal-submit-btn {
+            width: 100%;
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 11px;
+            border-radius: 10px;
+            font-size: 13.5px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-top: 6px;
+        }
+
+        .settings-section-card {
+            background: var(--surface-inner);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: var(--surface-inner);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item.extra { border-right: 3px solid var(--accent); }
+        .history-item.renewal { border-right: 3px solid var(--success); }
+        .history-item.payment { border-right: 3px solid #38bdf8; }
+
+        .toast-notify {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #0f172a;
+            color: #fff;
+            border: 1px solid var(--accent);
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 12.5px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .toast-notify.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
 </head>
 <body>
 
-  <!-- شاشة الدخول -->
-  <div id="screenLogin" class="container" style="min-height: 85vh; display: flex; align-items: center; justify-content: center;">
-    <div class="card" style="width: 100%; text-align: center; padding: 24px 16px;">
-      <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 4px;">أعطالي 📶</h2>
-      <p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">تسجيل الدخول</p>
-      <input type="text" id="logUser" placeholder="اسم المستخدم" class="input-control">
-      <input type="password" id="logPass" placeholder="كلمة المرور" class="input-control">
-      <button type="button" onclick="handleLogin()" class="btn btn-primary">دخول</button>
-    </div>
-  </div>
+<div class="app-container">
 
-  <!-- لوحة الإدارة -->
-  <div id="screenAdmin" class="hidden">
-    <header class="header">
-      <div>
-        <h3 style="font-size: 14px; font-weight: 900;">لوحة الإدارة</h3>
-        <span id="adminDate" style="font-size: 10px; color: #64748b; font-weight: 700;"></span>
-      </div>
-      <div style="display: flex; gap: 5px;">
-        <button type="button" onclick="openSettingsPage()" class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;">⚙ الإعدادات</button>
-        <button type="button" onclick="handleLogout()" class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 11px;">خروج</button>
-      </div>
-    </header>
-
-    <div class="container">
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; margin-bottom: 12px;">
-        <div class="stat-tab stat-pending" onclick="openOrdersPage('pending')">
-          <span style="font-size: 10px; font-weight: 800; color: #b45309;">معلق</span>
-          <strong id="statPending" style="font-size: 15px; display: block;">0</strong>
-        </div>
-        <div class="stat-tab stat-assigned" onclick="openOrdersPage('assigned')">
-          <span style="font-size: 10px; font-weight: 800; color: #1d4ed8;">جاري</span>
-          <strong id="statAssigned" style="font-size: 15px; display: block;">0</strong>
-        </div>
-        <div class="stat-tab stat-postponed" onclick="openOrdersPage('postponed')">
-          <span style="font-size: 10px; font-weight: 800; color: #c2410c;">مؤجل</span>
-          <strong id="statPostponed" style="font-size: 15px; display: block;">0</strong>
-        </div>
-        <div class="stat-tab stat-done" onclick="openOrdersPage('done')">
-          <span style="font-size: 10px; font-weight: 800; color: #047857;">منجز</span>
-          <strong id="statDone" style="font-size: 15px; display: block;">0</strong>
-        </div>
-      </div>
-
-      <!-- تسجيل طلب جديد -->
-      <div class="card">
-        <h4 style="font-size: 12px; font-weight: 900; margin-bottom: 8px;">➕ تسجيل عطل جديد</h4>
-        <div class="grid-2">
-          <input type="text" id="newCustName" placeholder="اسم العميل *" class="input-control">
-          <input type="tel" id="newCustPhone" placeholder="رقم الهاتف" class="input-control">
-        </div>
-        <div class="grid-2">
-          <select id="newJobType" class="input-control">
-            <option value="عطل">عطل</option>
-            <option value="عطل متكرر">عطل متكرر</option>
-            <option value="تركيبه جديده">تركيبه جديده</option>
-            <option value="معاينه جديده">معاينه جديده</option>
-            <option value="تشييك">تشييك</option>
-          </select>
-          <input type="text" id="newCustDesc" placeholder="ملاحظات / العنوان" class="input-control">
-        </div>
-        <button type="button" onclick="saveNewOrder()" class="btn btn-primary">حفظ العطل</button>
-      </div>
-
-      <!-- قائمة الفنيين -->
-      <div id="adminTechsList"></div>
-    </div>
-  </div>
-
-  <!-- صفحة الأعطال -->
-  <div id="screenOrdersPage" class="hidden">
-    <header class="header">
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <button type="button" onclick="backToAdminHome()" class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;">← رجوع</button>
-        <h3 id="ordersPageTitle" style="font-size: 13px; font-weight: 900;">الأعطال</h3>
-      </div>
-    </header>
-    <div class="container">
-      <div id="adminOrdersList"></div>
-    </div>
-  </div>
-
-  <!-- صفحة الإعدادات -->
-  <div id="screenSettingsPage" class="hidden">
-    <header class="header">
-      <div style="display: flex; align-items: center; gap: 6px;">
-        <button type="button" onclick="backToAdminHomeFromSettings()" class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;">← رجوع</button>
-        <h3 style="font-size: 13px; font-weight: 900;">الإعدادات</h3>
-      </div>
-    </header>
-    <div class="container">
-      <div class="card">
-        <h5 style="font-size: 12px; font-weight: 900; margin-bottom: 8px;">👷 بيانات الفني وتليجرام</h5>
-        <select id="settingsTechSelect" onchange="loadSelectedTechData()" class="input-control"></select>
-        <input type="text" id="settingsTechName" placeholder="الاسم" class="input-control">
-        <label style="font-size: 10px; font-weight: 800; color: #2563eb; display: block; margin-bottom: 2px;">Telegram Chat ID:</label>
-        <input type="text" id="settingsTechTelegram" placeholder="مثال: 5007105167" class="input-control" style="direction: ltr; font-weight: 800;">
-        <button type="button" onclick="saveSelectedTechAccount()" class="btn btn-primary">حفظ البيانات 💾</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- شاشة الفني -->
-  <div id="screenTech" class="hidden">
-    <header class="header">
-      <div>
-        <h3 id="techDispName" style="font-size: 14px; font-weight: 900;">الفني</h3>
-        <span style="font-size: 10px; color: #64748b; font-weight: 700;">أعطالي المسندة</span>
-      </div>
-      <button type="button" onclick="handleLogout()" class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 11px;">خروج</button>
-    </header>
-    <div class="container">
-      <div class="card" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; text-align: center; border: none; padding: 18px 10px;">
-        <span style="font-size: 11px; opacity: 0.9;">إجمالي رصيد البونص</span>
-        <h2 id="techBonusBalance" style="font-size: 32px; font-weight: 900; margin: 4px 0;">0 ج</h2>
-      </div>
-      <div style="display: flex; gap: 6px; margin-bottom: 10px;">
-        <button type="button" id="tabBtnPending" onclick="switchTechTab('pending')" class="btn btn-primary" style="flex: 1; padding: 7px; font-size: 11px;">المطلوبة (<span id="countTechPending">0</span>)</button>
-        <button type="button" id="tabBtnDone" onclick="switchTechTab('done')" class="btn btn-secondary" style="flex: 1; padding: 7px; font-size: 11px;">المنجزة (<span id="countTechDone">0</span>)</button>
-      </div>
-      <div id="techOrdersList"></div>
-    </div>
-  </div>
-
-  <!-- نافذة حل العطل -->
-  <div id="modalSolveOrder" class="modal-overlay hidden">
-    <div class="modal-content">
-      <h4 style="font-size: 13px; font-weight: 900; margin-bottom: 8px; color: #059669;">تأكيد حل المشكلة ✓</h4>
-      <input type="hidden" id="solveOrderId">
-      <input type="text" id="solveReasonText" placeholder="ما تم إنجازه..." class="input-control">
-      <div class="grid-2">
-        <button type="button" onclick="submitSolveOrder()" class="btn btn-success">تأكيد الحل</button>
-        <button type="button" onclick="closeSolveModal()" class="btn btn-secondary">إلغاء</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    const FIREBASE_DB = "https://maintanance-7de19-default-rtdb.firebaseio.com";
-    const TELEGRAM_BOT_TOKEN = "9027122334:AAGV1B4QIk9dtIHMecW2hqcGXkjwYZy4PeM";
-    const DEFAULT_TELEGRAM_CHAT = "5007105167";
-
-    let appAccounts = [
-      { id: 1, role: 'admin', name: 'المدير العام', username: 'mega_admin', pass: 'M@g@#2026!Sec' },
-      { id: 2, role: 'tech', name: 'أحمد سعيد', username: 'ahmed', pass: '111', accumulatedBonus: 0, telegramChatId: '' },
-      { id: 3, role: 'tech', name: 'محمود علي', username: 'mahmoud', pass: '222', accumulatedBonus: 0, telegramChatId: '5007105167' }
-    ];
-
-    let appOrders = [];
-    let currentUser = null;
-    let techCurrentTab = 'pending';
-    let adminFilter = 'pending';
-
-    function getToday() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    async function sendTelegramAlert(targetTechName, messageText) {
-      try {
-        const tech = appAccounts.find(a => a.name === targetTechName);
-        const chatId = (tech && tech.telegramChatId) ? tech.telegramChatId : DEFAULT_TELEGRAM_CHAT;
-        if (!chatId) return;
-
-        const endpoint = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-        fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: messageText,
-            parse_mode: 'HTML'
-          })
-        }).catch(err => console.error("TG Err:", err));
-      } catch (e) {
-        console.error("TG send error:", e);
-      }
-    }
-
-    function handleLogin() {
-      const u = (document.getElementById('logUser').value || '').trim().toLowerCase();
-      const p = (document.getElementById('logPass').value || '').trim();
-
-      const user = appAccounts.find(a => a.username.toLowerCase() === u && a.pass === p);
-      if (user) {
-        currentUser = user;
-        localStorage.setItem('saved_active_user', JSON.stringify(currentUser));
-        showUserScreen();
-      } else {
-        alert('بيانات الدخول غير صحيحة!');
-      }
-    }
-
-    function handleLogout() {
-      currentUser = null;
-      localStorage.removeItem('saved_active_user');
-      document.getElementById('screenAdmin').classList.add('hidden');
-      document.getElementById('screenOrdersPage').classList.add('hidden');
-      document.getElementById('screenSettingsPage').classList.add('hidden');
-      document.getElementById('screenTech').classList.add('hidden');
-      document.getElementById('screenLogin').classList.remove('hidden');
-    }
-
-    function showUserScreen() {
-      if (!currentUser) return;
-      document.getElementById('screenLogin').classList.add('hidden');
-
-      if (currentUser.role === 'admin') {
-        document.getElementById('screenAdmin').classList.remove('hidden');
-        document.getElementById('adminDate').innerText = getToday();
-        renderAdmin();
-      } else {
-        document.getElementById('screenTech').classList.remove('hidden');
-        document.getElementById('techDispName').innerText = currentUser.name;
-        renderTech();
-      }
-    }
-
-    function saveNewOrder() {
-      const name = document.getElementById('newCustName').value.trim();
-      const phone = document.getElementById('newCustPhone').value.trim();
-      const jobType = document.getElementById('newJobType').value;
-      const desc = document.getElementById('newCustDesc').value.trim();
-
-      if (!name) return alert('يرجى إدخال اسم العميل');
-
-      const newOrder = {
-        id: 'ORD-' + Date.now().toString().slice(-5),
-        customer: name,
-        phone: phone,
-        jobType: jobType,
-        desc: desc,
-        tech: '',
-        status: 'pending',
-        date: getToday(),
-        createdAt: Date.now()
-      };
-
-      appOrders.unshift(newOrder);
-      document.getElementById('newCustName').value = '';
-      document.getElementById('newCustPhone').value = '';
-      document.getElementById('newCustDesc').value = '';
-
-      renderAdmin();
-      syncUp();
-    }
-
-    function saveAssignDirectly(orderId, selectElem) {
-      const targetTech = selectElem.value;
-      if (!targetTech) return;
-
-      const ord = appOrders.find(o => o.id === orderId);
-      if (ord) {
-        ord.tech = targetTech;
-        ord.status = 'pending';
-
-        const msg = `🔔 <b>عطل جديد مسند إليك!</b>\n\n👤 <b>العميل:</b> ${ord.customer}\n🛠 <b>نوع الطلب:</b> ${ord.jobType}\n📞 <b>الهاتف:</b> <code>${ord.phone || 'بدون رقم'}</code>\n📍 <b>الملاحظات:</b> ${ord.desc || 'لا توجد'}`;
-        sendTelegramAlert(targetTech, msg);
-
-        syncUp();
-        renderAdmin();
-      }
-    }
-
-    function renderAdmin() {
-      const pendingCount = appOrders.filter(o => o.status === 'pending' && (!o.tech || o.tech === '')).length;
-      const assignedCount = appOrders.filter(o => o.status === 'pending' && Boolean(o.tech)).length;
-      const postponedCount = appOrders.filter(o => o.status === 'postponed').length;
-      const doneCount = appOrders.filter(o => o.status === 'done').length;
-
-      document.getElementById('statPending').innerText = pendingCount;
-      document.getElementById('statAssigned').innerText = assignedCount;
-      document.getElementById('statPostponed').innerText = postponedCount;
-      document.getElementById('statDone').innerText = doneCount;
-
-      const techBox = document.getElementById('adminTechsList');
-      techBox.innerHTML = '';
-      const techs = appAccounts.filter(a => a.role === 'tech');
-
-      techs.forEach(t => {
-        techBox.innerHTML += `
-          <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px;">
-            <div>
-              <strong style="font-size:13px;">${t.name}</strong>
-              <span style="display:block; color:#10b981; font-weight:800; font-size:14px;">${t.accumulatedBonus || 0} ج</span>
+    <header>
+        <div class="header-top">
+            <div class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-wifi"></i>
+                </div>
+                <div class="brand-meta">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h1 id="headerTitle">--</h1>
+                        <span id="roleBadgeIndicator" class="role-pill viewer">عرض فقط</span>
+                    </div>
+                    <div class="brand-note-pill" id="headerNote">--</div>
+                    <div class="brand-lines-counter">
+                        إجمالي الخطوط: <span id="totalLinesCounter" class="mono">0</span>
+                    </div>
+                </div>
             </div>
-            <button onclick="promptBonus('${t.name}')" class="btn btn-success" style="width:auto; padding:4px 8px; font-size:11px;">➕ بونص</button>
-          </div>
-        `;
-      });
+        </div>
+
+        <div class="header-controls">
+            <div class="control-row">
+                <button type="button" class="btn-search-trigger" id="lineSearchTriggerBtn" onclick="openSearchModal()">
+                    <div style="display: flex; align-items: center; gap: 8px; overflow: hidden;">
+                        <i class="fa-solid fa-magnifying-glass" style="color: var(--accent); font-size: 12px;"></i>
+                        <span id="searchTriggerLabel">اختر الخط...</span>
+                    </div>
+                    <span style="font-size: 10px; background: rgba(255,255,255,0.08); padding: 2px 6px; border-radius: 4px; color: var(--text-secondary);">بحث</span>
+                </button>
+
+                <button class="btn btn-history" onclick="openHistoryModal()">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span>السجل</span>
+                </button>
+
+                <button class="btn btn-settings" onclick="openSettingsModal()">
+                    <i class="fa-solid fa-gear"></i> <span>الإعدادات</span>
+                </button>
+            </div>
+
+            <div class="control-row">
+                <button class="btn btn-accent" onclick="openAddModal()">
+                    <i class="fa-solid fa-plus"></i> إضافة خط
+                </button>
+
+                <button class="btn btn-action-icon" onclick="openEditModal()">
+                    <i class="fa-solid fa-pen-to-square"></i> <span>تعديل</span>
+                </button>
+
+                <button class="btn btn-action-icon danger" onclick="onDeleteLine()">
+                    <i class="fa-solid fa-trash"></i> <span>حذف</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="alert-hub" id="alertHubSection">
+        <div class="alert-hub-header">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> خطوط تتطلب المتابعة فوراً:</h4>
+            <span style="font-size: 11px; color: #fca5a5;" id="alertHubCount">0 خطوط</span>
+        </div>
+        <div class="alert-lines-list" id="alertLinesContainer"></div>
+    </div>
+
+    <div class="hero-card">
+        <div class="hero-top">
+            <div>
+                <span class="live-chip"><span class="live-dot"></span> مباشر بالثانية</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <span class="live-chip mono" id="heroLineBadge" style="background: rgba(2, 132, 199, 0.15); color: var(--accent); border-color: rgba(2, 132, 199, 0.35); font-weight: 800;">------</span>
+                <span class="live-chip" id="paymentStatusBadge" style="display: none; background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">
+                    <i class="fa-solid fa-check-double"></i> تم الدفع (جاهز للشهر الجديد)
+                </span>
+                <span class="live-chip" id="daysBadge">--</span>
+            </div>
+        </div>
+
+        <div style="color: var(--text-secondary); font-size: 12px; font-weight: 700;">الرصيد الحي المتبقي</div>
+        
+        <div class="hero-middle-container">
+            <div class="hero-balance">
+                <span class="number mono" id="liveBalanceDisplay">0.000</span>
+                <span class="unit">GB</span>
+            </div>
+
+            <div class="hero-side-actions">
+                <div class="card-address-badge" id="heroCardAddressBox">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span id="heroCardAddressText">العنوان</span>
+                </div>
+
+                <button class="btn btn-extra" onclick="openExtraQuotaModal()">
+                    <i class="fa-solid fa-plus-circle"></i> <span>كوتة إضافية</span>
+                </button>
+
+                <button class="btn btn-pay" id="paySubscriptionBtn" onclick="togglePaymentStatus()">
+                    <i class="fa-solid fa-circle-check"></i> <span id="payBtnLabel">دفع الاشتراك</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-header">
+                <span>نسبة الرصيد المتبقي</span>
+                <strong class="mono" id="percentageText" style="color: var(--accent);">0.00%</strong>
+            </div>
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFillBar"></div>
+            </div>
+        </div>
+
+        <div class="hero-details-container">
+            <div class="details-line">
+                <span id="monthlyTotalDisplay" style="font-weight: 800;">الباقة: 0 GB</span>
+                <span style="display: inline-flex; align-items: center; gap: 6px;">
+                    <span id="dailyBurnDisplay" class="clickable-burn" onclick="promptEditDailyRate()">السحب: 0 GB/يوم</span>
+                    <span class="stepper-wrap">
+                        <button class="stepper-btn" onclick="stepDailyRate(-0.5)">-</button>
+                        <button class="stepper-btn" onclick="stepDailyRate(+0.5)">+</button>
+                    </span>
+                </span>
+            </div>
+            <div class="details-line">
+                <span id="alertDaysDisplay">حد الأيام: 0 أيام</span>
+                <span id="alertGBDisplay">حد الجيجات: 0 GB</span>
+                <span id="expiryDateDisplay">الانتهاء: --</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="all-lines-card">
+        <div class="all-lines-header" onclick="toggleSortBar()">
+            <h3>
+                <i class="fa-solid fa-list-check" style="color: var(--accent);"></i>
+                <span>حالة جميع الخطوط</span>
+            </h3>
+            <div class="sort-toggle-badge">
+                <span id="sortModeLabel">الأعلى سحباً</span>
+            </div>
+        </div>
+
+        <div class="sort-selector-bar" id="sortSelectorBar">
+            <button type="button" class="sort-tab-btn active" id="tab-burn" onclick="changeSortMode('burn')">الأعلى سحباً</button>
+            <button type="button" class="sort-tab-btn" id="tab-gb" onclick="changeSortMode('gb')">قرب انتهاء الجيجات</button>
+            <button type="button" class="sort-tab-btn" id="tab-date" onclick="changeSortMode('date')">قرب انتهاء التاريخ</button>
+        </div>
+
+        <div style="overflow-x: auto;">
+            <table class="lines-table">
+                <thead>
+                    <tr>
+                        <th>الخط</th>
+                        <th>العنوان</th>
+                        <th>الرصيد الحي (GB)</th>
+                        <th>السحب (GB/يوم)</th>
+                        <th>الأيام المتبقية</th>
+                        <th>دفع الاشتراك</th>
+                        <th>الحالة</th>
+                    </tr>
+                </thead>
+                <tbody id="allLinesTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- البحث السريع -->
+<div class="modal-overlay" id="searchLinesModalOverlay">
+    <div class="app-modal" style="max-width: 400px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeSearchModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar"><i class="fa-solid fa-magnifying-glass"></i></div>
+        </div>
+        <h3 style="text-align: center; font-size: 15px; margin-bottom: 12px; font-weight: 800;">البحث واختيار الخط</h3>
+        <div class="form-row">
+            <input type="text" id="linesSearchQuickInput" class="form-input" placeholder="اكتب اسم الخط أو العنوان أو الرقم..." oninput="renderQuickSearchResults(this.value)">
+        </div>
+        <div id="quickSearchResultsList" class="history-list"></div>
+    </div>
+</div>
+
+<!-- سجل الحركات العام -->
+<div class="modal-overlay" id="historyModalOverlay">
+    <div class="app-modal" style="max-width: 450px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeHistoryModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar" style="color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);"><i class="fa-solid fa-clock-rotate-left"></i></div>
+        </div>
+        <h3 style="text-align: center; font-size: 15px; margin-bottom: 4px; font-weight: 800;">سجل الحركات العام (لكافة الخطوط)</h3>
+        <div class="form-row" style="margin-bottom: 8px;">
+            <select id="historyFilterSelect" class="form-input" onchange="renderGlobalHistoryList(this.value)">
+                <option value="ALL">عرض كل حركات الخطوط</option>
+            </select>
+        </div>
+        <div id="historyListContainer" class="history-list"></div>
+        <button type="button" class="btn btn-pay" style="width: 100%; margin-top: 14px; color: var(--danger); border-color: rgba(239, 68, 68, 0.4);" onclick="clearAllHistory()">
+            <i class="fa-solid fa-trash"></i> مسح سجل الحركات بالكامل
+        </button>
+    </div>
+</div>
+
+<!-- الإعدادات وقفل الأمان -->
+<div class="modal-overlay" id="settingsModalOverlay">
+    <div class="app-modal" style="max-width: 440px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar"><i class="fa-solid fa-gear"></i></div>
+        </div>
+        <h3 style="text-align: center; font-size: 15px; margin-bottom: 14px; font-weight: 800;">إعدادات النظام والأمان</h3>
+        
+        <div class="settings-section-card" style="border: 1.5px solid #10b981;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong style="font-size: 13px; color: #34d399;"><i class="fa-solid fa-shield-halved"></i> جهاز التحكم الأساسي (Admin)</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">فعّل هذا الخيار على هاتفك أنت فقط ليمنع أي جهاز آخر من مسح بياناتك.</div>
+                </div>
+                <input type="checkbox" id="adminToggleCheckbox" style="transform: scale(1.4); cursor: pointer;" onchange="toggleAdminPermission(this.checked)">
+            </div>
+        </div>
+
+        <div class="settings-section-card">
+            <div class="form-row">
+                <label>رابط قاعدة بيانات Firebase URL</label>
+                <input type="text" id="firebaseUrlInput" class="form-input mono" placeholder="https://xxx-default-rtdb.firebaseio.com">
+            </div>
+            <button type="button" class="modal-submit-btn" onclick="saveCloudSettings()">حفظ رابط السحابة وتحديث البيانات</button>
+        </div>
+
+        <div class="settings-section-card">
+            <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                <button type="button" class="btn btn-flex btn-pay" onclick="copyBackupToClipboard()">نسخ البيانات</button>
+                <button type="button" class="btn btn-flex btn-pay" onclick="applyRestoreFromInput()">استعادة المكتوب</button>
+            </div>
+            <textarea id="backupDataArea" class="form-input mono" rows="3" placeholder="كود النسخة الاحتياطية"></textarea>
+        </div>
+
+        <div class="settings-section-card">
+            <div class="form-row">
+                <label>توكن البوت (Bot Token)</label>
+                <input type="text" id="tgBotTokenInput" class="form-input mono">
+            </div>
+            <div class="form-row">
+                <label>معرّف المحادثة (Chat ID)</label>
+                <input type="text" id="tgChatIdInput" class="form-input mono">
+            </div>
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+                <button type="button" class="btn btn-flex" style="background: var(--telegram); color: white;" onclick="saveTelegramSettings()">حفظ الربط</button>
+                <button type="button" class="btn btn-flex btn-pay" onclick="testTelegramMessage()">تجربة إرسال</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- كوتة إضافية -->
+<div class="modal-overlay" id="extraQuotaModalOverlay">
+    <div class="app-modal" style="max-width: 380px;">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeExtraQuotaModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar"><i class="fa-solid fa-plus-circle"></i></div>
+        </div>
+        <h3 style="text-align: center; font-size: 15px; margin-bottom: 8px; font-weight: 800;">إضافة كوتة إضافية</h3>
+        <p style="text-align: center; font-size: 12px; color: var(--text-secondary); margin-bottom: 16px;" id="extraModalSubtitle">للخط الحالي</p>
+        <form onsubmit="applyQuickExtraQuota(event)">
+            <div class="form-row">
+                <label>حجم الكوتة (GB)</label>
+                <input type="number" step="any" id="quickExtraInput" value="2000" class="form-input" required autofocus>
+            </div>
+            <button type="submit" class="modal-submit-btn">تنزيل الكوتة وحفظها سحابياً</button>
+        </form>
+    </div>
+</div>
+
+<!-- إضافة وتعديل الخط -->
+<div class="modal-overlay" id="appModalOverlay">
+    <div class="app-modal">
+        <div class="modal-avatar-wrap">
+            <button class="modal-close-btn" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <div class="modal-avatar"><i class="fa-solid fa-pen-to-square"></i></div>
+        </div>
+        <h3 id="modalHeading" style="text-align: center; font-size: 15px; margin-bottom: 16px; font-weight: 800;">تعديل بيانات الخط</h3>
+        <form id="lineDataForm" onsubmit="saveLineData(event)">
+            <input type="hidden" id="formIndexKey" value="-1">
+            <div class="form-row">
+                <label>اسم الخط</label>
+                <input type="text" id="inputLineName" class="form-input" required>
+            </div>
+            <div class="form-row">
+                <label>العنوان</label>
+                <input type="text" id="inputLineAddress" class="form-input">
+            </div>
+            <div class="form-row">
+                <label>رقم WE</label>
+                <input type="text" id="inputWeServiceNumber" class="form-input mono">
+            </div>
+            <div class="form-row">
+                <label>ملاحظات</label>
+                <input type="text" id="inputLineNote" class="form-input">
+            </div>
+            <div class="form-row">
+                <label style="color: var(--accent); font-weight: 800;">الرصيد الفعلي (GB)</label>
+                <input type="number" step="any" id="inputCurrentBalance" class="form-input" required>
+            </div>
+            <div class="form-row">
+                <label>السحب اليومي (GB/يوم)</label>
+                <input type="number" step="any" id="inputDailyManual" class="form-input" required>
+            </div>
+            <div class="form-row">
+                <label>الباقة الشهرية (GB)</label>
+                <input type="number" step="any" id="inputMonthlyPackage" class="form-input" required>
+            </div>
+            <div class="form-dual-row">
+                <div>
+                    <label>حد الجيجات (GB)</label>
+                    <input type="number" step="any" id="inputAlertGB" class="form-input" required>
+                </div>
+                <div>
+                    <label>حد الأيام (يوم)</label>
+                    <input type="number" id="inputAlertDays" class="form-input" min="1" max="30" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <label>تاريخ الانتهاء</label>
+                <input type="date" id="inputExpiryDate" class="form-input" required>
+            </div>
+            <button type="submit" class="modal-submit-btn" id="modalSubmitBtn">حفظ الخط ونشره للأجهزة</button>
+        </form>
+    </div>
+</div>
+
+<div class="toast-notify" id="toastBox">
+    <i class="fa-solid fa-circle-check" id="toastIcon" style="color: var(--success); font-size: 15px;"></i>
+    <span id="toastMsg">تم التحديث</span>
+</div>
+
+<script>
+    const SECONDS_IN_DAY = 86400;
+    const PRIMARY_STORAGE_KEY = 'WE_NET_TRACKER_MASTER_DATA';
+    const GLOBAL_HISTORY_KEY = 'WE_NET_TRACKER_GLOBAL_HISTORY';
+    const SENT_ALERTS_KEY = 'NET_TRACKER_SENT_ALERTS_MAP';
+    const ADMIN_PERM_KEY = 'NET_TRACKER_IS_ADMIN_DEVICE';
+    const DEFAULT_FIREBASE_URL = "https://my-net-tracker-default-rtdb.firebaseio.com";
+
+    // افتراضياً: أي جهاز يفتح هو للعرض فقط لحماية البيانات
+    let isMasterAdmin = (localStorage.getItem(ADMIN_PERM_KEY) === 'true');
+
+    let canSendLiveAlerts = false;
+    setTimeout(() => { canSendLiveAlerts = true; }, 5000);
+
+    let sentAlertsMap = JSON.parse(localStorage.getItem(SENT_ALERTS_KEY)) || {};
+
+    function updateRoleUI() {
+        const badge = document.getElementById('roleBadgeIndicator');
+        if (badge) {
+            badge.innerText = isMasterAdmin ? "أدمن (متحكم)" : "عرض فقط";
+            badge.className = isMasterAdmin ? "role-pill admin" : "role-pill viewer";
+        }
+        const adminBox = document.getElementById('adminToggleCheckbox');
+        if (adminBox) adminBox.checked = isMasterAdmin;
     }
 
-    function openOrdersPage(type) {
-      adminFilter = type;
-      document.getElementById('screenAdmin').classList.add('hidden');
-      document.getElementById('screenOrdersPage').classList.remove('hidden');
-      renderAdminOrders();
+    function toggleAdminPermission(enable) {
+        isMasterAdmin = enable;
+        localStorage.setItem(ADMIN_PERM_KEY, enable ? 'true' : 'false');
+        updateRoleUI();
+        showToast(enable ? "✅ تم تفعيل هذا الجهاز كأدمن رئيسي" : "تم تحويل هذا الجهاز لوضع العرض فقط");
+        if (enable) syncToCloud();
     }
 
-    function backToAdminHome() {
-      document.getElementById('screenOrdersPage').classList.add('hidden');
-      document.getElementById('screenAdmin').classList.remove('hidden');
-      renderAdmin();
+    function sendNativeNotification(title, message) {
+        if (typeof AndroidAPI !== 'undefined' && AndroidAPI.showNotification) {
+            AndroidAPI.showNotification(title, message);
+        }
     }
 
-    function renderAdminOrders() {
-      const ordBox = document.getElementById('adminOrdersList');
-      ordBox.innerHTML = '';
-      const techs = appAccounts.filter(a => a.role === 'tech');
+    function showToast(msg, isError = false) {
+        const box = document.getElementById('toastBox');
+        const icon = document.getElementById('toastIcon');
+        document.getElementById('toastMsg').innerText = msg;
+        icon.className = isError ? "fa-solid fa-circle-exclamation" : "fa-solid fa-circle-check";
+        icon.style.color = isError ? "var(--danger)" : "var(--success)";
+        box.classList.add('show');
+        setTimeout(() => box.classList.remove('show'), 3000);
+    }
 
-      let filtered = [];
-      if (adminFilter === 'pending') filtered = appOrders.filter(o => o.status === 'pending' && (!o.tech || o.tech === ''));
-      else if (adminFilter === 'assigned') filtered = appOrders.filter(o => o.status === 'pending' && Boolean(o.tech));
-      else if (adminFilter === 'postponed') filtered = appOrders.filter(o => o.status === 'postponed');
-      else if (adminFilter === 'done') filtered = appOrders.filter(o => o.status === 'done');
+    function getOffsetDate(days) {
+        const target = new Date();
+        target.setDate(target.getDate() + days);
+        return `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
+    }
 
-      if (filtered.length === 0) {
-        ordBox.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">لا توجد طلبات</p>';
-        return;
-      }
+    function loadSavedLinesSafely() {
+        const raw = localStorage.getItem(PRIMARY_STORAGE_KEY);
+        if (raw) {
+            try {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            } catch (e) {}
+        }
+        return [{
+            id: "line_default_1",
+            name: "0402085503",
+            weServiceNumber: "0402085503",
+            address: "المنزل",
+            note: "البيت",
+            baseBalance: 700.0,
+            dailyManual: 5.0,
+            monthlyPackage: 700.0,
+            alertGB: 50.0,
+            alertDays: 5,
+            expiryDate: getOffsetDate(25),
+            lastSyncTime: Date.now(),
+            isPaid: false
+        }];
+    }
 
-      filtered.forEach(o => {
-        let techOpts = '<option value="">اختر الفني للإسناد...</option>';
-        techs.forEach(t => {
-          techOpts += `<option value="${t.name}" ${o.tech === t.name ? 'selected' : ''}>${t.name}</option>`;
+    let allLines = loadSavedLinesSafely();
+    let globalHistory = JSON.parse(localStorage.getItem(GLOBAL_HISTORY_KEY)) || [];
+    let activeLineId = allLines[0]?.id || "";
+    let currentSortMode = 'burn';
+
+    let tgSettings = JSON.parse(localStorage.getItem('pro_net_tg_settings')) || {
+        botToken: "8758932915:AAEt_RWVVzh7HBdk1naARW4UurodUPets-w",
+        chatId: "5007105167"
+    };
+
+    let cloudSettings = JSON.parse(localStorage.getItem('pro_net_cloud_settings')) || { firebaseUrl: DEFAULT_FIREBASE_URL };
+    if (!cloudSettings.firebaseUrl) cloudSettings.firebaseUrl = DEFAULT_FIREBASE_URL;
+
+    function getActiveLine() {
+        return allLines.find(l => l.id === activeLineId) || allLines[0] || null;
+    }
+
+    function toggleSortBar() {
+        document.getElementById('sortSelectorBar').classList.toggle('active');
+    }
+
+    function changeSortMode(mode) {
+        currentSortMode = mode;
+        ['burn', 'gb', 'date'].forEach(m => document.getElementById(`tab-${m}`)?.classList.toggle('active', m === mode));
+        const labels = { 'burn': 'الأعلى سحباً', 'gb': 'قرب انتهاء الجيجات', 'date': 'قرب انتهاء التاريخ' };
+        document.getElementById('sortModeLabel').innerText = labels[mode];
+        sortLinesDynamically();
+        persistData(false);
+        buildTableStructure();
+        renderStaticDetails();
+    }
+
+    function sortLinesDynamically() {
+        if (currentSortMode === 'burn') {
+            allLines.sort((a, b) => (Number(b.dailyManual) || 0) - (Number(a.dailyManual) || 0));
+        } else if (currentSortMode === 'gb') {
+            allLines.sort((a, b) => getCurrentLiveBalance(a) - getCurrentLiveBalance(b));
+        } else if (currentSortMode === 'date') {
+            allLines.sort((a, b) => calculateRemainingDays(a.expiryDate) - calculateRemainingDays(b.expiryDate));
+        }
+    }
+
+    /* حظر الرفع تماماً إذا لم يكن هذا جهازك أنت (Admin) */
+    function syncToCloud() {
+        if (!isMasterAdmin) {
+            console.warn("جهاز عرض فقط: ممنوع الرفع إلى السحابة.");
+            return;
+        }
+
+        const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
+        
+        const payload = allLines.map(l => ({
+            ...l,
+            baseBalance: Number(getCurrentLiveBalance(l).toFixed(3)),
+            lastSyncTime: Date.now()
+        }));
+
+        fetch(`${fireUrl}/net_tracker_data.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(err => console.error("Cloud push error:", err));
+
+        fetch(`${fireUrl}/net_tracker_history.json`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(globalHistory)
+        }).catch(err => console.error("Cloud push history error:", err));
+    }
+
+    /* سحب البيانات مع حماية الرصيد من التصفير بتحديث وقت البداية */
+    function syncFromCloud() {
+        const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
+        
+        fetch(`${fireUrl}/net_tracker_data.json?nocache=` + Date.now())
+            .then(res => res.json())
+            .then(data => {
+                if (data && (Array.isArray(data) || typeof data === 'object')) {
+                    const list = Array.isArray(data) ? data : Object.values(data);
+                    const valid = list.filter(l => l && l.name);
+                    
+                    if (valid.length > 0) {
+                        const cloudStr = JSON.stringify(valid);
+                        const localStr = JSON.stringify(allLines);
+
+                        if (cloudStr !== localStr) {
+                            allLines = valid.map(l => ({
+                                ...l,
+                                baseBalance: Number(l.baseBalance) || 0,
+                                dailyManual: Number(l.dailyManual) || 5,
+                                monthlyPackage: Number(l.monthlyPackage) || 700,
+                                alertGB: Number(l.alertGB) || 50,
+                                alertDays: Number(l.alertDays) || 5,
+                                // اعتماد وقت السحب كنقطة انطلاق لمنع التصفير التلقائي
+                                lastSyncTime: Date.now(),
+                                isPaid: Boolean(l.isPaid)
+                            }));
+
+                            if (!allLines.some(l => l.id === activeLineId)) {
+                                activeLineId = allLines[0].id;
+                            }
+
+                            sortLinesDynamically();
+                            localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
+                            buildTableStructure();
+                            renderStaticDetails();
+                        }
+                    }
+                }
+            })
+            .catch(err => console.error("Sync error:", err));
+
+        fetch(`${fireUrl}/net_tracker_history.json?nocache=` + Date.now())
+            .then(res => res.json())
+            .then(hist => {
+                if (Array.isArray(hist) && JSON.stringify(hist) !== JSON.stringify(globalHistory)) {
+                    globalHistory = hist;
+                    localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
+                }
+            })
+            .catch(() => {});
+    }
+
+    function persistData(uploadToCloud = false) {
+        localStorage.setItem(PRIMARY_STORAGE_KEY, JSON.stringify(allLines));
+        localStorage.setItem(GLOBAL_HISTORY_KEY, JSON.stringify(globalHistory));
+        if (uploadToCloud) {
+            syncToCloud();
+        }
+    }
+
+    function copyBackupToClipboard() {
+        const dataJson = JSON.stringify({ lines: allLines, history: globalHistory }, null, 2);
+        const area = document.getElementById('backupDataArea');
+        area.value = dataJson;
+        if (navigator.clipboard) navigator.clipboard.writeText(dataJson);
+        showToast("✅ تم نسخ كود البيانات للحافظة!");
+    }
+
+    function applyRestoreFromInput() {
+        if (!isMasterAdmin) return alert("عفواً، لا يملك هذا الجهاز صلاحية الأدمن للاستعادة.");
+        const area = document.getElementById('backupDataArea');
+        const content = area.value.trim();
+        if (!content) return alert("يرجى لصق الكود أولاً.");
+        try {
+            const parsed = JSON.parse(content);
+            allLines = parsed.lines || parsed;
+            if (parsed.history) globalHistory = parsed.history;
+            activeLineId = allLines[0].id;
+            persistData(true);
+            buildTableStructure();
+            renderStaticDetails();
+            closeSettingsModal();
+            showToast("✅ تم استرجاع ونشر البيانات بنجاح!");
+        } catch (e) {
+            alert("خطأ: كود النسخة غير صالح.");
+        }
+    }
+
+    function saveCloudSettings() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الخيار متاح لجهاز الأدمن فقط.");
+        cloudSettings.firebaseUrl = document.getElementById('firebaseUrlInput').value.trim() || DEFAULT_FIREBASE_URL;
+        localStorage.setItem('pro_net_cloud_settings', JSON.stringify(cloudSettings));
+        showToast("✅ تم حفظ رابط السحابة وتحديث البيانات!");
+        syncToCloud();
+    }
+
+    function saveTelegramSettings() {
+        tgSettings.botToken = document.getElementById('tgBotTokenInput').value.trim();
+        tgSettings.chatId = document.getElementById('tgChatIdInput').value.trim();
+        localStorage.setItem('pro_net_tg_settings', JSON.stringify(tgSettings));
+        showToast("تم حفظ إعدادات تيليجرام");
+    }
+
+    function sendTelegramAlert(message) {
+        if (!tgSettings.botToken || !tgSettings.chatId) return;
+        fetch(`https://api.telegram.org/bot${tgSettings.botToken}/sendMessage?chat_id=${encodeURIComponent(tgSettings.chatId)}&text=${encodeURIComponent(message)}&parse_mode=HTML`, { mode: 'no-cors' }).catch(()=>{});
+    }
+
+    function testTelegramMessage() {
+        saveTelegramSettings();
+        sendTelegramAlert(`🔔 <b>رسالة اختبار من التطبيق</b>\nالربط سليم وجاهز للتنبيهات.`);
+        sendNativeNotification("🔔 اختبار الإشعارات", "إشعارات الأندرويد الأصلية تعمل بنجاح!");
+        showToast("تم إرسال الطلب لتيليجرام والهاتف");
+    }
+
+    function togglePaymentStatus() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
+        const line = getActiveLine();
+        if (!line) return;
+        line.isPaid = !line.isPaid;
+        
+        if (line.isPaid) {
+            delete sentAlertsMap[`days_${line.id}`];
+            logGlobalActivity({
+                type: 'payment',
+                title: 'دفع اشتراك الباقة',
+                lineId: line.id,
+                lineName: line.name,
+                lineAddress: line.address || line.note || "",
+                amount: line.monthlyPackage,
+                desc: 'تم تسجيل دفع الاشتراك'
+            });
+        }
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        persistData(true);
+        checkAutoRenewalForLine(line);
+        buildTableStructure();
+        renderStaticDetails();
+        showToast(line.isPaid ? "تم تفعيل دفع الاشتراك" : "تم إلغاء تفعيل الدفع");
+    }
+
+    function getCurrentLiveBalance(line) {
+        if (!line.dailyManual || line.dailyManual <= 0) return Number(line.baseBalance) || 0;
+        const elapsed = (Date.now() - (line.lastSyncTime || Date.now())) / 1000;
+        return Math.max(0, Number(line.baseBalance) - (elapsed * (Number(line.dailyManual) / SECONDS_IN_DAY)));
+    }
+
+    function stepDailyRate(amount) {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
+        const line = getActiveLine();
+        if (!line) return;
+        line.baseBalance = getCurrentLiveBalance(line);
+        line.lastSyncTime = Date.now();
+        line.dailyManual = Math.max(0.1, Number(((Number(line.dailyManual) || 5) + amount).toFixed(1)));
+        sortLinesDynamically();
+        persistData(true);
+        buildTableStructure();
+        renderStaticDetails();
+        showToast(`السحب اليومي: ${line.dailyManual} GB/يوم`);
+    }
+
+    function promptEditDailyRate() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
+        const line = getActiveLine();
+        if (!line) return;
+        const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", line.dailyManual || 5);
+        if (val !== null && !isNaN(val) && Number(val) > 0) {
+            line.baseBalance = getCurrentLiveBalance(line);
+            line.lastSyncTime = Date.now();
+            line.dailyManual = Number(parseFloat(val).toFixed(2));
+            sortLinesDynamically();
+            persistData(true);
+            buildTableStructure();
+            renderStaticDetails();
+        }
+    }
+
+    function calculateRemainingDays(targetDate) {
+        if (!targetDate) return 0;
+        const parts = targetDate.split('-');
+        if (parts.length !== 3) return 0;
+        const exp = new Date(parts[0], parts[1] - 1, parts[2]);
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        return Math.max(0, Math.round((exp - today) / (1000 * 60 * 60 * 24)));
+    }
+
+    function logGlobalActivity({ type, title, lineId, lineName, lineAddress, amount, desc }) {
+        globalHistory.unshift({
+            id: `act_${Date.now()}`,
+            timestamp: Date.now(),
+            type, title, lineId, lineName, lineAddress, amount, desc,
+            date: new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+        });
+        if (globalHistory.length > 200) globalHistory = globalHistory.slice(0, 200);
+    }
+
+    function checkAutoRenewalForLine(line) {
+        const diffDays = calculateRemainingDays(line.expiryDate);
+        if (diffDays <= 0 && line.isPaid) {
+            line.baseBalance = Number((getCurrentLiveBalance(line) + Number(line.monthlyPackage)).toFixed(3));
+            line.lastSyncTime = Date.now();
+            
+            const parts = line.expiryDate.split('-');
+            const expDateObj = new Date(parts[0], parts[1] - 1, parts[2]);
+            expDateObj.setMonth(expDateObj.getMonth() + 1);
+            line.expiryDate = `${expDateObj.getFullYear()}-${String(expDateObj.getMonth() + 1).padStart(2, '0')}-${String(expDateObj.getDate()).padStart(2, '0')}`;
+            line.isPaid = false;
+            
+            logGlobalActivity({
+                type: 'renewal',
+                title: 'تجديد الباقة الشهرية الأساسية',
+                lineId: line.id,
+                lineName: line.name,
+                lineAddress: line.address || line.note || "",
+                amount: line.monthlyPackage,
+                desc: `التاريخ الجديد: ${line.expiryDate}`
+            });
+
+            persistData(true);
+            buildTableStructure();
+            renderStaticDetails();
+            showToast(`تم تجديد باقة ${line.name}`);
+        }
+    }
+
+    function checkLiveAlertsSystem() {
+        const breachedLines = [];
+        allLines.forEach((line) => {
+            const liveBal = getCurrentLiveBalance(line);
+            const daysLeft = calculateRemainingDays(line.expiryDate);
+            const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
+            const isDaysBreach = (!line.isPaid) && (daysLeft <= (Number(line.alertDays) || 0));
+
+            if (!isGbBreach && sentAlertsMap[`gb_${line.id}`]) delete sentAlertsMap[`gb_${line.id}`];
+            if (!isDaysBreach && sentAlertsMap[`days_${line.id}`]) delete sentAlertsMap[`days_${line.id}`];
+
+            if (isGbBreach || isDaysBreach) {
+                breachedLines.push({ id: line.id, line, balance: liveBal, daysLeft, isGbBreach, isDaysBreach });
+                if (canSendLiveAlerts) {
+                    let needsAlert = false;
+                    let alertDetails = [];
+
+                    if (isGbBreach && !sentAlertsMap[`gb_${line.id}`]) {
+                        alertDetails.push(`⚠️ رصيد منخفض: <b>${liveBal.toFixed(2)} GB</b> (الحد: ${line.alertGB} GB)`);
+                        sentAlertsMap[`gb_${line.id}`] = Date.now();
+                        needsAlert = true;
+
+                        sendNativeNotification(
+                            `⚠️ رصيد منخفض: ${line.name}`,
+                            `الرصيد المتبقي: ${liveBal.toFixed(2)} GB (حد الأمان: ${line.alertGB} GB)`
+                        );
+                    }
+                    if (isDaysBreach && !sentAlertsMap[`days_${line.id}`]) {
+                        alertDetails.push(`⏳ موعد الفاتورة: باقي <b>${daysLeft} يوم</b>`);
+                        sentAlertsMap[`days_${line.id}`] = Date.now();
+                        needsAlert = true;
+
+                        sendNativeNotification(
+                            `⏳ موعد الفاتورة: ${line.name}`,
+                            `باقي ${daysLeft} يوم ولم يتم دفع الاشتراك`
+                        );
+                    }
+                    if (needsAlert) {
+                        sendTelegramAlert(`🚨 <b>تنبيه استهلاك خط إنترنت!</b>\nالخط: <b>${line.name}</b>\n${alertDetails.join('\n')}`);
+                        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+                    }
+                }
+            }
+        });
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        const alertHub = document.getElementById('alertHubSection');
+        const alertContainer = document.getElementById('alertLinesContainer');
+        if (breachedLines.length > 0) {
+            alertHub.classList.add('active');
+            document.getElementById('alertHubCount').innerText = `${breachedLines.length} خطوط تحتاج انتباهك`;
+            alertContainer.innerHTML = '';
+            breachedLines.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'alert-line-item';
+                div.onclick = () => onSwitchLine(item.id);
+                let tags = '';
+                if (item.isGbBreach) tags += `<span class="alert-tag gb">رصيد منخفض (${item.balance.toFixed(2)})</span>`;
+                if (item.isDaysBreach) tags += `<span class="alert-tag days">اقترب موعد الدفع (${item.daysLeft} يوم)</span>`;
+                div.innerHTML = `<div style="font-weight:700; font-size:13px;">${item.line.name}</div><div style="display:flex; gap:6px;">${tags}</div>`;
+                alertContainer.appendChild(div);
+            });
+        } else {
+            alertHub.classList.remove('active');
+        }
+    }
+
+    function openHistoryModal() {
+        const select = document.getElementById('historyFilterSelect');
+        select.innerHTML = `<option value="ALL">عرض كل حركات الخطوط (${globalHistory.length})</option>` + 
+            allLines.map(l => `<option value="${l.id}">${l.name}</option>`).join('');
+        renderGlobalHistoryList('ALL');
+        document.getElementById('historyModalOverlay').classList.add('active');
+    }
+    function closeHistoryModal() { document.getElementById('historyModalOverlay').classList.remove('active'); }
+
+    function renderGlobalHistoryList(filterLineId = 'ALL') {
+        const container = document.getElementById('historyListContainer');
+        const list = (filterLineId === 'ALL') ? globalHistory : globalHistory.filter(h => h.lineId === filterLineId);
+        if (!list || list.length === 0) {
+            container.innerHTML = `<div style="text-align: center; color: var(--text-secondary); padding: 20px;">لا توجد حركات مسجلة بالسجل.</div>`;
+            return;
+        }
+        container.innerHTML = list.map(item => `
+            <div class="history-item ${item.type}">
+                <div>
+                    <div style="font-size: 13px; font-weight: 800; color: #38bdf8;">${item.title} <span style="font-size:11px; color:#fff;">[${item.lineName}]</span></div>
+                    <div style="font-size: 11px; color: var(--text-secondary);">${item.date} ${item.desc ? '• ' + item.desc : ''}</div>
+                </div>
+                <div class="mono" style="font-size: 13px; font-weight: 800; color: #fff;">${item.amount ? '+' + item.amount + ' GB' : 'تم الدفع'}</div>
+            </div>
+        `).join('');
+    }
+
+    function clearAllHistory() {
+        if (!isMasterAdmin) return alert("عفواً، لا يملك هذا الجهاز صلاحية الأدمن لمسح السجل.");
+        if (confirm("مسح السجل بالكامل؟")) {
+            globalHistory = [];
+            persistData(true);
+            renderGlobalHistoryList('ALL');
+            showToast("تم مسح السجل بالكامل");
+        }
+    }
+
+    function openSettingsModal() {
+        document.getElementById('tgBotTokenInput').value = tgSettings.botToken || "";
+        document.getElementById('tgChatIdInput').value = tgSettings.chatId || "";
+        document.getElementById('firebaseUrlInput').value = cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL;
+        updateRoleUI();
+        document.getElementById('settingsModalOverlay').classList.add('active');
+    }
+    function closeSettingsModal() { document.getElementById('settingsModalOverlay').classList.remove('active'); }
+
+    function openExtraQuotaModal() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
+        const line = getActiveLine();
+        if (!line) return;
+        document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name}`;
+        document.getElementById('extraQuotaModalOverlay').classList.add('active');
+    }
+    function closeExtraQuotaModal() { document.getElementById('extraQuotaModalOverlay').classList.remove('active'); }
+
+    function applyQuickExtraQuota(e) {
+        e.preventDefault();
+        const line = getActiveLine();
+        const addedGB = parseFloat(document.getElementById('quickExtraInput').value) || 0;
+        if (addedGB <= 0) return alert("أدخل رقماً صحيحاً.");
+        line.baseBalance = Number((getCurrentLiveBalance(line) + addedGB).toFixed(3));
+        line.lastSyncTime = Date.now();
+        delete sentAlertsMap[`gb_${line.id}`];
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        logGlobalActivity({
+            type: 'extra',
+            title: 'شحن كوتة إضافية',
+            lineId: line.id,
+            lineName: line.name,
+            lineAddress: line.address || line.note || "",
+            amount: addedGB,
+            desc: `الرصيد بعد الشحن: ${line.baseBalance.toFixed(2)} GB`
         });
 
-        ordBox.innerHTML += `
-          <div class="card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-              <strong style="font-size:13px;">${o.customer} (${o.jobType})</strong>
-              <span class="badge ${o.status === 'done' ? 'badge-done' : (o.tech ? 'badge-assigned' : 'badge-pending')}">${o.status}</span>
-            </div>
-            <p style="font-size:11px; color:#475569; margin-bottom:6px;">${o.desc || 'لا توجد ملاحظات'} ${o.phone ? `| 📞 ${o.phone}` : ''}</p>
-            ${o.status !== 'done' ? `
-              <select class="input-control" onchange="saveAssignDirectly('${o.id}', this)" style="margin-bottom:0;">
-                ${techOpts}
-              </select>
-            ` : `<span style="font-size:11px; color:#059669; font-weight:700;">بواسطة: ${o.tech}</span>`}
-          </div>
-        `;
-      });
+        persistData(true);
+        closeExtraQuotaModal();
+        renderStaticDetails();
+        showToast(`تمت إضافة ${addedGB} GB ونشرها لجميع الأجهزة`);
     }
 
-    function renderTech() {
-      const me = appAccounts.find(a => a.id === currentUser.id) || currentUser;
-      document.getElementById('techBonusBalance').innerText = `${me.accumulatedBonus || 0} ج`;
-
-      const myOrders = appOrders.filter(o => o.tech === me.name);
-      const pendingList = myOrders.filter(o => o.status !== 'done');
-      const doneList = myOrders.filter(o => o.status === 'done');
-
-      document.getElementById('countTechPending').innerText = pendingList.length;
-      document.getElementById('countTechDone').innerText = doneList.length;
-
-      const list = techCurrentTab === 'pending' ? pendingList : doneList;
-      const feed = document.getElementById('techOrdersList');
-      feed.innerHTML = '';
-
-      if (list.length === 0) {
-        feed.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">لا توجد طلبات</p>';
-        return;
-      }
-
-      list.forEach(o => {
-        feed.innerHTML += `
-          <div class="card">
-            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
-              <strong style="font-size:13px;">${o.customer}</strong>
-              <span class="badge ${o.status === 'done' ? 'badge-done' : 'badge-assigned'}">${o.jobType}</span>
-            </div>
-            <p style="font-size:11px; color:#475569; margin-bottom:6px;">${o.desc || 'لا توجد ملاحظات'}</p>
-            ${o.status !== 'done' ? `
-              <div class="grid-2">
-                ${o.phone ? `<a href="tel:${o.phone}" class="btn btn-success" style="font-size:11px;">📞 اتصال</a>` : '<div></div>'}
-                <button onclick="openSolveModal('${o.id}')" class="btn btn-primary" style="font-size:11px;">تم الحل ✓</button>
-              </div>
-            ` : ''}
-          </div>
-        `;
-      });
+    function openEditModal() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
+        const line = getActiveLine();
+        if (!line) return;
+        document.getElementById('formIndexKey').value = line.id;
+        document.getElementById('modalHeading').innerText = `تعديل بيانات: ${line.name}`;
+        document.getElementById('inputLineName').value = line.name;
+        document.getElementById('inputLineAddress').value = line.address || "";
+        document.getElementById('inputWeServiceNumber').value = line.weServiceNumber || "";
+        document.getElementById('inputLineNote').value = line.note || "";
+        document.getElementById('inputCurrentBalance').value = getCurrentLiveBalance(line).toFixed(2);
+        document.getElementById('inputDailyManual').value = line.dailyManual;
+        document.getElementById('inputMonthlyPackage').value = line.monthlyPackage;
+        document.getElementById('inputAlertGB').value = line.alertGB;
+        document.getElementById('inputAlertDays').value = line.alertDays;
+        document.getElementById('inputExpiryDate').value = line.expiryDate;
+        document.getElementById('appModalOverlay').classList.add('active');
     }
 
-    function switchTechTab(tab) {
-      techCurrentTab = tab;
-      document.getElementById('tabBtnPending').className = tab === 'pending' ? 'btn btn-primary' : 'btn btn-secondary';
-      document.getElementById('tabBtnDone').className = tab === 'done' ? 'btn btn-primary' : 'btn btn-secondary';
-      renderTech();
+    function openAddModal() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. الإضافة تتم من هاتف الأدمن.");
+        document.getElementById('formIndexKey').value = "-1";
+        document.getElementById('modalHeading').innerText = "إضافة خط جديد";
+        document.getElementById('lineDataForm').reset();
+        document.getElementById('inputCurrentBalance').value = 700;
+        document.getElementById('inputDailyManual').value = 5;
+        document.getElementById('inputMonthlyPackage').value = 700;
+        document.getElementById('inputAlertGB').value = 50;
+        document.getElementById('inputAlertDays').value = 5;
+        document.getElementById('inputExpiryDate').value = getOffsetDate(30);
+        document.getElementById('appModalOverlay').classList.add('active');
     }
+    function closeModal() { document.getElementById('appModalOverlay').classList.remove('active'); }
 
-    function openSolveModal(id) {
-      document.getElementById('solveOrderId').value = id;
-      document.getElementById('solveReasonText').value = '';
-      document.getElementById('modalSolveOrder').classList.remove('hidden');
-    }
-    function closeSolveModal() {
-      document.getElementById('modalSolveOrder').classList.add('hidden');
-    }
-
-    function submitSolveOrder() {
-      const id = document.getElementById('solveOrderId').value;
-      const reason = document.getElementById('solveReasonText').value.trim() || 'تم الإنجاز';
-      const ord = appOrders.find(o => o.id === id);
-
-      if (ord) {
-        ord.status = 'done';
-        ord.doneReason = reason;
-        closeSolveModal();
-        renderTech();
-        syncUp();
-      }
-    }
-
-    function promptBonus(techName) {
-      const amt = prompt(`أدخل مبلغ البونص لـ (${techName}):`, "50");
-      if (amt && Number(amt) > 0) {
-        const t = appAccounts.find(a => a.name === techName);
-        if (t) {
-          t.accumulatedBonus = (Number(t.accumulatedBonus) || 0) + Number(amt);
-          renderAdmin();
-          syncUp();
+    function saveLineData(e) {
+        e.preventDefault();
+        const editId = document.getElementById('formIndexKey').value;
+        const enteredBalance = parseFloat(document.getElementById('inputCurrentBalance').value);
+        if (editId !== "-1") {
+            const line = allLines.find(l => l.id === editId);
+            if (line) {
+                line.name = document.getElementById('inputLineName').value.trim();
+                line.address = document.getElementById('inputLineAddress').value.trim();
+                line.weServiceNumber = document.getElementById('inputWeServiceNumber').value.trim();
+                line.note = document.getElementById('inputLineNote').value.trim();
+                line.baseBalance = enteredBalance;
+                line.dailyManual = parseFloat(document.getElementById('inputDailyManual').value);
+                line.monthlyPackage = parseFloat(document.getElementById('inputMonthlyPackage').value);
+                line.alertGB = parseFloat(document.getElementById('inputAlertGB').value);
+                line.alertDays = parseInt(document.getElementById('inputAlertDays').value);
+                line.expiryDate = document.getElementById('inputExpiryDate').value;
+                line.lastSyncTime = Date.now();
+                delete sentAlertsMap[`gb_${line.id}`];
+                delete sentAlertsMap[`days_${line.id}`];
+            }
+        } else {
+            const newLine = {
+                id: `line_${Date.now()}`,
+                name: document.getElementById('inputLineName').value.trim(),
+                address: document.getElementById('inputLineAddress').value.trim(),
+                weServiceNumber: document.getElementById('inputWeServiceNumber').value.trim(),
+                note: document.getElementById('inputLineNote').value.trim(),
+                baseBalance: enteredBalance,
+                dailyManual: parseFloat(document.getElementById('inputDailyManual').value),
+                monthlyPackage: parseFloat(document.getElementById('inputMonthlyPackage').value),
+                alertGB: parseFloat(document.getElementById('inputAlertGB').value),
+                alertDays: parseInt(document.getElementById('inputAlertDays').value),
+                expiryDate: document.getElementById('inputExpiryDate').value,
+                lastSyncTime: Date.now(),
+                isPaid: false
+            };
+            allLines.push(newLine);
+            activeLineId = newLine.id;
         }
-      }
+        sortLinesDynamically();
+        persistData(true);
+        closeModal();
+        buildTableStructure();
+        renderStaticDetails();
+        showToast("✅ تم الحفظ ونشر البيانات للأجهزة سحابياً");
     }
 
-    function openSettingsPage() {
-      document.getElementById('screenAdmin').classList.add('hidden');
-      document.getElementById('screenSettingsPage').classList.remove('hidden');
-      const sel = document.getElementById('settingsTechSelect');
-      sel.innerHTML = '';
-      appAccounts.filter(a => a.role === 'tech').forEach(t => {
-        sel.innerHTML += `<option value="${t.id}">${t.name}</option>`;
-      });
-      loadSelectedTechData();
+    function buildTableStructure() {
+        const tbody = document.getElementById('allLinesTableBody');
+        tbody.innerHTML = allLines.map(line => {
+            const daysLeft = calculateRemainingDays(line.expiryDate);
+            const liveBal = getCurrentLiveBalance(line);
+            const isGbBreach = liveBal <= (Number(line.alertGB) || 0);
+            const isDaysBreach = (!line.isPaid) && (daysLeft <= (Number(line.alertDays) || 0));
+            const isBreached = isGbBreach || isDaysBreach;
+
+            return `
+                <tr onclick="onSwitchLine('${line.id}')">
+                    <td><strong>${line.name}</strong></td>
+                    <td style="color: var(--accent); font-weight: 700;">${line.address || line.note || '—'}</td>
+                    <td class="mono" id="tableBal-${line.id}" style="color: ${isGbBreach ? '#f87171' : '#34d399'}; font-weight: 700;">${liveBal.toFixed(3)}</td>
+                    <td class="mono" style="color: var(--accent); font-weight: 700;">${line.dailyManual}</td>
+                    <td class="mono" style="color: ${isDaysBreach ? '#f87171' : '#f8fafc'}; font-weight: 700;">${daysLeft} يوم</td>
+                    <td><span class="status-pill ${line.isPaid ? 'safe' : 'paid-pending'}">${line.isPaid ? 'مدفوع' : 'غير مدفوع'}</span></td>
+                    <td><span class="status-pill ${isBreached ? 'danger' : 'safe'}">${isBreached ? '⚠️ تنبيه' : 'مستقر'}</span></td>
+                </tr>
+            `;
+        }).join('');
     }
 
-    function backToAdminHomeFromSettings() {
-      document.getElementById('screenSettingsPage').classList.add('hidden');
-      document.getElementById('screenAdmin').classList.remove('hidden');
-      renderAdmin();
+    function tickLiveStats() {
+        if (allLines.length === 0) return;
+        allLines.forEach(l => checkAutoRenewalForLine(l));
+        const line = getActiveLine();
+        if (line) {
+            const liveBalance = getCurrentLiveBalance(line);
+            document.getElementById('liveBalanceDisplay').innerText = liveBalance.toFixed(3);
+            const totalCap = Math.max(Number(line.monthlyPackage) || 700, liveBalance);
+            const percent = Math.min(100, Math.max(0, (liveBalance / totalCap) * 100));
+            document.getElementById('percentageText').innerText = `${percent.toFixed(2)}%`;
+            document.getElementById('progressFillBar').style.width = `${percent}%`;
+        }
+        checkLiveAlertsSystem();
+        allLines.forEach(item => {
+            const cell = document.getElementById(`tableBal-${item.id}`);
+            if (cell) cell.innerText = getCurrentLiveBalance(item).toFixed(3);
+        });
     }
 
-    function loadSelectedTechData() {
-      const selId = document.getElementById('settingsTechSelect').value;
-      const tech = appAccounts.find(a => a.id == selId);
-      if (tech) {
-        document.getElementById('settingsTechName').value = tech.name;
-        document.getElementById('settingsTechTelegram').value = tech.telegramChatId || '';
-      }
+    function renderStaticDetails() {
+        const line = getActiveLine();
+        if (!line) return;
+        const daysLeft = calculateRemainingDays(line.expiryDate);
+        document.getElementById('headerTitle').innerText = line.name;
+        document.getElementById('heroCardAddressText').innerText = line.address || line.note || "العنوان";
+        document.getElementById('totalLinesCounter').innerText = allLines.length;
+        
+        const daysBadge = document.getElementById('daysBadge');
+        daysBadge.innerText = `باقي ${daysLeft} يوم`;
+        daysBadge.style.color = (line.isPaid || daysLeft > line.alertDays) ? '#34d399' : '#f87171';
+
+        const payBtn = document.getElementById('paySubscriptionBtn');
+        const payLabel = document.getElementById('payBtnLabel');
+        const payBadge = document.getElementById('paymentStatusBadge');
+        payBtn.classList.toggle('paid', line.isPaid);
+        payLabel.innerText = line.isPaid ? "تم الدفع بنجاح" : "دفع الاشتراك";
+        payBadge.style.display = line.isPaid ? "inline-flex" : "none";
+
+        document.getElementById('monthlyTotalDisplay').innerText = `الباقة: ${line.monthlyPackage} GB`;
+        document.getElementById('dailyBurnDisplay').innerText = `السحب: ${line.dailyManual} GB/يوم`;
+        document.getElementById('alertGBDisplay').innerText = `حد الجيجات: ${line.alertGB} GB`;
+        document.getElementById('alertDaysDisplay').innerText = `حد الأيام: ${line.alertDays} أيام`;
+        document.getElementById('expiryDateDisplay').innerText = `الانتهاء: ${line.expiryDate}`;
+        document.getElementById('searchTriggerLabel').innerText = (line.weServiceNumber || line.name) + (line.address ? ` [${line.address}]` : '');
+        document.getElementById('heroLineBadge').innerText = line.weServiceNumber || line.name || "------";
+
+        updateRoleUI();
+        tickLiveStats();
     }
 
-    function saveSelectedTechAccount() {
-      const selId = document.getElementById('settingsTechSelect').value;
-      const tech = appAccounts.find(a => a.id == selId);
-      if (tech) {
-        tech.name = document.getElementById('settingsTechName').value.trim();
-        tech.telegramChatId = document.getElementById('settingsTechTelegram').value.trim();
-        syncUp();
-        alert('تم حفظ البيانات بنجاح ✓');
-      }
+    function openSearchModal() {
+        document.getElementById('searchLinesModalOverlay').classList.add('active');
+        const input = document.getElementById('linesSearchQuickInput');
+        input.value = '';
+        renderQuickSearchResults('');
+        setTimeout(() => input.focus(), 50);
+    }
+    function closeSearchModal() { document.getElementById('searchLinesModalOverlay').classList.remove('active'); }
+
+    function renderQuickSearchResults(query) {
+        const q = (query || '').trim().toLowerCase();
+        const matched = allLines.filter(l => !q || l.name.toLowerCase().includes(q) || (l.address && l.address.toLowerCase().includes(q)));
+        document.getElementById('quickSearchResultsList').innerHTML = matched.map(m => `
+            <div class="history-item" onclick="selectLineFromSearch('${m.id}')" style="cursor: pointer;">
+                <div><strong>${m.name}</strong> ${m.address ? `[${m.address}]` : ''}</div>
+                <div class="mono" style="color:var(--accent);">${getCurrentLiveBalance(m).toFixed(1)} GB</div>
+            </div>
+        `).join('');
     }
 
-    function syncDown() {
-      fetch(`${FIREBASE_DB}/bonus_system_data.json?ts=${Date.now()}`)
-        .then(res => res.json())
-        .then(data => {
-          if (!data) return;
-          if (Array.isArray(data.accounts)) appAccounts = data.accounts;
-          if (Array.isArray(data.orders)) appOrders = data.orders;
+    function selectLineFromSearch(lineId) { closeSearchModal(); onSwitchLine(lineId); }
+    function onSwitchLine(lineId) { activeLineId = lineId; renderStaticDetails(); }
 
-          if (currentUser) {
-            const updated = appAccounts.find(a => a.id === currentUser.id);
-            if (updated) currentUser = Object.assign({}, currentUser, updated);
-            currentUser.role === 'admin' ? renderAdmin() : renderTech();
-          }
-        }).catch(() => {});
+    function onDeleteLine() {
+        if (!isMasterAdmin) return alert("عفواً، لا يملك هذا الجهاز صلاحية حذف الخطوط.");
+        if (allLines.length <= 1) return alert("لا يمكن حذف الخط الأخير.");
+        const line = getActiveLine();
+        if (confirm(`حذف الخط (${line.name})؟`)) {
+            allLines = allLines.filter(l => l.id !== line.id);
+            activeLineId = allLines[0].id;
+            persistData(true);
+            buildTableStructure();
+            renderStaticDetails();
+            showToast("تم حذف الخط");
+        }
     }
 
-    function syncUp() {
-      fetch(`${FIREBASE_DB}/bonus_system_data.json`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accounts: appAccounts, orders: appOrders })
-      }).catch(() => {});
-    }
+    buildTableStructure();
+    renderStaticDetails();
+    setInterval(tickLiveStats, 1000);
 
-    window.onload = function() {
-      const saved = localStorage.getItem('saved_active_user');
-      if (saved) currentUser = JSON.parse(saved);
-      showUserScreen();
-      syncDown();
-      setInterval(syncDown, 6000);
-    };
-  </script>
+    // سحب المزامنة كل 4 ثوانٍ دون رفع أي شيء
+    syncFromCloud();
+    setInterval(syncFromCloud, 4000);
+</script>
 </body>
 </html>
