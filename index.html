@@ -149,6 +149,28 @@
             color: var(--accent);
         }
 
+        .role-pill {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 8px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .role-pill.admin {
+            background: rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.4);
+        }
+
+        .role-pill.viewer {
+            background: rgba(56, 189, 248, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+
         .header-controls {
             display: flex;
             flex-direction: column;
@@ -216,23 +238,12 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
-        .btn-settings:hover {
-            background: rgba(56, 189, 248, 0.12);
-            border-color: var(--accent);
-        }
-
         .btn-pay {
             background: rgba(3, 105, 161, 0.12);
             color: #e2e8f0;
             border: 1.5px solid rgba(56, 189, 248, 0.45);
             border-radius: var(--radius-sm);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-        }
-
-        .btn-pay:hover {
-            color: var(--text-primary);
-            border-color: var(--accent);
-            background: rgba(56, 189, 248, 0.18);
         }
 
         .btn-pay.paid {
@@ -250,21 +261,11 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
         }
 
-        .btn-extra:hover {
-            background: rgba(2, 132, 199, 0.28);
-            border-color: var(--accent);
-        }
-
         .btn-history {
             background: rgba(245, 158, 11, 0.12);
             color: #fbbf24;
             border: 1.5px solid rgba(245, 158, 11, 0.45);
             border-radius: var(--radius-sm);
-        }
-
-        .btn-history:hover {
-            background: rgba(245, 158, 11, 0.2);
-            border-color: #f59e0b;
         }
 
         .btn-accent {
@@ -274,10 +275,6 @@
             border: 1.5px solid rgba(255, 255, 255, 0.25);
             border-radius: var(--radius-sm);
             flex: 1.4;
-        }
-
-        .btn-accent:hover {
-            filter: brightness(1.08);
         }
 
         .btn-action-icon {
@@ -291,20 +288,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
-        .btn-action-icon:hover {
-            color: var(--text-primary);
-            background: rgba(56, 189, 248, 0.12);
-            border-color: var(--accent);
-        }
-
         .btn-action-icon.danger {
             border-color: rgba(239, 68, 68, 0.45);
-        }
-
-        .btn-action-icon.danger:hover {
-            color: var(--danger);
-            border-color: var(--danger);
-            background: var(--danger-bg);
         }
 
         .alert-hub {
@@ -354,11 +339,6 @@
             transition: all 0.2s;
         }
 
-        .alert-line-item:hover {
-            background: rgba(3, 7, 18, 0.95);
-            border-color: var(--danger);
-        }
-
         .alert-tag {
             font-size: 10.5px;
             padding: 2px 6px;
@@ -384,16 +364,6 @@
             margin-bottom: 18px;
             box-shadow: 0 18px 40px -10px rgba(0, 0, 0, 0.85), 0 0 20px rgba(56, 189, 248, 0.08);
             position: relative;
-        }
-
-        .hero-card::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 20px;
-            right: 20px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
         }
 
         .hero-top {
@@ -475,40 +445,28 @@
             min-width: 118px;
             max-width: 118px;
             flex-shrink: 0;
-            margin: 0;
-            padding: 0;
         }
 
         .hero-side-actions .btn,
         .hero-side-actions .card-address-badge {
             width: 100% !important;
             box-sizing: border-box !important;
-            margin: 0 !important;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 8px !important;
-        }
-
-        .hero-side-actions .btn {
             padding: 6px 8px !important;
             font-size: 11px !important;
-            gap: 4px !important;
             font-weight: 800 !important;
         }
 
         .card-address-badge {
             background: rgba(3, 105, 161, 0.22);
             border: 1.5px solid #38bdf8;
-            padding: 5px 6px !important;
             color: #f0f9ff;
-            font-size: 11px !important;
-            font-weight: 800;
-            gap: 4px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
-            box-shadow: 0 3px 10px rgba(56, 189, 248, 0.15);
         }
 
         .progress-container {
@@ -537,7 +495,6 @@
             background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
             border-radius: 100px;
             transition: width 0.3s ease;
-            box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
         }
 
         .hero-details-container {
@@ -570,30 +527,13 @@
             width: 22px;
             height: 22px;
             border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-            font-weight: 900;
             cursor: pointer;
-            transition: all 0.15s;
-        }
-
-        .stepper-btn:hover {
-            background: var(--accent-gradient);
-            color: #fff;
-            border-color: transparent;
         }
 
         .clickable-burn {
             cursor: pointer;
             border-bottom: 1px dashed rgba(56, 189, 248, 0.5);
             color: #e2e8f0;
-            transition: color 0.2s;
-        }
-
-        .clickable-burn:hover {
-            color: var(--accent);
         }
 
         .all-lines-card {
@@ -601,19 +541,7 @@
             border: 1.5px solid rgba(255, 255, 255, 0.12);
             border-radius: var(--radius-xl);
             padding: 18px 16px;
-            box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.8);
             margin-bottom: 24px;
-            position: relative;
-        }
-
-        .all-lines-card::before {
-            content: '';
-            position: absolute;
-            top: -1px;
-            left: 20px;
-            right: 20px;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         }
 
         .all-lines-header {
@@ -621,17 +549,7 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            user-select: none;
             padding-bottom: 10px;
-        }
-
-        .all-lines-header h3 {
-            font-size: 15px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #f8fafc;
         }
 
         .sort-toggle-badge {
@@ -642,9 +560,6 @@
             font-weight: 800;
             padding: 4px 8px;
             border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .sort-selector-bar {
@@ -652,7 +567,6 @@
             grid-template-columns: 1fr 1fr 1fr;
             gap: 6px;
             background: var(--surface-inner);
-            border: 1px solid var(--border);
             border-radius: var(--radius-md);
             padding: 6px;
             margin-bottom: 12px;
@@ -671,15 +585,11 @@
             padding: 7px 4px;
             border-radius: 6px;
             cursor: pointer;
-            transition: all 0.2s;
-            text-align: center;
-            white-space: nowrap;
         }
 
         .sort-tab-btn.active {
             background: var(--accent-gradient);
             color: #ffffff;
-            box-shadow: 0 4px 12px var(--accent-glow);
         }
 
         .lines-table {
@@ -692,7 +602,6 @@
             padding: 10px 12px;
             font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 700;
             border-bottom: 1px solid var(--border);
         }
 
@@ -720,19 +629,16 @@
         .status-pill.safe {
             background: var(--success-bg);
             color: #34d399;
-            border: 1px solid rgba(16, 185, 129, 0.3);
         }
 
         .status-pill.danger {
             background: var(--danger-bg);
             color: #f87171;
-            border: 1px solid rgba(239, 68, 68, 0.3);
         }
 
         .status-pill.paid-pending {
             background: rgba(2, 132, 199, 0.15);
             color: var(--accent);
-            border: 1px solid rgba(2, 132, 199, 0.35);
         }
 
         .modal-overlay {
@@ -760,7 +666,6 @@
             max-height: 92vh;
             overflow-y: auto;
             padding: 22px 20px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
         }
 
         .modal-avatar-wrap {
@@ -796,7 +701,6 @@
             align-items: center;
             justify-content: center;
             color: var(--text-secondary);
-            font-size: 13px;
             cursor: pointer;
         }
 
@@ -821,13 +725,6 @@
             font-size: 13px;
             color: #fff;
             outline: none;
-            transition: all 0.2s ease;
-        }
-
-        .form-input:focus {
-            border-color: var(--accent);
-            background: #080e1a;
-            box-shadow: 0 0 10px var(--accent-glow);
         }
 
         .form-dual-row {
@@ -847,7 +744,6 @@
             font-size: 13.5px;
             font-weight: 800;
             cursor: pointer;
-            box-shadow: 0 4px 14px var(--accent-glow);
             margin-top: 6px;
         }
 
@@ -894,13 +790,12 @@
             border-radius: 30px;
             font-size: 12.5px;
             font-weight: 800;
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
             display: flex;
             align-items: center;
             gap: 8px;
             z-index: 2000;
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: all 0.3s ease;
             pointer-events: none;
         }
 
@@ -921,7 +816,10 @@
                     <i class="fa-solid fa-wifi"></i>
                 </div>
                 <div class="brand-meta">
-                    <h1 id="headerTitle">--</h1>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <h1 id="headerTitle">--</h1>
+                        <span id="roleBadgeIndicator" class="role-pill viewer">عرض فقط</span>
+                    </div>
                     <div class="brand-note-pill" id="headerNote">--</div>
                     <div class="brand-lines-counter">
                         إجمالي الخطوط: <span id="totalLinesCounter" class="mono">0</span>
@@ -1112,15 +1010,25 @@
     </div>
 </div>
 
-<!-- الإعدادات -->
+<!-- الإعدادات وقفل الأمان -->
 <div class="modal-overlay" id="settingsModalOverlay">
     <div class="app-modal" style="max-width: 440px;">
         <div class="modal-avatar-wrap">
             <button class="modal-close-btn" onclick="closeSettingsModal()"><i class="fa-solid fa-xmark"></i></button>
             <div class="modal-avatar"><i class="fa-solid fa-gear"></i></div>
         </div>
-        <h3 style="text-align: center; font-size: 15px; margin-bottom: 14px; font-weight: 800;">إعدادات السحابة والمزامنة</h3>
+        <h3 style="text-align: center; font-size: 15px; margin-bottom: 14px; font-weight: 800;">إعدادات النظام والأمان</h3>
         
+        <div class="settings-section-card" style="border: 1.5px solid #10b981;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong style="font-size: 13px; color: #34d399;"><i class="fa-solid fa-shield-halved"></i> جهاز التحكم الأساسي (Admin)</strong>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">فعّل هذا الخيار على هاتفك أنت فقط ليمنع أي جهاز آخر من مسح بياناتك.</div>
+                </div>
+                <input type="checkbox" id="adminToggleCheckbox" style="transform: scale(1.4); cursor: pointer;" onchange="toggleAdminPermission(this.checked)">
+            </div>
+        </div>
+
         <div class="settings-section-card">
             <div class="form-row">
                 <label>رابط قاعدة بيانات Firebase URL</label>
@@ -1240,14 +1148,35 @@
     const PRIMARY_STORAGE_KEY = 'WE_NET_TRACKER_MASTER_DATA';
     const GLOBAL_HISTORY_KEY = 'WE_NET_TRACKER_GLOBAL_HISTORY';
     const SENT_ALERTS_KEY = 'NET_TRACKER_SENT_ALERTS_MAP';
+    const ADMIN_PERM_KEY = 'NET_TRACKER_IS_ADMIN_DEVICE';
     const DEFAULT_FIREBASE_URL = "https://my-net-tracker-default-rtdb.firebaseio.com";
+
+    // افتراضياً: أي جهاز يفتح هو للعرض فقط لحماية البيانات
+    let isMasterAdmin = (localStorage.getItem(ADMIN_PERM_KEY) === 'true');
 
     let canSendLiveAlerts = false;
     setTimeout(() => { canSendLiveAlerts = true; }, 5000);
 
     let sentAlertsMap = JSON.parse(localStorage.getItem(SENT_ALERTS_KEY)) || {};
 
-    /* دالة إرسال إشعارات أندرويد الأصلية داخل الستارة بصوت واهتزاز */
+    function updateRoleUI() {
+        const badge = document.getElementById('roleBadgeIndicator');
+        if (badge) {
+            badge.innerText = isMasterAdmin ? "أدمن (متحكم)" : "عرض فقط";
+            badge.className = isMasterAdmin ? "role-pill admin" : "role-pill viewer";
+        }
+        const adminBox = document.getElementById('adminToggleCheckbox');
+        if (adminBox) adminBox.checked = isMasterAdmin;
+    }
+
+    function toggleAdminPermission(enable) {
+        isMasterAdmin = enable;
+        localStorage.setItem(ADMIN_PERM_KEY, enable ? 'true' : 'false');
+        updateRoleUI();
+        showToast(enable ? "✅ تم تفعيل هذا الجهاز كأدمن رئيسي" : "تم تحويل هذا الجهاز لوضع العرض فقط");
+        if (enable) syncToCloud();
+    }
+
     function sendNativeNotification(title, message) {
         if (typeof AndroidAPI !== 'undefined' && AndroidAPI.showNotification) {
             AndroidAPI.showNotification(title, message);
@@ -1300,7 +1229,11 @@
     let activeLineId = allLines[0]?.id || "";
     let currentSortMode = 'burn';
 
-    let tgSettings = JSON.parse(localStorage.getItem('pro_net_tg_settings')) || { botToken: "", chatId: "" };
+    let tgSettings = JSON.parse(localStorage.getItem('pro_net_tg_settings')) || {
+        botToken: "8758932915:AAEt_RWVVzh7HBdk1naARW4UurodUPets-w",
+        chatId: "5007105167"
+    };
+
     let cloudSettings = JSON.parse(localStorage.getItem('pro_net_cloud_settings')) || { firebaseUrl: DEFAULT_FIREBASE_URL };
     if (!cloudSettings.firebaseUrl) cloudSettings.firebaseUrl = DEFAULT_FIREBASE_URL;
 
@@ -1333,8 +1266,13 @@
         }
     }
 
-    /* الرفع للسحاب يتم بيدك أنت فقط عند التعديل/الإضافة/الدفع */
+    /* حظر الرفع تماماً إذا لم يكن هذا جهازك أنت (Admin) */
     function syncToCloud() {
+        if (!isMasterAdmin) {
+            console.warn("جهاز عرض فقط: ممنوع الرفع إلى السحابة.");
+            return;
+        }
+
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
         
         const payload = allLines.map(l => ({
@@ -1356,7 +1294,7 @@
         }).catch(err => console.error("Cloud push history error:", err));
     }
 
-    /* السحب من السحاب (لجميع الأجهزة) دون أن يمسح أحد بيانات الآخر */
+    /* سحب البيانات مع حماية الرصيد من التصفير بتحديث وقت البداية */
     function syncFromCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
         
@@ -1379,7 +1317,8 @@
                                 monthlyPackage: Number(l.monthlyPackage) || 700,
                                 alertGB: Number(l.alertGB) || 50,
                                 alertDays: Number(l.alertDays) || 5,
-                                lastSyncTime: Number(l.lastSyncTime) || Date.now(),
+                                // اعتماد وقت السحب كنقطة انطلاق لمنع التصفير التلقائي
+                                lastSyncTime: Date.now(),
                                 isPaid: Boolean(l.isPaid)
                             }));
 
@@ -1425,6 +1364,7 @@
     }
 
     function applyRestoreFromInput() {
+        if (!isMasterAdmin) return alert("عفواً، لا يملك هذا الجهاز صلاحية الأدمن للاستعادة.");
         const area = document.getElementById('backupDataArea');
         const content = area.value.trim();
         if (!content) return alert("يرجى لصق الكود أولاً.");
@@ -1444,6 +1384,7 @@
     }
 
     function saveCloudSettings() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الخيار متاح لجهاز الأدمن فقط.");
         cloudSettings.firebaseUrl = document.getElementById('firebaseUrlInput').value.trim() || DEFAULT_FIREBASE_URL;
         localStorage.setItem('pro_net_cloud_settings', JSON.stringify(cloudSettings));
         showToast("✅ تم حفظ رابط السحابة وتحديث البيانات!");
@@ -1464,12 +1405,13 @@
 
     function testTelegramMessage() {
         saveTelegramSettings();
-        sendTelegramAlert(`🔔 <b>رسالة اختبار من تطبيق متابعة الإنترنت</b>\nالربط سليم وجاهز للتنبيهات.`);
+        sendTelegramAlert(`🔔 <b>رسالة اختبار من التطبيق</b>\nالربط سليم وجاهز للتنبيهات.`);
         sendNativeNotification("🔔 اختبار الإشعارات", "إشعارات الأندرويد الأصلية تعمل بنجاح!");
         showToast("تم إرسال الطلب لتيليجرام والهاتف");
     }
 
     function togglePaymentStatus() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
         const line = getActiveLine();
         if (!line) return;
         line.isPaid = !line.isPaid;
@@ -1502,6 +1444,7 @@
     }
 
     function stepDailyRate(amount) {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
         const line = getActiveLine();
         if (!line) return;
         line.baseBalance = getCurrentLiveBalance(line);
@@ -1515,6 +1458,7 @@
     }
 
     function promptEditDailyRate() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
         const line = getActiveLine();
         if (!line) return;
         const val = prompt("أدخل معدل السحب اليومي المطلوب (GB/يوم):", line.dailyManual || 5);
@@ -1600,7 +1544,6 @@
                         sentAlertsMap[`gb_${line.id}`] = Date.now();
                         needsAlert = true;
 
-                        // إرسال إشعار أندرويد في الستارة
                         sendNativeNotification(
                             `⚠️ رصيد منخفض: ${line.name}`,
                             `الرصيد المتبقي: ${liveBal.toFixed(2)} GB (حد الأمان: ${line.alertGB} GB)`
@@ -1611,7 +1554,6 @@
                         sentAlertsMap[`days_${line.id}`] = Date.now();
                         needsAlert = true;
 
-                        // إرسال إشعار أندرويد في الستارة
                         sendNativeNotification(
                             `⏳ موعد الفاتورة: ${line.name}`,
                             `باقي ${daysLeft} يوم ولم يتم دفع الاشتراك`
@@ -1675,6 +1617,7 @@
     }
 
     function clearAllHistory() {
+        if (!isMasterAdmin) return alert("عفواً، لا يملك هذا الجهاز صلاحية الأدمن لمسح السجل.");
         if (confirm("مسح السجل بالكامل؟")) {
             globalHistory = [];
             persistData(true);
@@ -1687,11 +1630,13 @@
         document.getElementById('tgBotTokenInput').value = tgSettings.botToken || "";
         document.getElementById('tgChatIdInput').value = tgSettings.chatId || "";
         document.getElementById('firebaseUrlInput').value = cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL;
+        updateRoleUI();
         document.getElementById('settingsModalOverlay').classList.add('active');
     }
     function closeSettingsModal() { document.getElementById('settingsModalOverlay').classList.remove('active'); }
 
     function openExtraQuotaModal() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
         const line = getActiveLine();
         if (!line) return;
         document.getElementById('extraModalSubtitle').innerText = `إضافة كوتة إلى: ${line.name}`;
@@ -1726,6 +1671,7 @@
     }
 
     function openEditModal() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التعديل يتم من هاتف الأدمن.");
         const line = getActiveLine();
         if (!line) return;
         document.getElementById('formIndexKey').value = line.id;
@@ -1744,6 +1690,7 @@
     }
 
     function openAddModal() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. الإضافة تتم من هاتف الأدمن.");
         document.getElementById('formIndexKey').value = "-1";
         document.getElementById('modalHeading').innerText = "إضافة خط جديد";
         document.getElementById('lineDataForm').reset();
@@ -1874,6 +1821,7 @@
         document.getElementById('searchTriggerLabel').innerText = (line.weServiceNumber || line.name) + (line.address ? ` [${line.address}]` : '');
         document.getElementById('heroLineBadge').innerText = line.weServiceNumber || line.name || "------";
 
+        updateRoleUI();
         tickLiveStats();
     }
 
@@ -1901,6 +1849,7 @@
     function onSwitchLine(lineId) { activeLineId = lineId; renderStaticDetails(); }
 
     function onDeleteLine() {
+        if (!isMasterAdmin) return alert("عفواً، لا يملك هذا الجهاز صلاحية حذف الخطوط.");
         if (allLines.length <= 1) return alert("لا يمكن حذف الخط الأخير.");
         const line = getActiveLine();
         if (confirm(`حذف الخط (${line.name})؟`)) {
@@ -1917,7 +1866,7 @@
     renderStaticDetails();
     setInterval(tickLiveStats, 1000);
 
-    // سحب البيانات من السحابة كل 4 ثوانٍ دون رفع أي شيء
+    // سحب المزامنة كل 4 ثوانٍ دون رفع أي شيء
     syncFromCloud();
     setInterval(syncFromCloud, 4000);
 </script>
