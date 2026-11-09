@@ -1,1855 +1,620 @@
-#ecfdf5 !important; color: #059669 !important; border: 1px solid #a7f3d0 !important; font-size: 10px; }
-.badge-time-yesterday { background-color: #fff7ed !important; color: #ea580c !important; border: 1px solid #fed7aa !important; font-size: 10px; font-weight: 800; }
-.badge-time-older { background-color: #f8fafc !important; color: #64748b !important; border: 1px solid #e2e8f0 !important; font-size: 10px; font-weight: 700; }
-​.badge-delayed-alert {
-background-color: #fee2e2 !important;
-color: #b91c1c !important;
-border: 1px solid #f87171 !important;
-font-size: 10px;
-font-weight: 900;
-}
-​.status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-left: 5px; }
-.status-online { background-color: #10b981 !important; }
-.status-offline { background-color: #cbd5e1 !important; }
-​.stat-tab-card {
-border-radius: 12px;
-padding: 9px 4px;
-text-align: center;
-cursor: pointer;
-}
-.stat-pending { background-color: #fffbeb !important; border: 1.5px solid #fde68a !important; }
-.stat-assigned { background-color: #eff6ff !important; border: 1.5px solid #bfdbfe !important; }
-.stat-postponed { background-color: #fff7ed !important; border: 1.5px solid #fed7aa !important; }
-.stat-done { background-color: #ecfdf5 !important; border: 1.5px solid #a7f3d0 !important; }
-​.sub-filter-bar { display: flex; gap: 5px; overflow-x: auto; padding: 3px 2px 8px 2px; margin-bottom: 8px; scrollbar-width: none; }
-.sub-filter-bar::-webkit-scrollbar { display: none; }
-.tech-pill {
-padding: 5px 12px;
-font-size: 11px;
-font-weight: 800;
-border-radius: 16px;
-border: 1px solid #cbd5e1 !important;
-background-color: #ffffff !important;
-color: #475569 !important;
-cursor: pointer;
-white-space: nowrap;
-}
-.tech-pill.active {
-background-color: #2563eb !important;
-color: #ffffff !important;
-border-color: #2563eb !important;
-}
-​.bonus-card-green {
-background: linear-gradient(135deg, #10b981, #047857) !important;
-background-color: #10b981 !important;
-color: #ffffff !important;
-border-radius: 18px;
-padding: 22px 14px;
-text-align: center;
-border: none !important;
-box-shadow: 0 8px 20px rgba(16, 185, 129, 0.28);
-margin-bottom: 12px;
-}
-​.modal-overlay {
-position: fixed;
-inset: 0;
-background: rgba(15, 23, 42, 0.45);
-backdrop-filter: blur(2px);
-display: flex;
-align-items: center;
-justify-content: center;
-padding: 12px;
-z-index: 999;
-}
-.modal-content {
-background-color: #ffffff !important;
-color: #0f172a !important;
-width: 100%;
-max-width: 420px;
-border-radius: 16px;
-padding: 16px;
-max-height: 90vh;
-overflow-y: auto;
-border: 1px solid #e2e8f0;
--webkit-overflow-scrolling: touch;
-}
-</style>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>نظام متابعة الأعطال</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background-color: #f8fafc;
+      color: #0f172a;
+      min-height: 100vh;
+      padding-bottom: 30px;
+    }
+    .hidden { display: none !important; }
+    .container { width: 100%; max-width: 480px; margin: 0 auto; padding: 12px; }
+    
+    .card {
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border: 1.5px solid #cbd5e1;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1.5px solid #cbd5e1;
+      font-size: 12px;
+      font-weight: 700;
+      outline: none;
+      background: #ffffff;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+    .input-control:focus {
+      border-color: #2563eb;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 9px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      text-decoration: none;
+    }
+    .btn-primary { background: #2563eb; color: #ffffff; }
+    .btn-success { background: #10b981; color: #ffffff; }
+    .btn-warning { background: #f59e0b; color: #ffffff; }
+    .btn-danger { background: #ef4444; color: #ffffff; }
+    .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+
+    .header {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
+
+    .badge { padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; display: inline-block; }
+    .badge-pending { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .badge-assigned { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+    .badge-done { background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; }
+    .badge-postponed { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+
+    .stat-tab {
+      border-radius: 10px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+    .stat-pending { background: #fffbeb; border-color: #fde68a; }
+    .stat-assigned { background: #eff6ff; border-color: #bfdbfe; }
+    .stat-postponed { background: #fff7ed; border-color: #fed7aa; }
+    .stat-done { background: #ecfdf5; border-color: #a7f3d0; }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+      z-index: 999;
+    }
+    .modal-content {
+      background: #ffffff;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 14px;
+      padding: 14px;
+    }
+  </style>
 </head>
-<body onclick="unlockAudioSystem()" ontouchstart="unlockAudioSystem()">
-​<!-- نافذة تعديل بيانات العميل أو العطل -->
-<div id="modalEditOrder" class="modal-overlay hidden">
-<div class="modal-content">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
-<h4 style="font-size: 14px; font-weight: 900; color: #2563eb;">✏️ تعديل بيانات العطل</h4>
-<button type="button" onclick="closeEditOrderModal()" style="border: none; background: transparent; font-size: 18px; cursor: pointer; color: #94a3b8;">✕</button>
-</div>
-<input type="hidden" id="editOrderId">
-<label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 2px;">اسم العميل:</label>
-<input type="text" id="editCustName" class="input-control">
-<label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 2px;">رقم الهاتف:</label>
-<input type="tel" id="editCustPhone" class="input-control">
-<label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 2px;">نوع الطلب:</label>
-<select id="editJobType" class="input-control" style="font-weight: 700;">
-<option value="عطل">عطل</option>
-<option value="عطل متكرر">عطل متكرر</option>
-<option value="تركيبه جديده">تركيبه جديده</option>
-<option value="معاينه جديده">معاينه جديده</option>
-<option value="تشييك">تشييك</option>
-</select>
-<label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 2px;">الملاحظات / العنوان:</label>
-<input type="text" id="editCustDesc" class="input-control">
-<div class="grid-2" style="margin-top: 6px;">
-<button type="button" onclick="submitEditOrder()" class="btn btn-primary">حفظ التعديل 💾</button>
-<button type="button" onclick="closeEditOrderModal()" class="btn btn-secondary">إلغاء</button>
-</div>
-</div>
-</div>
-​<!-- نافذة إشعار طلب للفني المحدد فقط -->
-<div id="modalOrderAlert" class="modal-overlay hidden" onclick="stopAlertChimeNow()">
-<div class="modal-content" style="text-align: center; border: 2px solid #2563eb;" onclick="event.stopPropagation()">
-<div style="font-size: 34px; margin-bottom: 4px;">🔔</div>
-<h3 style="font-size: 16px; font-weight: 900; color: #2563eb; margin-bottom: 6px;">طلب جديد مسند إليك!</h3>
-<div style="background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; text-align: right; font-size: 12px; line-height: 1.5; margin-bottom: 10px;">
-<div><strong>العميل:</strong> <span id="alertCustName" style="font-weight: 800; color: #0f172a;"></span></div>
-<div><strong>النوع:</strong> <span id="alertJobTypeBadge" style="font-weight: 800; color: #2563eb;"></span></div>
-<div><strong>الهاتف:</strong> <span id="alertCustPhone" style="font-weight: 800; direction: ltr; display: inline-block;"></span></div>
-<div id="alertDescRow"><strong>ملاحظات:</strong> <span id="alertCustDesc"></span></div>
-</div>
-<div class="grid-2">
-<a id="alertCallBtn" href="tel:" class="btn btn-success" onclick="dismissOrderAlert()">📞 اتصال فوراً</a>
-<button type="button" onclick="dismissOrderAlert()" class="btn btn-secondary">إغلاق وتوقف الرنين</button>
-</div>
-</div>
-</div>
-​<!-- نافذة إشعار للمدير -->
-<div id="modalAdminNotification" class="modal-overlay hidden" onclick="stopAlertChimeNow()">
-<div class="modal-content" id="adminNotifBox" style="text-align: center; border: 2px solid #2563eb;" onclick="event.stopPropagation()">
-<div id="adminNotifIcon" style="font-size: 34px; margin-bottom: 4px;">📢</div>
-<h3 id="adminNotifTitle" style="font-size: 16px; font-weight: 900; margin-bottom: 6px;">تحديث جديد من الفني</h3>
-<div style="background-color: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px; text-align: right; font-size: 12px; line-height: 1.5; margin-bottom: 10px;">
-<div><strong>الفني:</strong> <span id="adminNotifTech" style="color: #2563eb; font-weight: 800;"></span></div>
-<div><strong>العميل:</strong> <span id="adminNotifCust" style="font-weight: 800; color: #0f172a;"></span></div>
-<div><strong>البيان / السبب:</strong> <span id="adminNotifDetail"></span></div>
-</div>
-<button type="button" onclick="dismissAdminNotification()" class="btn btn-primary">حسناً ✓</button>
-</div>
-</div>
-​<!-- نافذة إشعار البونص / الخصم للفني -->
-<div id="modalBonusAlert" class="modal-overlay hidden" onclick="stopAlertChimeNow()">
-<div class="modal-content" id="bonusAlertBox" style="text-align: center; border: 2px solid #10b981;" onclick="event.stopPropagation()">
-<div id="bonusAlertIcon" style="font-size: 34px; margin-bottom: 4px;">🎁</div>
-<h3 id="bonusAlertTitle" style="font-size: 16px; font-weight: 900; color: #059669; margin-bottom: 3px;">مبروك! نزل لك بونص جديد</h3>
-<p id="bonusAlertReason" style="font-size: 11px; color: #64748b; margin-bottom: 8px; font-weight: 700;"></p>
-<div id="bonusAlertCard" style="background-color: #ecfdf5; border-radius: 10px; padding: 12px; margin-bottom: 12px; border: 1px solid #a7f3d0;">
-<span id="bonusAlertLabel" style="font-size: 10px; color: #059669; font-weight: 700; display: block;">المبلغ:</span>
-<h2 id="bonusAlertAmount" style="font-size: 32px; font-weight: 900; color: #059669; margin: 2px 0;">+0 ج</h2>
-</div>
-<button type="button" id="bonusAlertBtn" onclick="dismissBonusAlert()" class="btn btn-primary" style="background-color: #10b981 !important;">تم الاستلام ✓</button>
-</div>
-</div>
-​<!-- سجل المكافآت للفني -->
-<div id="modalTechBonusHistory" class="modal-overlay hidden">
-<div class="modal-content">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
-<h4 style="font-size: 13px; font-weight: 900; color: #059669;">📜 سجل المكافآت والخصومات</h4>
-<button type="button" onclick="closeTechBonusHistory()" style="border: none; background: transparent; font-size: 18px; cursor: pointer; color: #94a3b8;">✕</button>
-</div>
-<div id="techBonusHistoryList" style="max-height: 280px; overflow-y: auto; -webkit-overflow-scrolling: touch; margin-bottom: 8px;"></div>
-<button type="button" onclick="closeTechBonusHistory()" class="btn btn-secondary" style="padding: 7px; font-size: 11px;">إغلاق</button>
-</div>
-</div>
-​<!-- نافذة حل العطل -->
-<div id="modalSolveOrder" class="modal-overlay hidden">
-<div class="modal-content">
-<h4 style="font-size: 14px; font-weight: 900; margin-bottom: 6px; color: #059669;">تأكيد حل المشكلة ✓</h4>
-<input type="hidden" id="solveOrderId">
-<label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 3px;">ما تم إنجازه (اختياري):</label>
-<input type="text" id="solveReasonText" placeholder="مثلاً: تم التركيب أو حل المشكلة..." class="input-control">
-<div class="grid-2" style="margin-top: 6px;">
-<button type="button" onclick="submitSolveOrder()" class="btn btn-success">تأكيد الحل ✓</button>
-<button type="button" onclick="closeSolveModal()" class="btn btn-secondary">إلغاء</button>
-</div>
-</div>
-</div>
-​<!-- نافذة تأجيل العطل -->
-<div id="modalPostponeOrder" class="modal-overlay hidden">
-<div class="modal-content">
-<h4 style="font-size: 14px; font-weight: 900; margin-bottom: 6px; color: #d97706;">تأجيل موعد الطلب ⏳</h4>
-<input type="hidden" id="postponeOrderId">
-<label style="font-size: 11px; font-weight: 700; color: #475569; display: block; margin-bottom: 3px;">سبب التأجيل (اختياري):</label>
-<input type="text" id="postponeReasonText" placeholder="مثلاً: العميل غير متواجد" class="input-control">
-<div class="grid-2" style="margin-top: 6px;">
-<button type="button" onclick="submitPostponeOrder()" class="btn btn-warning">حفظ التأجيل ⏳</button>
-<button type="button" onclick="closePostponeModal()" class="btn btn-secondary">إلغاء</button>
-</div>
-</div>
-</div>
-​<!-- شاشة الدخول -->
-<div id="screenLogin" class="container" style="min-height: 85vh; display: flex; align-items: center; justify-content: center;">
-<div class="card" style="width: 100%; text-align: center; padding: 26px 18px;">
-<div style="width: 52px; height: 52px; background-color: #eff6ff !important; color: #2563eb !important; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px auto; font-size: 22px; border: 1.5px solid #bfdbfe;">
-📶
-</div>
-<h2 style="font-size: 20px; font-weight: 900; color: #0f172a; margin-bottom: 2px;">أعطالي</h2>
-<p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">تسجيل الدخول للنظام</p>
-​<input type="text" id="logUser" placeholder="اسم المستخدم" class="input-control">
-<input type="password" id="logPass" placeholder="كلمة المرور" class="input-control">
-​<button type="button" onclick="handleLogin()" class="btn btn-primary" style="margin-top: 4px; padding: 10px; font-size: 13px;">دخول 🚀</button>
-</div>
-</div>
-​<!-- 1. شاشة المدير الرئيسية -->
-<div id="screenAdmin" class="hidden">
-<header class="header">
-<div>
-<h3 style="font-size: 14px; font-weight: 900; color: #0f172a;">لوحة الإدارة</h3>
-<span id="adminDate" style="font-size: 10px; color: #64748b; font-weight: 700;"></span>
-</div>
-<div style="display: flex; gap: 5px; align-items: center;">
-<button type="button" onclick="triggerManualSync()" class="icon-btn-pro" title="تحديث السحابة">
-<svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-<span>تحديث</span>
-</button>
-<button type="button" onclick="openSettingsPage()" class="icon-btn-pro" title="الإعدادات">
-<svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
-<span>الإعدادات</span>
-</button>
-<button type="button" onclick="handleLogout()" class="icon-btn-pro danger" title="تسجيل الخروج">
-<svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
-<span>خروج</span>
-</button>
-</div>
-</header>
-​<div class="container">
-<div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; margin-bottom: 10px;">
-<div class="stat-tab-card stat-pending" onclick="openOrdersPage('pending')">
-<span style="font-size: 10px; font-weight: 800; color: #b45309; display: block;">⏳ معلق</span>
-<strong id="statPending" style="font-size: 16px; font-weight: 900; color: #d97706; display: block; margin-top: 1px;">0</strong>
-</div>
-<div class="stat-tab-card stat-assigned" onclick="openOrdersPage('assigned')">
-<span style="font-size: 10px; font-weight: 800; color: #1d4ed8; display: block;">🚀 جاري</span>
-<strong id="statAssigned" style="font-size: 16px; font-weight: 900; color: #2563eb; display: block; margin-top: 1px;">0</strong>
-</div>
-<div class="stat-tab-card stat-postponed" onclick="openOrdersPage('postponed')">
-<span style="font-size: 10px; font-weight: 800; color: #c2410c; display: block;">⏸️ مؤجل</span>
-<strong id="statPostponed" style="font-size: 16px; font-weight: 900; color: #ea580c; display: block; margin-top: 1px;">0</strong>
-</div>
-<div class="stat-tab-card stat-done" onclick="openOrdersPage('done')">
-<span style="font-size: 10px; font-weight: 800; color: #047857; display: block;">✅ منجز</span>
-<strong id="statDone" style="font-size: 16px; font-weight: 900; color: #10b981; display: block; margin-top: 1px;">0</strong>
-</div>
-</div>
-​<!-- تسجيل طلب جديد -->
-<div class="card" style="border: 2px solid #94a3b8 !important;">
-<div style="display: flex; align-items: center; gap: 5px; margin-bottom: 8px;">
-<span style="font-size: 14px; color: #2563eb;">➕</span>
-<h4 style="font-size: 13px; font-weight: 900; color: #1e3a8a;">تسجيل طلب عطل جديد</h4>
-</div>
-<div class="grid-2">
-<input 
-type="text" 
-id="newCustName" 
-placeholder="اسم العميل *" 
-class="input-control" 
-tabindex="1"
-inputmode="text"
-autocomplete="off"
->
-<input 
-type="tel" 
-id="newCustPhone" 
-placeholder="رقم الهاتف (اختياري)" 
-class="input-control" 
-tabindex="2"
-inputmode="tel"
->
-</div>
-<div class="grid-2" style="margin-bottom: 6px;">
-<select id="newJobType" class="input-control" style="margin-bottom: 0; font-weight: 700; color: #1e293b;">
-<option value="عطل">عطل</option>
-<option value="عطل متكرر">عطل متكرر</option>
-<option value="تركيبه جديده">تركيبه جديده</option>
-<option value="معاينه جديده">معاينه جديده</option>
-<option value="تشييك">تشييك</option>
-</select>
-<input type="text" id="newCustDesc" placeholder="ملاحظات / العنوان" class="input-control" style="margin-bottom: 0;">
-</div>
-<button type="button" onclick="saveNewOrder()" class="btn btn-primary">حفظ الطلب ➕</button>
-</div>
-​<!-- قائمة الفنيين -->
-<div id="adminTechsList"></div>
-</div>
-</div>
-​<!-- 2. صفحة الأعطال المستقلة -->
-<div id="screenOrdersPage" class="hidden">
-<header class="header">
-<div style="display: flex; align-items: center; gap: 6px;">
-<button type="button" onclick="backToAdminHome()" class="icon-btn-pro" style="padding: 4px 10px; font-size: 11px;">← رجوع</button>
-<h3 id="ordersPageTitle" style="font-size: 14px; font-weight: 900; color: #0f172a;">الأعطال</h3>
-</div>
-<button type="button" onclick="triggerManualSync()" class="icon-btn-pro" title="تحديث">
-<svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-</button>
-</header>
-​<div class="container">
-<div id="techSubFilterBar" class="sub-filter-bar hidden"></div>
-​<!-- فلتر التاريخ -->
-<div class="card" style="padding: 8px 10px; margin-bottom: 8px;">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-<span style="font-size: 11px; font-weight: 800; color: #475569;">📅 فلتر التاريخ:</span>
-<span id="selectedDateLabel" style="font-size: 10px; font-weight: 800; color: #2563eb;">عرض: الكل</span>
-</div>
-<div style="display: flex; gap: 5px; align-items: center; flex-wrap: wrap;">
-<button type="button" id="datePillAll" onclick="setDateFilter('all')" class="tech-pill active" style="flex: 1; padding: 4px 5px;">الكل</button>
-<button type="button" id="datePillToday" onclick="setDateFilter('today')" class="tech-pill" style="flex: 1; padding: 4px 5px;">اليوم</button>
-<button type="button" id="datePillYesterday" onclick="setDateFilter('yesterday')" class="tech-pill" style="flex: 1; padding: 4px 5px;">أمس</button>
-<input type="date" id="datePickerFilter" onchange="setDateFilterCustom(this.value)" class="input-control" style="flex: 1.5; margin-bottom: 0; padding: 3px 5px; font-size: 10px; font-weight: 700; height: 28px;">
-</div>
-</div>
-​<div style="padding: 2px 0;">
-<div id="adminOrdersList"></div>
-</div>
-</div>
-</div>
-​<!-- 3. صفحة الإعدادات والتحكم -->
-<div id="screenSettingsPage" class="hidden">
-<header class="header">
-<div style="display: flex; align-items: center; gap: 6px;">
-<button type="button" onclick="backToAdminHomeFromSettings()" class="icon-btn-pro" style="padding: 4px 10px; font-size: 11px;">← رجوع</button>
-<h3 style="font-size: 14px; font-weight: 900; color: #2563eb;">⚙ لوحة الإعدادات والتحكم</h3>
-</div>
-</header>
-​<div class="container" style="padding-bottom: 50px;">
-<!-- قسم تجربة وإدارة التقرير المسائي -->
-<div class="card" style="border: 2px solid #8b5cf6 !important; background-color: #faf5ff !important;">
-<div style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
-<span style="font-size: 16px;">📊</span>
-<h5 style="font-size: 12px; font-weight: 900; color: #6d28d9;">التقرير المسائي التلقائي (تليجرام):</h5>
-</div>
-<p style="font-size: 10px; color: #64748b; margin-bottom: 8px;">يتم الإرسال تلقائياً يومياً في تمام الساعة 11:00 مساءً للإدارة ولكل فني بملخص عمله اليومي.</p>
-<button type="button" onclick="sendDailyEveningReport(true)" class="btn btn-primary" style="background-color: #7c3aed !important; font-size: 11px; padding: 8px;">
-🚀 إرسال التقرير المسائي الآن للتجربة
-</button>
-</div>
-​<div class="card" style="background-color: #fff5f5 !important; border: 2px solid #fecdd3 !important;">
-<h5 style="font-size: 12px; font-weight: 900; color: #e11d48; margin-bottom: 8px;">➖ تسجيل سلفة أو خصم كاش:</h5>
-<select id="deductTechSelect" class="input-control"></select>
-<input type="number" id="deductAmount" placeholder="المبلغ بالجنيه" class="input-control" style="font-weight: 900; color: #e11d48;">
-<input type="text" id="deductReason" placeholder="السبب (مثلاً: سلفة بنزين)" class="input-control">
-<button type="button" onclick="submitDeduction()" class="btn btn-danger" style="padding: 8px; font-size: 11px;">خصم من الرصيد ➖</button>
-</div>
-​<!-- التحكم في حساب الفني -->
-<div class="card">
-<h5 style="font-size: 12px; font-weight: 900; margin-bottom: 8px; color: #1e293b;">🛠 التحكم في حساب وسجل الفني:</h5>
-<select id="settingsTechSelect" onchange="loadSelectedTechData()" class="input-control"></select>
-​<label style="font-size: 10px; font-weight: 700; color: #475569; display: block; margin-bottom: 3px;">تعديل الرصيد يدوياً:</label>
-<div style="display: flex; gap: 5px; margin-bottom: 8px;">
-<input type="number" id="settingsTechBal" class="input-control" style="margin-bottom: 0; font-weight: 900; color: #059669;">
-<button type="button" onclick="updateSelectedTechBalance()" class="btn btn-success" style="width: auto; padding: 0 12px; font-size: 11px; white-space: nowrap;">تحديث</button>
-</div>
-​<label style="font-size: 10px; font-weight: 700; color: #475569; display: block; margin-bottom: 2px;">اسم الفني:</label>
-<input type="text" id="settingsTechName" placeholder="الاسم" class="input-control">
-<div class="grid-2">
-<input type="text" id="settingsTechUser" placeholder="اليوزر" class="input-control">
-<input type="text" id="settingsTechPass" placeholder="الباسورد" class="input-control">
-</div>
-​<label style="font-size: 10px; font-weight: 800; color: #2563eb; display: block; margin-bottom: 2px;">✈️ تليجرام Chat ID للفني:</label>
-<input type="text" id="settingsTechTelegram" placeholder="مثال: 5007105167" class="input-control" style="direction: ltr; font-weight: 800; border-color: #93c5fd;">
-​<div class="grid-2" style="margin-bottom: 8px;">
-<button type="button" onclick="saveSelectedTechAccount()" class="btn btn-primary" style="padding: 8px; font-size: 11px;">حفظ البيانات 💾</button>
-<button type="button" onclick="deleteSelectedTechAccount()" class="btn btn-danger" style="padding: 8px; font-size: 11px;">حذف الفني ✕</button>
-</div>
-​<button type="button" onclick="clearSelectedTechOrdersHistory()" class="btn btn-secondary" style="background-color: #fff7ed !important; color: #c2410c !important; border: 1px solid #fed7aa !important; font-size: 11px; padding: 8px;">
-مسح سجل طلبات هذا الفني 🗑️
-</button>
-</div>
-​<div class="card">
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-<h5 style="font-size: 12px; font-weight: 900; color: #0f172a;">📊 سجل حركات البونص والخصومات:</h5>
-<button type="button" onclick="clearAllBonusRecords()" class="btn btn-danger" style="width: auto; padding: 3px 8px; font-size: 10px;">مسح السجل 🗑️</button>
-</div>
-​<select id="historyFilterTech" class="input-control" onchange="renderBonusHistoryLog()" style="margin-bottom: 8px; font-weight: 700;">
-<option value="all">👥 جميع الفنيين</option>
-</select>
-​<div id="bonusHistoryLogList" style="max-height: 220px; overflow-y: auto; -webkit-overflow-scrolling: touch;"></div>
-</div>
-​<!-- إضافة فني جديد -->
-<div class="card">
-<h5 style="font-size: 12px; font-weight: 900; margin-bottom: 8px; color: #1e293b;">👷 إضافة فني جديد:</h5>
-<input type="text" id="addTechName" placeholder="اسم الفني بالكامل" class="input-control">
-<div class="grid-2">
-<input type="text" id="addTechUser" placeholder="اليوزر" class="input-control">
-<input type="text" id="addTechPass" placeholder="الباسورد" class="input-control">
-</div>
-<input type="text" id="addTechTelegram" placeholder="تليجرام Chat ID للفني (مثلاً: 5007105167)" class="input-control" style="direction: ltr; font-weight: 800;">
-<button type="button" onclick="addNewTechAccount()" class="btn btn-primary" style="padding: 8px; font-size: 11px;">إضافة الفني ➕</button>
-</div>
-​<div class="card" style="border: 2px solid #bfdbfe !important;">
-<h5 style="font-size: 12px; font-weight: 900; color: #2563eb; margin-bottom: 3px;">🔐 أمان حساب المدير:</h5>
-<p style="font-size: 10px; color: #64748b; margin-bottom: 8px;">يمكنك تغيير اسم المستخدم وكلمة المرور في أي وقت لحماية التطبيق.</p>
-<div class="grid-2">
-<input type="text" id="adminUserField" placeholder="اسم المستخدم الجديد" class="input-control">
-<input type="text" id="adminPassField" placeholder="كلمة المرور الجديدة" class="input-control">
-</div>
-<button type="button" onclick="saveAdminCredentials()" class="btn btn-primary" style="padding: 8px; font-size: 11px;">تحديث وتأمين حساب المدير 💾</button>
-</div>
-</div>
-</div>
-​<!-- 4. شاشة الفني -->
-<div id="screenTech" class="hidden">
-<header class="header">
-<div>
-<h3 id="techDispName" style="font-size: 14px; font-weight: 900; color: #0f172a;">الفني</h3>
-<span style="font-size: 10px; color: #64748b; font-weight: 700;">أعطالي المسندة فقط</span>
-</div>
-<div style="display: flex; gap: 5px;">
-<button type="button" onclick="triggerManualSync()" class="icon-btn-pro" title="تحديث السحابة">
-<svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0012 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0112 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
-</button>
-<button type="button" onclick="handleLogout()" class="icon-btn-pro danger" title="خروج">
-<svg viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
-</button>
-</div>
-</header>
-​<div class="container">
-<div class="bonus-card-green">
-<span style="font-size: 12px; font-weight: 700; opacity: 0.95; display: block; margin-bottom: 4px; color: #ffffff;">إجمالي رصيد البونص المستحق لك</span>
-<h2 id="techBonusBalance" style="font-size: 42px; font-weight: 900; margin: 4px 0; line-height: 1.1; color: #ffffff;">0 ج</h2>
-<span style="font-size: 11px; background: rgba(255,255,255,0.25); color: #ffffff; padding: 4px 14px; border-radius: 20px; font-weight: 800; display: inline-block; margin-top: 6px;">حصالة المكافآت ✓</span>
-</div>
-​<button type="button" onclick="openTechBonusHistory()" class="btn btn-secondary" style="margin-bottom: 10px; padding: 8px; font-size: 11px; background-color: #ffffff !important; border: 1.5px solid #a7f3d0 !important; color: #047857 !important;">
-📜 سجل المكافآت والخصومات
-</button>
-​<div style="display: flex; gap: 6px; margin-bottom: 10px;">
-<button type="button" id="tabBtnPending" onclick="switchTechTab('pending')" class="btn btn-primary" style="flex: 1; padding: 8px; font-size: 11px;">المطلوبة مني (<span id="countTechPending">0</span>)</button>
-<button type="button" id="tabBtnDone" onclick="switchTechTab('done')" class="btn btn-secondary" style="flex: 1; padding: 8px; font-size: 11px;">المنجزة (<span id="countTechDone">0</span>)</button>
-</div>
-​<div id="techOrdersList"></div>
-</div>
-</div>
-​<script>
-const FIREBASE_DB = "https://maintanance-7de19-default-rtdb.firebaseio.com";
-const NTFY_TOPIC = "mega-network-alerts";
-​// إعدادات بوت تليجرام
-const TELEGRAM_BOT_TOKEN = "9027122334:AAGV1B4QIk9dtIHMecW2hqcGXkjwYZy4PeM";
-const ADMIN_TELEGRAM_CHAT = "5007105167";
-​// دالة إرسال الإشعار التفاعلي عبر تليجرام مع أزرار سريعة
-async function sendTelegramAlertToTech(targetTechName, messageText, clientPhone, clientAddress) {
-try {
-const techObj = appAccounts.find(a => a.name === targetTechName);
-const chatId = (techObj && techObj.telegramChatId) ? techObj.telegramChatId : ADMIN_TELEGRAM_CHAT;
-​if (!chatId) return;
-​const buttons = [];
-const actionRow = [];
-​if (clientPhone && clientPhone.trim() !== '') {
-actionRow.push({
-text: "📞 اتصال بالعميل",
-url: tel:${clientPhone.trim()}
-});
-}
-​if (clientAddress && clientAddress.trim() !== '') {
-actionRow.push({
-text: "📍 الموقع على الخريطة",
-url: [https://www.google.com/maps/search/?api=1&query=$](https://www.google.com/maps/search/?api=1&query=$){encodeURIComponent(clientAddress.trim())}
-});
-}
-​if (actionRow.length > 0) {
-buttons.push(actionRow);
-}
-​const url = [https://api.telegram.org/bot$](https://api.telegram.org/bot$){TELEGRAM_BOT_TOKEN}/sendMessage;
-fetch(url, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-chat_id: chatId,
-text: messageText,
-parse_mode: 'HTML',
-reply_markup: buttons.length > 0 ? { inline_keyboard: buttons } : undefined
-})
-}).catch(err => console.error("Telegram fetch error:", err));
-} catch (e) {
-console.error("خطأ تليجرام:", e);
-}
-}
-​// إرسال رسالة تليجرام مباشرة
-async function sendRawTelegram(chatId, messageText) {
-if (!chatId) return;
-try {
-const url = [https://api.telegram.org/bot$](https://api.telegram.org/bot$){TELEGRAM_BOT_TOKEN}/sendMessage;
-await fetch(url, {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-chat_id: chatId,
-text: messageText,
-parse_mode: 'HTML'
-})
-});
-} catch (e) {
-console.error("خطأ تقرير تليجرام:", e);
-}
-}
-​// 📊 دالة توليد وإرسال التقرير المسائي التلقائي
-async function sendDailyEveningReport(isManual = false) {
-try {
-const today = getToday();
-const todaysOrders = appOrders.filter(o => o.date === today);
-const total = todaysOrders.length;
-const done = todaysOrders.filter(o => o.status === 'done').length;
-const pending = todaysOrders.filter(o => o.status === 'pending' && Boolean(o.tech)).length;
-const postponed = todaysOrders.filter(o => o.status === 'postponed').length;
-const unassigned = todaysOrders.filter(o => o.status === 'pending' && (!o.tech || o.tech === '')).length;
-​const techs = appAccounts.filter(a => a.role === 'tech');
-​// 1. تجهيز وإرسال تقرير الإدارة
-let adminReport = 🌙 <b>التقرير المسائي اليومي لمنظومة الأعطال</b>\n📅 <b>التاريخ:</b> ${today}\n━━━━━━━━━━━━━━━━━━\n;
-adminReport += 📊 <b>إجمالي طلبات اليوم:</b> ${total}\n;
-adminReport += ✅ <b>المنجز:</b> ${done}\n;
-adminReport += 🚀 <b>جاري المتابعة:</b> ${pending}\n;
-adminReport += ⏳ <b>المؤجل:</b> ${postponed}\n;
-adminReport += ⚠️ <b>معلق غير مسند:</b> ${unassigned}\n;
-adminReport += ━━━━━━━━━━━━━━━━━━\n👷 <b>أداء الفنيين اليوم:</b>\n;
-​techs.forEach(t => {
-const tDone = todaysOrders.filter(o => o.tech === t.name && o.status === 'done').length;
-const tPending = todaysOrders.filter(o => o.tech === t.name && o.status !== 'done').length;
-adminReport += • <b>${t.name}:</b> أنجز (${tDone}) | متبقي (${tPending}) | الرصيد: ${t.accumulatedBonus || 0} ج\n;
-});
-​adminReport += ━━━━━━━━━━━━━━━━━━\n⚡ <i>تقرير آلي من تطبيق أعطالي</i>;
-await sendRawTelegram(ADMIN_TELEGRAM_CHAT, adminReport);
-​// 2. إرسال تقرير مخصص لكل فني على حسابه الخاص
-for (const t of techs) {
-const tOrders = todaysOrders.filter(o => o.tech === t.name);
-const tDoneCount = tOrders.filter(o => o.status === 'done').length;
-const tRemainCount = tOrders.filter(o => o.status !== 'done').length;
-​let techReport = 🌙 <b>تقريرك المسائي يا ${t.name}</b>\n📅 <b>التاريخ:</b> ${today}\n━━━━━━━━━━━━━━━━━━\n;
-techReport += ✅ <b>الأعطال التي أنجزتها اليوم:</b> ${tDoneCount}\n;
-techReport += ⏳ <b>الطلبات المتبقية عليك:</b> ${tRemainCount}\n;
-techReport += 💰 <b>إجمالي رصيد البونص الحالي:</b> ${t.accumulatedBonus || 0} ج\n;
-techReport += ━━━━━━━━━━━━━━━━━━\nعاش يا بطل، جهودكم مشكورة! 👏;
-​const techChat = t.telegramChatId || (t.name === 'mahmoud' ? ADMIN_TELEGRAM_CHAT : null);
-if (techChat) {
-await sendRawTelegram(techChat, techReport);
-}
-}
-​if (isManual) {
-toastNative('تم إرسال التقرير المسائي للإدارة ولكل الفنيين بنجاح 📊✓');
-}
-} catch (err) {
-console.error("خطأ في التقرير المسائي:", err);
-if (isManual) toastNative('حدث خطأ أثناء إرسال التقرير.');
-}
-}
-​// فحص الساعة 11 مساءً تلقائياً كل دقيقة
-function checkEveningReportSchedule() {
-const now = new Date();
-const hours = now.getHours();
-const minutes = now.getMinutes();
-​// فحص الساعة 23:00 (11 مساءً)
-if (hours === 23 && minutes === 0) {
-const today = getToday();
-const lastSent = localStorage.getItem('last_evening_report_date');
-if (lastSent !== today) {
-localStorage.setItem('last_evening_report_date', today);
-sendDailyEveningReport(false);
-}
-}
-}
-​async function sendNtfyPush(title, message, priority = 'urgent') {
-try {
-await fetch([https://ntfy.sh/$](https://ntfy.sh/$){NTFY_TOPIC}, {
-method: 'POST',
-body: message,
-headers: {
-'Title': title,
-'Priority': priority,
-'Tags': 'warning,wrench',
-'Content-Type': 'text/plain; charset=utf-8'
-}
-});
-} catch (err) {
-console.error("خطأ ntfy:", err);
-}
-}
-​let appAccounts = [
-{ id: 1, role: 'admin', name: 'المدير العام', username: 'mega_admin', pass: 'M@g@#2026!Sec' },
-{ id: 2, role: 'tech', name: 'أحمد سعيد', username: 'ahmed', pass: '111', accumulatedBonus: 0, lastSeen: 0, telegramChatId: '' },
-{ id: 3, role: 'tech', name: 'محمود علي', username: 'mahmoud', pass: '222', accumulatedBonus: 0, lastSeen: 0, telegramChatId: '5007105167' }
-];
-​let appOrders = [];
-let bonusRecords = [];
-let currentUser = null;
-let techCurrentTab = 'pending';
-let adminFilter = 'pending';
-let selectedTechFilter = 'all';
-let selectedDateFilter = 'all';
-let globalAudioCtx = null;
-let isChimePlaying = false;
-let activeChimeNodes = [];
-let lastOrderAlertId = null;
-let lastBonusAlertId = null;
-let lastAdminAlertId = null;
-let isUserInteractingWithSelect = false;
-​function forceLightModeEverywhere() {
-try {
-document.documentElement.style.setProperty('background-color', '#f8fafc', 'important');
-document.body.style.setProperty('background-color', '#f8fafc', 'important');
-document.body.style.setProperty('color', '#0f172a', 'important');
-} catch(e) {}
-}
-​function notifyNative(title, message) {
-try {
-if (window.AndroidAPI && typeof window.AndroidAPI.showNotification === 'function') {
-window.AndroidAPI.showNotification(String(title), String(message));
-} else if (window.Android && typeof window.Android.showNotification === 'function') {
-window.AndroidAPI.showNotification(String(title), String(message));
-} else if ("Notification" in window && Notification.permission === "granted") {
-new Notification(title, { body: message });
-}
-} catch (e) {}
-}
-​function toastNative(msg) {
-try {
-if (window.AndroidAPI && typeof window.AndroidAPI.showToast === 'function') {
-window.AndroidAPI.showToast(String(msg));
-return;
-}
-} catch (e) {}
-alert(msg);
-}
-​async function requestWakeLock() {
-try {
-if ('wakeLock' in navigator) {
-await navigator.wakeLock.request('screen');
-}
-} catch (err) {}
-}
-​function requestNotificationPermission() {
-try {
-if ("Notification" in window && Notification.permission !== "granted") {
-Notification.requestPermission();
-}
-} catch (e) {}
-}
-​function getToday() {
-const d = new Date();
-return ${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')};
-}
-​function getYesterday() {
-const d = new Date();
-d.setDate(d.getDate() - 1);
-return ${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')};
-}
-​function getOrderTimeBadge(orderDate) {
-if (!orderDate) return '';
-const today = getToday();
-const yesterday = getYesterday();
-​if (orderDate === today) {
-return <span class="badge badge-time-today">اليوم 🟢</span>;
-} else if (orderDate === yesterday) {
-return <span class="badge badge-time-yesterday">أمس ⚠️</span>;
-} else {
-return <span class="badge badge-time-older">📅 ${orderDate}</span>;
-}
-}
-​function checkOrderDelay(order) {
-if (order.status === 'done') return { isDelayed: false, hours: 0 };
-​const now = Date.now();
-const created = Number(order.createdAt) || 0;
-const today = getToday();
-​if (order.date && order.date !== today) {
-return { isDelayed: true, hours: 'سابق' };
-}
-​if (created > 0) {
-const diffHours = (now - created) / (1000 * 60 * 60);
-if (diffHours >= 3) {
-return { isDelayed: true, hours: Math.floor(diffHours) };
-}
-}
-​return { isDelayed: false, hours: 0 };
-}
-​function formatLastSeen(timestamp) {
-if (!timestamp) return 'لم يسجل دخول بعد';
-const diffMinutes = Math.floor((Date.now() - timestamp) / 60000);
-​if (diffMinutes < 1) return 'الآن';
-if (diffMinutes === 1) return 'منذ دقيقة';
-if (diffMinutes === 2) return 'منذ دقيقتين';
-if (diffMinutes >= 3 && diffMinutes <= 10) return منذ ${diffMinutes} دقائق;
-if (diffMinutes < 60) return منذ ${diffMinutes} دقيقة;
-​const diffHours = Math.floor(diffMinutes / 60);
-if (diffHours === 1) return 'منذ ساعة';
-if (diffHours === 2) return 'منذ ساعتين';
-if (diffHours >= 3 && diffHours <= 10) return منذ ${diffHours} ساعات;
-if (diffHours < 24) return منذ ${diffHours} ساعة;
-​const date = new Date(timestamp);
-return ${date.toLocaleDateString('ar-EG')} ${date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })};
-}
-​function unlockAudioSystem() {
-try {
-if (!globalAudioCtx) {
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-if (AudioContext) globalAudioCtx = new AudioContext();
-}
-if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
-globalAudioCtx.resume();
-}
-} catch(e) {}
-}
-​function stopAlertChimeNow() {
-isChimePlaying = false;
-if (activeChimeNodes && activeChimeNodes.length > 0) {
-activeChimeNodes.forEach(node => {
-try { node.stop(); } catch(e){}
-});
-activeChimeNodes = [];
-}
-if (navigator.vibrate) {
-try { navigator.vibrate(0); } catch(e){}
-}
-}
-​function playTone(freq, start, duration) {
-if (!globalAudioCtx || !isChimePlaying) return;
-try {
-const osc = globalAudioCtx.createOscillator();
-const gain = globalAudioCtx.createGain();
-osc.connect(gain);
-gain.connect(globalAudioCtx.destination);
-osc.frequency.setValueAtTime(freq, start);
-gain.gain.setValueAtTime(0.25, start);
-gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
-osc.start(start);
-osc.stop(start + duration);
-activeChimeNodes.push(osc);
-} catch(e) {}
-}
-​function triggerAlertChime(isDeduct = false) {
-unlockAudioSystem();
-if (!globalAudioCtx) return;
-stopAlertChimeNow();
-isChimePlaying = true;
-​const t = globalAudioCtx.currentTime;
-for (let i = 0; i < 3; i++) {
-const offset = i * 0.45;
-if (isDeduct) {
-playTone(520, t + offset, 0.16);
-playTone(440, t + offset + 0.1, 0.2);
-} else {
-playTone(587.33, t + offset, 0.12);
-playTone(880, t + offset + 0.12, 0.2);
-}
-}
-​if (navigator.vibrate) {
-try {
-navigator.vibrate([200, 80, 200]);
-} catch(e){}
-}
-}
-​function sendTechHeartbeat() {
-if (!currentUser || currentUser.role !== 'tech') return;
-const now = Date.now();
-currentUser.lastSeen = now;
-const meInList = appAccounts.find(a => a.id === currentUser.id);
-if (meInList) meInList.lastSeen = now;
-​fetch(${FIREBASE_DB}/bonus_system_data/presence/${currentUser.id}.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ lastSeen: now, techName: currentUser.name })
-}).catch(() => {});
-}
-​function checkIncomingAlerts(data) {
-if (!currentUser || !data) return;
-​if (currentUser.role === 'tech' && data.latestOrderAlert && data.latestOrderAlert.targetTech === currentUser.name) {
-const alert = data.latestOrderAlert;
-const dismissed = localStorage.getItem('last_dismissed_ord_' + currentUser.name);
-if (alert.alertId && alert.alertId !== dismissed && alert.alertId !== lastOrderAlertId) {
-lastOrderAlertId = alert.alertId;
-document.getElementById('alertCustName').innerText = alert.customer || 'عميل';
-document.getElementById('alertJobTypeBadge').innerText = alert.jobType || 'عطل';
-document.getElementById('alertCustPhone').innerText = alert.phone || 'بدون رقم';
-​const descRow = document.getElementById('alertDescRow');
-if (alert.desc && alert.desc.trim()) {
-document.getElementById('alertCustDesc').innerText = alert.desc;
-descRow.style.display = 'block';
-} else {
-descRow.style.display = 'none';
-}
-​const callBtn = document.getElementById('alertCallBtn');
-if (alert.phone) {
-callBtn.href = tel:${alert.phone};
-callBtn.classList.remove('hidden');
-} else {
-callBtn.classList.add('hidden');
-}
-​document.getElementById('modalOrderAlert').classList.remove('hidden');
-triggerAlertChime(false);
-notifyNative('طلب جديد مسند إليك! 🔔', العميل: ${alert.customer} (${alert.jobType}));
-syncDown(true);
-}
-}
-​if (currentUser.role === 'tech' && data.latestBonusAlert && data.latestBonusAlert.targetTech === currentUser.name) {
-const alert = data.latestBonusAlert;
-const dismissed = localStorage.getItem('last_dismissed_bn_' + currentUser.name);
-if (alert.bonusId && alert.bonusId !== dismissed && alert.bonusId !== lastBonusAlertId) {
-lastBonusAlertId = alert.bonusId;
-const isNeg = Number(alert.amount) < 0;
-const box = document.getElementById('bonusAlertBox');
-const card = document.getElementById('bonusAlertCard');
-const title = document.getElementById('bonusAlertTitle');
-const icon = document.getElementById('bonusAlertIcon');
-const label = document.getElementById('bonusAlertLabel');
-const amt = document.getElementById('bonusAlertAmount');
-const btn = document.getElementById('bonusAlertBtn');
-​if (isNeg) {
-box.style.borderColor = '#ef4444';
-card.style.backgroundColor = '#fff5f5';
-title.innerText = 'تنبيه: تم تسجيل خصم / سلفة';
-title.style.color = '#ef4444';
-icon.innerText = '⚠️';
-label.innerText = 'المبلغ المخصوم:';
-label.style.color = '#ef4444';
-amt.innerText = ${alert.amount} ج;
-amt.style.color = '#ef4444';
-btn.style.backgroundColor = '#ef4444';
-} else {
-box.style.borderColor = '#10b981';
-card.style.backgroundColor = '#ecfdf5';
-title.innerText = 'مبروك! نزل لك بونص جديد 🎁';
-title.style.color = '#059669';
-icon.innerText = '🎁';
-label.innerText = 'المبلغ المضاف:';
-label.style.color = '#059669';
-amt.innerText = +${alert.amount} ج;
-amt.style.color = '#059669';
-btn.style.backgroundColor = '#10b981';
-}
-​document.getElementById('bonusAlertReason').innerText = alert.reason ? السبب: ${alert.reason} : (isNeg ? 'خصم مالي' : 'مكافأة إنجاز');
-document.getElementById('modalBonusAlert').classList.remove('hidden');
-triggerAlertChime(isNeg);
-​if (isNeg) {
-notifyNative('تنبيه خصم مالي ⚠️', تم خصم ${Math.abs(alert.amount)} ج - السبب: ${alert.reason || 'خصم'});
-} else {
-notifyNative('مبروك! نزل لك بونص جديد 🎁', المبلغ: +${alert.amount} ج - السبب: ${alert.reason || 'مكافأة'});
-}
-syncDown(true);
-}
-}
-​if (currentUser.role === 'admin' && data.latestAdminAlert) {
-const aAlert = data.latestAdminAlert;
-const dismissedAdmin = localStorage.getItem('last_dismissed_admin_alert');
-if (aAlert.id && aAlert.id !== dismissedAdmin && aAlert.id !== lastAdminAlertId) {
-lastAdminAlertId = aAlert.id;
-document.getElementById('adminNotifTech').innerText = aAlert.tech || 'الفني';
-document.getElementById('adminNotifCust').innerText = aAlert.customer || 'العميل';
-document.getElementById('adminNotifDetail').innerText = aAlert.detail || 'بدون تفاصيل';
-​const icon = document.getElementById('adminNotifIcon');
-const title = document.getElementById('adminNotifTitle');
-const box = document.getElementById('adminNotifBox');
-​if (aAlert.type === 'done') {
-box.style.borderColor = '#10b981';
-title.innerText = '✅ تم حل الطلب بواسطة الفني';
-title.style.color = '#059669';
-icon.innerText = '🎉';
-notifyNative('تم حل عطل بنجاح ✅', الفني: ${aAlert.tech} أنهى عطل ${aAlert.customer});
-} else {
-box.style.borderColor = '#f59e0b';
-title.innerText = '⏳ قام الفني بتأجيل الطلب';
-title.style.color = '#d97706';
-icon.innerText = '⏳';
-notifyNative('تأجيل موعد عطل ⏳', الفني: ${aAlert.tech} قام بتأجيل طلب ${aAlert.customer});
-}
-​document.getElementById('modalAdminNotification').classList.remove('hidden');
-triggerAlertChime(false);
-syncDown(true);
-}
-}
-}
-​function dismissAdminNotification() {
-stopAlertChimeNow();
-if (lastAdminAlertId) {
-localStorage.setItem('last_dismissed_admin_alert', lastAdminAlertId);
-}
-document.getElementById('modalAdminNotification').classList.add('hidden');
-}
-​function dismissOrderAlert() {
-stopAlertChimeNow();
-if (lastOrderAlertId && currentUser) {
-localStorage.setItem('last_dismissed_ord_' + currentUser.name, lastOrderAlertId);
-}
-document.getElementById('modalOrderAlert').classList.add('hidden');
-}
-​function dismissBonusAlert() {
-stopAlertChimeNow();
-if (lastBonusAlertId && currentUser) {
-localStorage.setItem('last_dismissed_bn_' + currentUser.name, lastBonusAlertId);
-}
-document.getElementById('modalBonusAlert').classList.add('hidden');
-}
-​function handleLogin() {
-unlockAudioSystem();
-requestNotificationPermission();
-requestWakeLock();
-forceLightModeEverywhere();
-​const u = (document.getElementById('logUser').value || '').trim().toLowerCase();
-const p = (document.getElementById('logPass').value || '').trim();
-​let user = appAccounts.find(a => a.username.toLowerCase() === u && a.pass === p);
-​if (user) {
-currentUser = user;
-try {
-localStorage.setItem('saved_active_user', JSON.stringify(currentUser));
-} catch(e) {}
-showUserScreen();
-if (currentUser.role === 'tech') sendTechHeartbeat();
-} else {
-toastNative('اسم المستخدم أو كلمة المرور غير صحيحة!');
-}
-}
-​function handleLogout() {
-stopAlertChimeNow();
-currentUser = null;
-try {
-localStorage.removeItem('saved_active_user');
-localStorage.removeItem('admin_current_page');
-localStorage.removeItem('admin_current_tab');
-} catch(e) {}
-document.getElementById('screenAdmin').classList.add('hidden');
-document.getElementById('screenOrdersPage').classList.add('hidden');
-document.getElementById('screenSettingsPage').classList.add('hidden');
-document.getElementById('screenTech').classList.add('hidden');
-document.getElementById('modalOrderAlert').classList.add('hidden');
-document.getElementById('modalBonusAlert').classList.add('hidden');
-document.getElementById('modalTechBonusHistory').classList.add('hidden');
-document.getElementById('modalAdminNotification').classList.add('hidden');
-document.getElementById('modalEditOrder').classList.add('hidden');
-document.getElementById('screenLogin').classList.remove('hidden');
-}
-​function showUserScreen() {
-try {
-forceLightModeEverywhere();
-if (!currentUser) {
-document.getElementById('screenLogin').classList.remove('hidden');
-return;
-}
-​document.getElementById('screenLogin').classList.add('hidden');
-​if (currentUser.role === 'admin') {
-document.getElementById('screenTech').classList.add('hidden');
-document.getElementById('adminDate').innerText = getToday();
-​const savedPage = localStorage.getItem('admin_current_page') || 'home';
-const savedTab = localStorage.getItem('admin_current_tab') || 'pending';
-​if (savedPage === 'orders') {
-openOrdersPage(savedTab);
-} else if (savedPage === 'settings') {
-openSettingsPage();
-} else {
-document.getElementById('screenOrdersPage').classList.add('hidden');
-document.getElementById('screenSettingsPage').classList.add('hidden');
-document.getElementById('screenAdmin').classList.remove('hidden');
-renderAdmin();
-}
-} else {
-document.getElementById('screenAdmin').classList.add('hidden');
-document.getElementById('screenOrdersPage').classList.add('hidden');
-document.getElementById('screenSettingsPage').classList.add('hidden');
-document.getElementById('screenTech').classList.remove('hidden');
-document.getElementById('techDispName').innerText = currentUser.name || 'الفني';
-renderTech();
-}
-} catch(err) {
-document.getElementById('screenLogin').classList.remove('hidden');
-}
-}
-​function triggerManualSync() {
-syncDown(true);
-toastNative('تم تحديث البيانات من السحابة بنجاح ✓');
-}
-​function openSettingsPage() {
-localStorage.setItem('admin_current_page', 'settings');
-const adm = appAccounts.find(a => a.role === 'admin') || appAccounts[0];
-document.getElementById('adminUserField').value = adm.username;
-document.getElementById('adminPassField').value = adm.pass;
-populateSettingsTechSelects();
-loadSelectedTechData();
-renderBonusHistoryLog();
-​document.getElementById('screenAdmin').classList.add('hidden');
-document.getElementById('screenOrdersPage').classList.add('hidden');
-document.getElementById('screenSettingsPage').classList.remove('hidden');
-window.scrollTo(0, 0);
-}
-​function backToAdminHomeFromSettings() {
-localStorage.setItem('admin_current_page', 'home');
-document.getElementById('screenSettingsPage').classList.add('hidden');
-document.getElementById('screenAdmin').classList.remove('hidden');
-window.scrollTo(0, 0);
-renderAdmin();
-}
-​function populateSettingsTechSelects() {
-const setSel = document.getElementById('settingsTechSelect');
-const dedSel = document.getElementById('deductTechSelect');
-const hisSel = document.getElementById('historyFilterTech');
-const techs = appAccounts.filter(a => a.role === 'tech');
-setSel.innerHTML = '';
-dedSel.innerHTML = '';
-hisSel.innerHTML = '<option value="all">👥 جميع الفنيين</option>';
-​techs.forEach(t => {
-setSel.innerHTML += <option value="${t.id}">${t.name} (@${t.username})</option>;
-dedSel.innerHTML += <option value="${t.name}">${t.name}</option>;
-hisSel.innerHTML += <option value="${t.name}">${t.name}</option>;
-});
-}
-​function loadSelectedTechData() {
-const selId = document.getElementById('settingsTechSelect').value;
-const tech = appAccounts.find(a => a.id == selId);
-if (tech) {
-document.getElementById('settingsTechBal').value = tech.accumulatedBonus || 0;
-document.getElementById('settingsTechName').value = tech.name;
-document.getElementById('settingsTechUser').value = tech.username;
-document.getElementById('settingsTechPass').value = tech.pass;
-document.getElementById('settingsTechTelegram').value = tech.telegramChatId || '';
-}
-}
-​function renderBonusHistoryLog() {
-const container = document.getElementById('bonusHistoryLogList');
-const filter = document.getElementById('historyFilterTech').value;
-container.innerHTML = '';
-​let records = bonusRecords;
-if (filter !== 'all') {
-records = records.filter(b => b.tech === filter);
-}
-​if (records.length === 0) {
-container.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:11px; padding:12px;">لا توجد حركات مسجلة</p>';
-return;
-}
-​records.forEach(b => {
-const isNeg = Number(b.amount) < 0;
-const color = isNeg ? '#ef4444' : '#10b981';
-const sign = isNeg ? '' : '+';
-​container.innerHTML += <div style="display:flex; justify-content:space-between; align-items:center; background-color:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:6px 10px; margin-bottom:5px;"> <div> <strong style="font-size:12px; color:#1e293b; display:block;">${b.tech}</strong> <span style="font-size:10px; color:#64748b;">${b.date} • ${b.reason || 'بدون سبب'}</span> </div> <strong style="font-size:12px; color:${color}; direction:ltr;">${sign}${b.amount} ج</strong> </div>;
-});
-}
-​function clearAllBonusRecords() {
-if (confirm('هل أنت متأكد من مسح سجل الحركات؟ (لن يتم المساس بأرصدة الفنيين الحالية)')) {
-bonusRecords = [];
-renderBonusHistoryLog();
-syncUp();
-toastNative('تم تفريغ سجل الحركات بنجاح ✓');
-}
-}
-​function openTechBonusHistory() {
-if (!currentUser) return;
-const listContainer = document.getElementById('techBonusHistoryList');
-listContainer.innerHTML = '';
-​const myRecords = bonusRecords.filter(b => b.tech === currentUser.name);
-​if (myRecords.length === 0) {
-listContainer.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px; padding:18px;">لا توجد مكافآت أو خصومات مسجلة بعد</p>';
-} else {
-myRecords.forEach(b => {
-const isNeg = Number(b.amount) < 0;
-const color = isNeg ? '#ef4444' : '#059669';
-const bg = isNeg ? '#fff5f5' : '#ecfdf5';
-const sign = isNeg ? '' : '+';
-​listContainer.innerHTML += <div style="display:flex; justify-content:space-between; align-items:center; background-color:${bg}; border:1.5px solid ${isNeg ? '#fecdd3' : '#a7f3d0'}; border-radius:10px; padding:8px 12px; margin-bottom:6px;"> <div> <strong style="font-size:12px; color:#1e293b; display:block;">${b.reason || (isNeg ? 'خصم مالي' : 'مكافأة إنجاز')}</strong> <span style="font-size:10px; color:#64748b;">التاريخ: ${b.date}</span> </div> <strong style="font-size:13px; color:${color}; direction:ltr;">${sign}${b.amount} ج</strong> </div>;
-});
-}
-​document.getElementById('modalTechBonusHistory').classList.remove('hidden');
-}
-​function closeTechBonusHistory() {
-document.getElementById('modalTechBonusHistory').classList.add('hidden');
-}
-​function clearSelectedTechOrdersHistory() {
-const selId = document.getElementById('settingsTechSelect').value;
-const tech = appAccounts.find(a => a.id == selId);
-if (!tech) return;
-​const techOrdersCount = appOrders.filter(o => o.tech === tech.name).length;
-if (techOrdersCount === 0) {
-return toastNative(لا توجد طلبات مسجلة باسم الفني (${tech.name}) حالياً.);
-}
-​if (confirm(هل أنت متأكد من مسح جميع طلبات الفني (${tech.name}) بالكامل؟ (عددها: ${techOrdersCount}))) {
-appOrders = appOrders.filter(o => o.tech !== tech.name);
-renderAdmin();
-fetch(${FIREBASE_DB}/bonus_system_data/orders.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify(appOrders)
-}).catch(() => {});
-toastNative(تم مسح سجل طلبات (${tech.name}) بنجاح ✓);
-}
-}
-​function submitDeduction() {
-const techName = document.getElementById('deductTechSelect').value;
-const amount = Number(document.getElementById('deductAmount').value);
-const reason = document.getElementById('deductReason').value.trim() || 'سلفة / خصم كاش';
-​if (!amount || amount <= 0) return toastNative('أدخل مبلغ خصم صحيح');
-​const techObj = appAccounts.find(a => a.name === techName);
-if (techObj) {
-techObj.accumulatedBonus = Math.max(0, (Number(techObj.accumulatedBonus) || 0) - amount);
-bonusRecords.unshift({ id: Date.now(), tech: techName, amount: -amount, reason: reason, date: getToday() });
-​fetch(${FIREBASE_DB}/bonus_system_data/latestBonusAlert.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-bonusId: 'DED-' + Date.now(),
-targetTech: techName,
-amount: -amount,
-reason: reason,
-sentAt: Date.now()
-})
-}).catch(() => {});
-​sendTelegramAlertToTech(techName, ⚠️ <b>تنبيه خصم مالي</b>\n👤 <b>الفني:</b> ${techName}\n🔻 <b>المبلغ:</b> -${amount} ج\n📝 <b>السبب:</b> ${reason}\n💰 <b>الرصيد المتبقي:</b> ${techObj.accumulatedBonus} ج);
-​document.getElementById('deductAmount').value = '';
-document.getElementById('deductReason').value = '';
-loadSelectedTechData();
-renderBonusHistoryLog();
-renderAdmin();
-syncUp();
-toastNative(تم خصم ${amount} ج من حساب (${techName}) بنجاح ➖);
-}
-}
-​function updateSelectedTechBalance() {
-const selId = document.getElementById('settingsTechSelect').value;
-const newBal = Number(document.getElementById('settingsTechBal').value);
-if (isNaN(newBal) || newBal < 0) return toastNative('أدخل رقم رصيد صحيح');
-const tech = appAccounts.find(a => a.id == selId);
-if (tech) {
-tech.accumulatedBonus = newBal;
-renderAdmin();
-syncUp();
-toastNative(تم تثبيت رصيد (${tech.name}) إلى ${newBal} ج ✓);
-}
-}
-​function saveSelectedTechAccount() {
-const selId = document.getElementById('settingsTechSelect').value;
-const newName = document.getElementById('settingsTechName').value.trim();
-const newUser = document.getElementById('settingsTechUser').value.trim();
-const newPass = document.getElementById('settingsTechPass').value.trim();
-const newTgId = document.getElementById('settingsTechTelegram').value.trim();
-​if (!newName || !newUser || !newPass) return toastNative('يرجى ملء جميع الخانات');
-const tech = appAccounts.find(a => a.id == selId);
-if (tech) {
-const oldName = tech.name;
-tech.name = newName;
-tech.username = newUser;
-tech.pass = newPass;
-tech.telegramChatId = newTgId;
-​if (oldName !== newName) {
-appOrders.forEach(o => { if (o.tech === oldName) o.tech = newName; });
-bonusRecords.forEach(b => { if (b.tech === oldName) b.tech = newName; });
-}
-populateSettingsTechSelects();
-renderAdmin();
-syncUp();
-toastNative('تم حفظ وتحديث بيانات الفني وتليجرام بنجاح ✓');
-}
-}
-​function deleteSelectedTechAccount() {
-const selId = document.getElementById('settingsTechSelect').value;
-const tech = appAccounts.find(a => a.id == selId);
-if (!tech) return;
-if (confirm(حذف الفني (${tech.name}) نهائياً؟)) {
-appAccounts = appAccounts.filter(a => a.id != selId);
-populateSettingsTechSelects();
-loadSelectedTechData();
-renderAdmin();
-syncUp();
-toastNative('تم حذف الفني.');
-}
-}
-​function addNewTechAccount() {
-const name = document.getElementById('addTechName').value.trim();
-const user = document.getElementById('addTechUser').value.trim();
-const pass = document.getElementById('addTechPass').value.trim();
-const tgId = document.getElementById('addTechTelegram').value.trim();
-​if (!name || !user || !pass) return toastNative('يرجى ملء الاسم واليوزر والباسورد');
-appAccounts.push({
-id: Date.now(),
-role: 'tech',
-name,
-username: user,
-pass,
-accumulatedBonus: 0,
-lastSeen: 0,
-telegramChatId: tgId || ''
-});
-​document.getElementById('addTechName').value = '';
-document.getElementById('addTechUser').value = '';
-document.getElementById('addTechPass').value = '';
-document.getElementById('addTechTelegram').value = '';
-​populateSettingsTechSelects();
-loadSelectedTechData();
-renderAdmin();
-syncUp();
-toastNative('تمت إضافة الفني بنجاح ➕');
-}
-​function saveAdminCredentials() {
-const u = document.getElementById('adminUserField').value.trim();
-const p = document.getElementById('adminPassField').value.trim();
-if (!u || !p) return toastNative('أدخل اسم المستخدم وكلمة المرور الجديدة');
-const adm = appAccounts.find(a => a.role === 'admin') || appAccounts[0];
-adm.username = u;
-adm.pass = p;
-if (currentUser && currentUser.role === 'admin') {
-currentUser.username = u;
-currentUser.pass = p;
-try {
-localStorage.setItem('saved_active_user', JSON.stringify(currentUser));
-} catch(e) {}
-}
-syncUp();
-toastNative('تم تحديث وتأمين بيانات المدير بنجاح 💾');
-}
-​function saveNewOrder() {
-const nameInput = document.getElementById('newCustName');
-const phoneInput = document.getElementById('newCustPhone');
-const descInput = document.getElementById('newCustDesc');
-​const name = nameInput.value.trim();
-const phone = phoneInput.value.trim();
-const jobType = document.getElementById('newJobType').value;
-const desc = descInput.value.trim();
-​if (!name) {
-toastNative('أدخل اسم العميل أولاً');
-nameInput.focus();
-return;
-}
-​const newOrder = {
-id: 'ORD-' + Date.now().toString().slice(-5),
-customer: name,
-phone: phone,
-jobType: jobType || 'عطل',
-desc: desc || '',
-tech: '',
-status: 'pending',
-postponeReason: '',
-doneReason: '',
-date: getToday(),
-createdAt: Date.now()
-};
-​appOrders.unshift(newOrder);
-​nameInput.value = '';
-phoneInput.value = '';
-descInput.value = '';
-renderAdmin();
-syncUp();
-toastNative('تم حفظ الطلب في المعلق بنجاح ✓');
-}
-​function openEditOrderModal(orderId) {
-const ord = appOrders.find(o => o.id === orderId);
-if (!ord) return;
-document.getElementById('editOrderId').value = ord.id;
-document.getElementById('editCustName').value = ord.customer;
-document.getElementById('editCustPhone').value = ord.phone || '';
-​let curJob = ord.jobType || 'عطل';
-if (curJob === 'معاينة') curJob = 'معاينه جديده';
-document.getElementById('editJobType').value = curJob;
-​document.getElementById('editCustDesc').value = ord.desc || '';
-document.getElementById('modalEditOrder').classList.remove('hidden');
-}
-​function closeEditOrderModal() {
-document.getElementById('modalEditOrder').classList.add('hidden');
-}
-​function submitEditOrder() {
-const id = document.getElementById('editOrderId').value;
-const ord = appOrders.find(o => o.id === id);
-if (!ord) return;
-​const newName = document.getElementById('editCustName').value.trim();
-if (!newName) return toastNative('اسم العميل مطلوب');
-​ord.customer = newName;
-ord.phone = document.getElementById('editCustPhone').value.trim();
-ord.jobType = document.getElementById('editJobType').value;
-ord.desc = document.getElementById('editCustDesc').value.trim();
-​closeEditOrderModal();
-renderAdmin();
-syncUp();
-toastNative('تم تحديث بيانات العطل والعميل بنجاح 💾');
-}
-​function markAsRepeatedFault(orderId) {
-const ord = appOrders.find(o => o.id === orderId);
-if (!ord) return;
-​if (confirm(هل تريد تحويل طلب العميل (${ord.customer}) إلى (عطل متكرر) ونقله للمعلق كطلب جديد؟)) {
-ord.jobType = 'عطل متكرر';
-ord.status = 'pending';
-ord.tech = '';
-​if (ord.desc) {
-ord.desc = ord.desc
-.replace(/[كان مؤجلاً:.?]/g, '')
-.replace(/[كان منجزاً:.?]/g, '')
-.trim();
-}
-ord.doneReason = '';
-ord.postponeReason = '';
-ord.date = getToday();
-ord.createdAt = Date.now();
-​renderAdmin();
-syncUp();
-toastNative(تم نقل طلب (${ord.customer}) إلى المعلق كطلب جديد ✓);
-}
-}
-​function saveAssignDirectly(orderId, selectElem) {
-const targetTech = selectElem.value;
-if (!targetTech) return;
-​const ord = appOrders.find(o => o.id === orderId);
-if (ord) {
-const prevTech = ord.tech;
-ord.tech = targetTech;
-if (ord.status === 'postponed') ord.status = 'pending';
-​fetch(${FIREBASE_DB}/bonus_system_data/latestOrderAlert.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-alertId: 'ALERT-ORD-' + Date.now(),
-targetTech: targetTech,
-customer: ord.customer,
-phone: ord.phone || '',
-jobType: ord.jobType || 'عطل',
-desc: ord.desc || '',
-sentAt: Date.now()
-})
-}).catch(() => {});
-​sendNtfyPush(إسناد طلب للفني: ${targetTech} 👤, العميل: ${ord.customer} (${ord.jobType || 'عطل'})\nالهاتف: ${ord.phone || 'بدون رقم'});
-​const tgMsg = 🔔 <b>إسناد عطل جديد لك</b>\n\n👷 <b>الفني:</b> ${targetTech}\n👤 <b>العميل:</b> ${ord.customer}\n🛠 <b>نوع الطلب:</b> ${ord.jobType || 'عطل'}\n📞 <b>الهاتف:</b> <code>${ord.phone || 'بدون رقم'}</code>\n📍 <b>الملاحظات/العنوان:</b> ${ord.desc || 'لا توجد'}\n\n⚡ يرجى سرعة التحرك والإنجاز ✓;
-sendTelegramAlertToTech(targetTech, tgMsg, ord.phone, ord.desc);
-​syncUp();
-renderAdmin();
-​if (prevTech && prevTech !== targetTech) {
-toastNative(تم نقل الطلب وإرسال تنبيه لـ (${targetTech}) بنجاح ✓);
-} else {
-toastNative(تم إسناد الطلب وإرسال تنبيه لـ (${targetTech}) بنجاح ✓);
-}
-}
-}
-​function sendDirectAlertToTech(orderId) {
-const ord = appOrders.find(o => o.id === orderId);
-if (!ord) return;
-​if (!ord.tech || ord.tech.trim() === '') {
-return toastNative('يرجى إسناد العطل إلى فني أولاً لإرسال التنبيه له!');
-}
-​const alertPayload = {
-alertId: 'MANUAL-ALERT-' + Date.now(),
-targetTech: ord.tech,
-customer: ord.customer,
-phone: ord.phone || '',
-jobType: ord.jobType || 'عطل',
-desc: ord.desc || '',
-sentAt: Date.now()
-};
-​fetch(${FIREBASE_DB}/bonus_system_data/latestOrderAlert.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify(alertPayload)
-}).then(() => {
-sendNtfyPush(تنبيه رنين للفني: ${ord.tech} 🔔, العميل: ${ord.customer} - يرجى التحرك فوراً);
-​const tgRingMsg = 🚨 <b>تنبيه رنين عاجل من الإدارة!</b>\n\n👷 <b>الفني:</b> ${ord.tech}\n👤 <b>العميل:</b> ${ord.customer}\n📞 <b>الهاتف:</b> <code>${ord.phone || 'بدون رقم'}</code>\n\n⚡ يرجى فتح التطبيق والتوجه فوراً للمكان!;
-sendTelegramAlertToTech(ord.tech, tgRingMsg, ord.phone, ord.desc);
-​toastNative(تم إرسال رنين للتطبيق وتنبيه تليجرام للفني (${ord.tech}) الآن 🔔);
-}).catch(() => {
-toastNative('حدث خطأ أثناء إرسال التنبيه، تأكد من الاتصال.');
-});
-}
-​function deleteOrder(orderId) {
-if (confirm('حذف هذا الطلب نهائياً من النظام وجميع الفنيين؟')) {
-appOrders = appOrders.filter(o => o.id !== orderId);
-renderAdmin();
-fetch(${FIREBASE_DB}/bonus_system_data/orders.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify(appOrders)
-}).catch(() => {});
-}
-}
-​function promptBonus(techName) {
-const amt = prompt(أدخل مبلغ البونص لـ (${techName}):, "50");
-if (amt && Number(amt) > 0) {
-const reason = prompt('سبب البونص (مثلاً: إنجاز مهمة، شد سلك، تركيب راوتر...):', 'مكافأة إنجاز') || 'مكافأة إنجاز';
-const t = appAccounts.find(a => a.name === techName);
-if (t) {
-t.accumulatedBonus = (Number(t.accumulatedBonus) || 0) + Number(amt);
-bonusRecords.unshift({ id: Date.now(), tech: techName, amount: Number(amt), reason: reason, date: getToday() });
-​fetch(${FIREBASE_DB}/bonus_system_data/latestBonusAlert.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-bonusId: 'BN-' + Date.now(),
-targetTech: techName,
-amount: Number(amt),
-reason: reason,
-sentAt: Date.now()
-})
-}).catch(() => {});
-​const tgBonusMsg = 🎁 <b>مبروك! مكافأة جديدة</b>\n\n👷 <b>الفني:</b> ${techName}\n💵 <b>قيمة البونص:</b> +${amt} ج\n📝 <b>السبب:</b> ${reason}\n💰 <b>إجمالي رصيدك الحالي:</b> ${t.accumulatedBonus} ج;
-sendTelegramAlertToTech(techName, tgBonusMsg);
-​renderAdmin();
-syncUp();
-toastNative(تم نزول ${amt} ج لحساب (${techName}) وإرسال إشعار له 🎁);
-}
-}
-}
-​function zeroBonus(techName) {
-if (confirm(تصفير حساب الفني (${techName}) بعد محاسبته؟)) {
-const t = appAccounts.find(a => a.name === techName);
-if (t) {
-const clearedAmt = t.accumulatedBonus;
-t.accumulatedBonus = 0;
-if (clearedAmt > 0) {
-bonusRecords.unshift({ id: Date.now(), tech: techName, amount: -clearedAmt, reason: 'تسليم كاش وتصفير حساب', date: getToday() });
-}
-renderAdmin();
-syncUp();
-}
-}
-}
-​function openOrdersPage(type) {
-adminFilter = type;
-selectedTechFilter = 'all';
-selectedDateFilter = 'all';
-​localStorage.setItem('admin_current_page', 'orders');
-localStorage.setItem('admin_current_tab', type);
-​const titles = {
-'pending': '⏳ الطلبات المعلقة (غير المسندة)',
-'assigned': '🚀 الطلبات الجارية (مسندة للفنيين)',
-'postponed': '⏸️ الطلبات المؤجلة',
-'done': '✅ الطلبات المنجزة'
-};
-​document.getElementById('ordersPageTitle').innerText = titles[type] || 'الطلبات';
-document.getElementById('screenAdmin').classList.add('hidden');
-document.getElementById('screenSettingsPage').classList.add('hidden');
-document.getElementById('screenOrdersPage').classList.remove('hidden');
-window.scrollTo(0, 0);
-​updateDateFilterUI();
-renderAdminOrders();
-}
-​function backToAdminHome() {
-localStorage.setItem('admin_current_page', 'home');
-document.getElementById('screenOrdersPage').classList.add('hidden');
-document.getElementById('screenSettingsPage').classList.add('hidden');
-document.getElementById('screenAdmin').classList.remove('hidden');
-window.scrollTo(0, 0);
-renderAdmin();
-}
-​function setTechSubFilter(techName) {
-selectedTechFilter = techName;
-const pills = document.querySelectorAll('#techSubFilterBar .tech-pill');
-pills.forEach(p => {
-if (p.getAttribute('data-tech') === techName) {
-p.classList.add('active');
-} else {
-p.classList.remove('active');
-}
-});
-renderAdminOrders();
-}
-​function setDateFilter(filterType) {
-selectedDateFilter = filterType;
-document.getElementById('datePickerFilter').value = '';
-updateDateFilterUI();
-renderAdminOrders();
-}
-​function setDateFilterCustom(customDate) {
-if (!customDate) {
-selectedDateFilter = 'all';
-} else {
-selectedDateFilter = customDate;
-}
-updateDateFilterUI();
-renderAdminOrders();
-}
-​function updateDateFilterUI() {
-const pAll = document.getElementById('datePillAll');
-const pToday = document.getElementById('datePillToday');
-const pYest = document.getElementById('datePillYesterday');
-const lbl = document.getElementById('selectedDateLabel');
-​pAll.classList.remove('active');
-pToday.classList.remove('active');
-pYest.classList.remove('active');
-​if (selectedDateFilter === 'all') {
-pAll.classList.add('active');
-lbl.innerText = 'عرض: الكل';
-} else if (selectedDateFilter === 'today') {
-pToday.classList.add('active');
-lbl.innerText = عرض: أعطال اليوم (${getToday()});
-} else if (selectedDateFilter === 'yesterday') {
-pYest.classList.add('active');
-lbl.innerText = عرض: أعطال أمس (${getYesterday()});
-} else {
-lbl.innerText = عرض يوم: ${selectedDateFilter};
-}
-}
-​function renderAdmin() {
-try {
-const pendingCount = appOrders.filter(o => o.status === 'pending' && (!o.tech || o.tech === '')).length;
-const assignedCount = appOrders.filter(o => o.status === 'pending' && Boolean(o.tech)).length;
-const postponedCount = appOrders.filter(o => o.status === 'postponed').length;
-const doneCount = appOrders.filter(o => o.status === 'done').length;
-​document.getElementById('statPending').innerText = pendingCount;
-document.getElementById('statAssigned').innerText = assignedCount;
-document.getElementById('statPostponed').innerText = postponedCount;
-document.getElementById('statDone').innerText = doneCount;
-​const techBox = document.getElementById('adminTechsList');
-techBox.innerHTML = '';
-const techs = appAccounts.filter(a => a.role === 'tech');
-const now = Date.now();
-​techs.forEach(t => {
-const isOnline = t.lastSeen && (now - t.lastSeen < 45000);
-const statusClass = isOnline ? 'status-online' : 'status-offline';
-const statusText = isOnline ? 'متصل الآن' : آخر ظهور: ${formatLastSeen(t.lastSeen)};
-const statusTextColor = isOnline ? '#10b981' : '#64748b';
-​techBox.innerHTML += <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px;"> <div> <div style="display:flex; align-items:center; gap:4px; flex-wrap: wrap;"> <span class="status-dot ${statusClass}"></span> <strong style="font-size:13px; color:#0f172a;">${t.name}</strong> <span style="font-size:10px; font-weight:700; color:${statusTextColor};">(${statusText})</span> </div> <span style="display:block; color:#10b981; font-weight:900; font-size:16px; margin-top:2px;">${t.accumulatedBonus || 0} ج</span> </div> <div style="display:flex; gap:5px;"> <button onclick="promptBonus('${t.name}')" class="btn btn-success" style="width:auto; padding:5px 10px; font-size:11px;">➕ بونص</button> <button onclick="zeroBonus('${t.name}')" class="btn btn-secondary" style="width:auto; padding:5px 10px; font-size:11px;">تصفير</button> </div> </div>;
-});
-​const subBar = document.getElementById('techSubFilterBar');
-if (adminFilter === 'pending') {
-subBar.classList.add('hidden');
-} else {
-subBar.classList.remove('hidden');
-let pillsHtml = <div class="tech-pill ${selectedTechFilter === 'all' ? 'active' : ''}" data-tech="all" onclick="setTechSubFilter('all')">👥 الكل</div>;
-techs.forEach(t => {
-let count = 0;
-if (adminFilter === 'assigned') count = appOrders.filter(o => o.status === 'pending' && o.tech === t.name).length;
-else if (adminFilter === 'postponed') count = appOrders.filter(o => o.status === 'postponed' && o.tech === t.name).length;
-else if (adminFilter === 'done') count = appOrders.filter(o => o.status === 'done' && o.tech === t.name).length;
-​pillsHtml += <div class="tech-pill ${selectedTechFilter === t.name ? 'active' : ''}" data-tech="${t.name}" onclick="setTechSubFilter('${t.name}')">👤 ${t.name} (${count})</div>;
-});
-subBar.innerHTML = pillsHtml;
-}
-​renderAdminOrders();
-} catch(e) {
-console.error("Error in renderAdmin:", e);
-}
-}
-​function renderAdminOrders() {
-if (isUserInteractingWithSelect) return;
-​const ordBox = document.getElementById('adminOrdersList');
-if (!ordBox) return;
-ordBox.innerHTML = '';
-const techs = appAccounts.filter(a => a.role === 'tech');
-​let filtered = [];
-if (adminFilter === 'pending') {
-filtered = appOrders.filter(o => o.status === 'pending' && (!o.tech || o.tech === ''));
-} else if (adminFilter === 'assigned') {
-filtered = appOrders.filter(o => o.status === 'pending' && Boolean(o.tech));
-} else if (adminFilter === 'postponed') {
-filtered = appOrders.filter(o => o.status === 'postponed');
-} else if (adminFilter === 'done') {
-filtered = appOrders.filter(o => o.status === 'done');
-}
-​if (adminFilter !== 'pending' && selectedTechFilter !== 'all') {
-filtered = filtered.filter(o => o.tech === selectedTechFilter);
-}
-​const today = getToday();
-const yesterday = getYesterday();
-​if (selectedDateFilter === 'today') {
-filtered = filtered.filter(o => o.date === today);
-} else if (selectedDateFilter === 'yesterday') {
-filtered = filtered.filter(o => o.date === yesterday);
-} else if (selectedDateFilter !== 'all') {
-filtered = filtered.filter(o => o.date === selectedDateFilter);
-}
-​if (filtered.length === 0) {
-ordBox.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">لا توجد طلبات مطابقة للفلتر المحدد</p>';
-return;
-}
-​const renderSlice = filtered.slice(0, 40);
-​renderSlice.forEach(o => {
-const isDone = o.status === 'done';
-const isPostponed = o.status === 'postponed';
-​const delayInfo = checkOrderDelay(o);
-const delayedClass = delayInfo.isDelayed ? 'order-delayed-box' : '';
-const delayedBadgeHtml = delayInfo.isDelayed ? <span class="badge badge-delayed-alert">⚠️ متأخر (${delayInfo.hours === 'سابق' ? 'أيام سابقة' : delayInfo.hours + ' س'})</span> : '';
-​let badgeClass = 'badge-unassigned';
-let badgeText = 'معلق';
-​if (isDone) {
-badgeClass = 'badge-done';
-badgeText = 'تم الحل ✓';
-} else if (isPostponed) {
-badgeClass = 'badge-postponed';
-badgeText = 'مؤجل ⏳';
-} else if (o.tech) {
-badgeClass = 'badge-assigned';
-badgeText = 'تم الإسناد';
-}
-​let jobBadgeClass = 'badge-job-fault';
-if (o.jobType === 'تركيبه جديده') jobBadgeClass = 'badge-job-install';
-else if (o.jobType === 'معاينه جديده' || o.jobType === 'معاينة') jobBadgeClass = 'badge-job-inspect';
-else if (o.jobType === 'تشييك') jobBadgeClass = 'badge-job-check';
-else if (o.jobType === 'عطل متكرر') jobBadgeClass = 'badge-job-repeat';
-​const displayJobName = (o.jobType === 'معاينة') ? 'معاينه جديده' : (o.jobType || 'عطل');
-const timeBadgeHtml = getOrderTimeBadge(o.date);
-​let techOpts = '<option value="">اختر الفني للإسناد...</option>';
-techs.forEach(t => {
-techOpts += <option value="${t.name}" ${o.tech === t.name ? 'selected' : ''}>${t.name}</option>;
-});
-​ordBox.innerHTML += `
-<div class="order-box ${delayedClass}">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; border-bottom:1px solid #cbd5e1; padding-bottom:5px;">
-<span style="font-size:11px; font-weight:800; color:#334155; display:inline-flex; align-items:center; gap:4px;">
-👤 الفني: <strong style="color:#2563eb;">${o.tech || 'غير محدد بعد'}</strong>
-</span>
-<div style="display:flex; gap:3px; align-items:center; flex-wrap: wrap;">
-${delayedBadgeHtml}
-{timeBadgeHtml}
-<span class="badge ${badgeClass}">{badgeText}</span>
-</div>
-</div>
-​<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-<div>
-<strong style="font-size:13px; color:#0f172a;">{o.customer}</strong>
-<span class="badge ${jobBadgeClass}" style="margin-right: 4px; font-size: 10px;">{displayJobName}</span>
-${o.phone ? <a href="tel:${o.phone}" style="color:#2563eb; text-decoration:none; font-size:12px; font-weight:800; margin-right:6px;">📞 ${o.phone}</a> : <span style="color:#94a3b8; font-size:10px; margin-right:6px;">(بدون رقم)</span>}
-</div>
-</div>
-​${o.desc ? <p style="font-size:11px; color:#475569; margin-bottom:4px; background-color:#f8fafc; padding:5px 8px; border-radius:6px; border: 1px solid #e2e8f0;">${o.desc}</p> : ''}
-​${isPostponed && o.postponeReason ? <div style="font-size:11px; color:#c2410c; background-color:#fff7ed; border:1px solid #fed7aa; padding:4px 8px; border-radius:6px; margin-bottom:4px;"> سبب التأجيل: ${o.postponeReason} </div> : ''}
-​${isDone ? <div style="font-size:11px; color:#15803d; background-color:#f0fdf4; border:1px solid #bbf7d0; padding:4px 8px; border-radius:6px; margin-bottom:4px;"> ما تم فعله: ${o.doneReason || 'تم الإنجاز بنجاح'} </div> : ''}
-​<div style="display:flex; gap:5px; margin-top:6px; align-items: center; flex-wrap: wrap;">
-${!isDone ? <select  id="sel_${o.id}"  class="input-control"  style="margin-bottom:0; padding:5px 8px; font-size:11px; font-weight:700; flex: 1; min-width: 100px;" onfocus="isUserInteractingWithSelect = true" onblur="isUserInteractingWithSelect = false" onchange="saveAssignDirectly('${o.id}', this)" > ${techOpts} </select> <button type="button" onclick="sendDirectAlertToTech('${o.id}')" class="btn btn-warning" style="width:auto; padding:5px 8px; font-size:11px; white-space:nowrap;" title="رنين داخل التطبيق وتليجرام"> 🔔 رنين </button> : ''}
-​<button type="button" onclick="openEditOrderModal('${o.id}')" class="btn btn-secondary" style="width:auto; padding:5px 8px; font-size:11px; white-space:nowrap;" title="تعديل بيانات العطل أو العميل">
-✏️ تعديل
-</button>
-​${(isDone || isPostponed) ? <button type="button" onclick="markAsRepeatedFault('${o.id}')" class="btn btn-warning" style="width:auto; padding:5px 8px; font-size:11px; white-space:nowrap; background-color:#ea580c !important;" title="تحويل لعطل متكرر ونقله للمعلق كطلب جديد"> 🔁 متكرر </button> : ''}
-​<button type="button" onclick="deleteOrder('${o.id}')" class="btn btn-danger" style="width:auto; padding:5px 8px; font-size:11px;">✕</button>
-</div>
-</div>
-`;
-});
-}
-​function renderTech() {
-try {
-const me = appAccounts.find(a => a.id === currentUser.id) || currentUser;
-document.getElementById('techBonusBalance').innerText = ${me.accumulatedBonus || 0} ج;
-​const myOrders = appOrders.filter(o => o.tech === me.name);
-const pendingList = myOrders.filter(o => o.status !== 'done');
-const doneList = myOrders.filter(o => o.status === 'done');
-​const today = getToday();
-pendingList.sort((a, b) => {
-const aIsToday = (a.date === today);
-const bIsToday = (b.date === today);
-if (!aIsToday && bIsToday) return -1;
-if (aIsToday && !bIsToday) return 1;
-return (b.date || '').localeCompare(a.date || '');
-});
-​document.getElementById('countTechPending').innerText = pendingList.length;
-document.getElementById('countTechDone').innerText = doneList.length;
-​const feed = document.getElementById('techOrdersList');
-feed.innerHTML = '';
-const list = techCurrentTab === 'pending' ? pendingList : doneList;
-​if (list.length === 0) {
-feed.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">لا توجد طلبات مسندة إليك في هذا التبويب</p>';
-return;
-}
-​list.slice(0, 30).forEach(o => {
-const isDone = o.status === 'done';
-const isPostponed = o.status === 'postponed';
-​const delayInfo = checkOrderDelay(o);
-const delayedClass = delayInfo.isDelayed ? 'order-delayed-box' : '';
-const delayedBadgeHtml = delayInfo.isDelayed ? <span class="badge badge-delayed-alert">⚠️ متأخر (${delayInfo.hours === 'سابق' ? 'أيام سابقة' : delayInfo.hours + ' س'})</span> : '';
-​let jobBadgeClass = 'badge-job-fault';
-let displayJobText = (o.jobType === 'معاينة') ? 'معاينه جديده' : (o.jobType || 'عطل');
-​if (o.jobType === 'تركيبه جديده') {
-jobBadgeClass = 'badge-job-install';
-} else if (o.jobType === 'معاينه جديده' || o.jobType === 'معاينة') {
-jobBadgeClass = 'badge-job-inspect';
-} else if (o.jobType === 'تشييك') {
-jobBadgeClass = 'badge-job-check';
-} else if (o.jobType === 'عطل متكرر') {
-jobBadgeClass = 'badge-job-repeat';
-}
-​let statusBadgeHtml = '';
-if (isDone) {
-statusBadgeHtml = <span class="badge badge-done">تم الحل ✓</span>;
-} else if (isPostponed) {
-statusBadgeHtml = <span class="badge badge-postponed">مؤجل ⏳</span>;
-}
-​const timeBadgeHtml = getOrderTimeBadge(o.date);
-​let phoneBtnHtml = '';
-if (o.phone && o.phone.trim() !== '') {
-phoneBtnHtml = <a href="tel:${o.phone}" class="btn btn-success" style="padding:6px; font-size:11px;">📞 اتصال</a>;
-} else {
-phoneBtnHtml = <span class="btn btn-secondary" style="padding:6px; font-size:11px; cursor:default; opacity:0.85;">بدون رقم</span>;
-}
-​feed.innerHTML += `
-<div class="card ${delayedClass}">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; border-bottom:1px solid #cbd5e1; padding-bottom:5px;">
-<strong style="font-size:14px; color:#0f172a;">${o.customer}</strong>
-<div style="display:flex; gap:3px; align-items:center; flex-wrap: wrap;">
-{delayedBadgeHtml}
-<span class="badge ${jobBadgeClass}">{displayJobText}</span>
-${timeBadgeHtml}
-${statusBadgeHtml}
-</div>
-</div>
-​${o.desc && o.desc.trim() !== '' ? <p style="font-size:11px; color:#475569; margin-bottom:6px; background-color:#f8fafc; padding:6px 8px; border-radius:6px; border:1px solid #e2e8f0;"> ${o.desc} </p> : ''}
-​${isPostponed && o.postponeReason ? <div style="font-size:11px; color:#c2410c; background-color:#fff7ed; border:1px solid #fed7aa; padding:4px 8px; border-radius:6px; margin-bottom:6px;"> سبب التأجيل: ${o.postponeReason} </div> : ''}
-​${isDone && o.doneReason ? <div style="font-size:11px; color:#15803d; background-color:#f0fdf4; border:1px solid #bbf7d0; padding:4px 8px; border-radius:6px; margin-bottom:6px;"> تم: ${o.doneReason} </div> : ''}
-​${!isDone ? <div class="grid-3" style="margin-top: 5px;"> ${phoneBtnHtml} <button onclick="openPostponeModal('${o.id}')" class="btn btn-warning" style="padding:6px; font-size:11px;">⏳ تأجيل</button> <button onclick="openSolveModal('${o.id}')" class="btn btn-primary" style="padding:6px; font-size:11px;">تم الحل ✓</button> </div> : <div style="text-align:left; margin-top: 5px;"> ${o.phone && o.phone.trim() !== '' ?<a href="tel:${o.phone}" class="btn btn-success" style="width:auto; display:inline-flex; padding:5px 12px; font-size:11px;">📞 اتصال</a>: ''} </div>}
-</div>
-`;
-});
-} catch(e) {
-console.error("Error in renderTech:", e);
-}
-}
-​function switchTechTab(tab) {
-techCurrentTab = tab;
-if (tab === 'pending') {
-document.getElementById('tabBtnPending').className = 'btn btn-primary';
-document.getElementById('tabBtnDone').className = 'btn btn-secondary';
-} else {
-document.getElementById('tabBtnPending').className = 'btn btn-secondary';
-document.getElementById('tabBtnDone').className = 'btn btn-primary';
-}
-renderTech();
-}
-​function openSolveModal(id) {
-document.getElementById('solveOrderId').value = id;
-document.getElementById('solveReasonText').value = '';
-document.getElementById('modalSolveOrder').classList.remove('hidden');
-}
-​function closeSolveModal() {
-document.getElementById('modalSolveOrder').classList.add('hidden');
-}
-​function submitSolveOrder() {
-const id = document.getElementById('solveOrderId').value;
-const reason = document.getElementById('solveReasonText').value.trim() || 'تم الإنجاز بنجاح';
-const ord = appOrders.find(o => o.id === id);
-​if (ord) {
-ord.status = 'done';
-ord.doneReason = reason;
-​fetch(${FIREBASE_DB}/bonus_system_data/latestAdminAlert.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-id: 'DONE-' + Date.now(),
-type: 'done',
-tech: currentUser.name,
-customer: ord.customer,
-detail: reason,
-sentAt: Date.now()
-})
-}).then(() => {
-sendNtfyPush(تم إنجاز العطل ✅ (${currentUser.name}), العميل: ${ord.customer}\nما تم: ${reason});
-toastNative('تم تأكيد الحل وإرسال التنبيه للإدارة بنجاح ✓');
-}).catch(() => {});
-​closeSolveModal();
-renderTech();
-syncUp();
-}
-}
-​function openPostponeModal(id) {
-document.getElementById('postponeOrderId').value = id;
-document.getElementById('postponeReasonText').value = '';
-document.getElementById('modalPostponeOrder').classList.remove('hidden');
-}
-​function closePostponeModal() {
-document.getElementById('modalPostponeOrder').classList.add('hidden');
-}
-​function submitPostponeOrder() {
-const id = document.getElementById('postponeOrderId').value;
-const reason = document.getElementById('postponeReasonText').value.trim() || 'تم التأجيل';
-const ord = appOrders.find(o => o.id === id);
-​if (ord) {
-ord.status = 'postponed';
-ord.postponeReason = reason;
-​fetch(${FIREBASE_DB}/bonus_system_data/latestAdminAlert.json, {
-method: 'PUT',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({
-id: 'POSTPONE-' + Date.now(),
-type: 'postpone',
-tech: currentUser.name,
-customer: ord.customer,
-detail: reason,
-sentAt: Date.now()
-})
-}).then(() => {
-sendNtfyPush(تم تأجيل الطلب ⏳ (${currentUser.name}), العميل: ${ord.customer}\nالسبب: ${reason});
-toastNative('تم حفظ التأجيل وإشعار الإدارة ✓');
-}).catch(() => {});
-​closePostponeModal();
-renderTech();
-syncUp();
-}
-}
-​let isFetchingInstantAlert = false;
-function instantAlertsCheck() {
-if (!currentUser || isFetchingInstantAlert) return;
-isFetchingInstantAlert = true;
-​const t = Date.now();
-​if (currentUser.role === 'admin') {
-fetch(${FIREBASE_DB}/bonus_system_data/latestAdminAlert.json?ts=${t}, { cache: 'no-store' })
-.then(res => res.json())
-.then(alert => {
-if (alert) checkIncomingAlerts({ latestAdminAlert: alert });
-})
-.catch(() => {})
-.finally(() => { isFetchingInstantAlert = false; });
-} else if (currentUser.role === 'tech') {
-Promise.all([
-fetch(${FIREBASE_DB}/bonus_system_data/latestOrderAlert.json?ts=${t}, { cache: 'no-store' }).then(r => r.json()).catch(() => null),
-fetch(${FIREBASE_DB}/bonus_system_data/latestBonusAlert.json?ts=${t}, { cache: 'no-store' }).then(r => r.json()).catch(() => null)
-]).then(([orderAlert, bonusAlert]) => {
-if (orderAlert) checkIncomingAlerts({ latestOrderAlert: orderAlert });
-if (bonusAlert) checkIncomingAlerts({ latestBonusAlert: bonusAlert });
-}).finally(() => { isFetchingInstantAlert = false; });
-} else {
-isFetchingInstantAlert = false;
-}
-}
-​function syncDown(force = false) {
-fetch(${FIREBASE_DB}/bonus_system_data.json?ts=${Date.now()}, { cache: 'no-store' })
-.then(res => res.json())
-.then(data => {
-if (!data) return;
-​if (Array.isArray(data.accounts) && data.accounts.length > 0) {
-appAccounts = data.accounts;
-}
-appOrders = Array.isArray(data.orders) ? data.orders : [];
-if (Array.isArray(data.bonusRecords)) bonusRecords = data.bonusRecords;
-​if (data.presence) {
-Object.keys(data.presence).forEach(techId => {
-const target = appAccounts.find(a => a.id == techId);
-if (target && data.presence[techId].lastSeen) {
-target.lastSeen = data.presence[techId].lastSeen;
-}
-});
-}
-​checkIncomingAlerts(data);
-​if (currentUser) {
-const updated = appAccounts.find(a => (a.username && currentUser.username && a.username.toLowerCase() === currentUser.username.toLowerCase()) || a.id === currentUser.id);
-if (updated) {
-currentUser = Object.assign({}, currentUser, updated);
-}
-if (currentUser.role === 'admin') {
-renderAdmin();
-renderBonusHistoryLog();
-} else {
-renderTech();
-}
-}
-})
-.catch(() => {});
-}
-​function syncUp() {
-fetch(${FIREBASE_DB}/bonus_system_data.json, {
-method: 'PATCH',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ accounts: appAccounts, orders: appOrders, bonusRecords: bonusRecords })
-}).catch(() => {});
-}
-​window.onload = function() {
-try {
-const saved = localStorage.getItem('saved_active_user');
-if (saved) {
-currentUser = JSON.parse(saved);
-}
-} catch(e) {
-currentUser = null;
-}
-​forceLightModeEverywhere();
-showUserScreen();
-requestNotificationPermission();
-requestWakeLock();
-​if (currentUser && currentUser.role === 'tech') {
-sendTechHeartbeat();
-}
-​syncDown(true);
-​setInterval(instantAlertsCheck, 1000);
-setInterval(() => syncDown(false), 6000);
-setInterval(sendTechHeartbeat, 15000);
-​// فحص الساعة 11 مساءً لإرسال التقرير اليومي تلقائياً
-setInterval(checkEveningReportSchedule, 60000);
-};
-</script>
+<body>
+
+  <!-- شاشة الدخول -->
+  <div id="screenLogin" class="container" style="min-height: 85vh; display: flex; align-items: center; justify-content: center;">
+    <div class="card" style="width: 100%; text-align: center; padding: 24px 16px;">
+      <h2 style="font-size: 20px; font-weight: 900; margin-bottom: 4px;">أعطالي 📶</h2>
+      <p style="font-size: 12px; color: #64748b; margin-bottom: 16px;">تسجيل الدخول</p>
+      <input type="text" id="logUser" placeholder="اسم المستخدم" class="input-control">
+      <input type="password" id="logPass" placeholder="كلمة المرور" class="input-control">
+      <button type="button" onclick="handleLogin()" class="btn btn-primary">دخول</button>
+    </div>
+  </div>
+
+  <!-- لوحة الإدارة -->
+  <div id="screenAdmin" class="hidden">
+    <header class="header">
+      <div>
+        <h3 style="font-size: 14px; font-weight: 900;">لوحة الإدارة</h3>
+        <span id="adminDate" style="font-size: 10px; color: #64748b; font-weight: 700;"></span>
+      </div>
+      <div style="display: flex; gap: 5px;">
+        <button type="button" onclick="openSettingsPage()" class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;">⚙ الإعدادات</button>
+        <button type="button" onclick="handleLogout()" class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 11px;">خروج</button>
+      </div>
+    </header>
+
+    <div class="container">
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 5px; margin-bottom: 12px;">
+        <div class="stat-tab stat-pending" onclick="openOrdersPage('pending')">
+          <span style="font-size: 10px; font-weight: 800; color: #b45309;">معلق</span>
+          <strong id="statPending" style="font-size: 15px; display: block;">0</strong>
+        </div>
+        <div class="stat-tab stat-assigned" onclick="openOrdersPage('assigned')">
+          <span style="font-size: 10px; font-weight: 800; color: #1d4ed8;">جاري</span>
+          <strong id="statAssigned" style="font-size: 15px; display: block;">0</strong>
+        </div>
+        <div class="stat-tab stat-postponed" onclick="openOrdersPage('postponed')">
+          <span style="font-size: 10px; font-weight: 800; color: #c2410c;">مؤجل</span>
+          <strong id="statPostponed" style="font-size: 15px; display: block;">0</strong>
+        </div>
+        <div class="stat-tab stat-done" onclick="openOrdersPage('done')">
+          <span style="font-size: 10px; font-weight: 800; color: #047857;">منجز</span>
+          <strong id="statDone" style="font-size: 15px; display: block;">0</strong>
+        </div>
+      </div>
+
+      <!-- تسجيل طلب جديد -->
+      <div class="card">
+        <h4 style="font-size: 12px; font-weight: 900; margin-bottom: 8px;">➕ تسجيل عطل جديد</h4>
+        <div class="grid-2">
+          <input type="text" id="newCustName" placeholder="اسم العميل *" class="input-control">
+          <input type="tel" id="newCustPhone" placeholder="رقم الهاتف" class="input-control">
+        </div>
+        <div class="grid-2">
+          <select id="newJobType" class="input-control">
+            <option value="عطل">عطل</option>
+            <option value="عطل متكرر">عطل متكرر</option>
+            <option value="تركيبه جديده">تركيبه جديده</option>
+            <option value="معاينه جديده">معاينه جديده</option>
+            <option value="تشييك">تشييك</option>
+          </select>
+          <input type="text" id="newCustDesc" placeholder="ملاحظات / العنوان" class="input-control">
+        </div>
+        <button type="button" onclick="saveNewOrder()" class="btn btn-primary">حفظ العطل</button>
+      </div>
+
+      <!-- قائمة الفنيين -->
+      <div id="adminTechsList"></div>
+    </div>
+  </div>
+
+  <!-- صفحة الأعطال -->
+  <div id="screenOrdersPage" class="hidden">
+    <header class="header">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button type="button" onclick="backToAdminHome()" class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;">← رجوع</button>
+        <h3 id="ordersPageTitle" style="font-size: 13px; font-weight: 900;">الأعطال</h3>
+      </div>
+    </header>
+    <div class="container">
+      <div id="adminOrdersList"></div>
+    </div>
+  </div>
+
+  <!-- صفحة الإعدادات -->
+  <div id="screenSettingsPage" class="hidden">
+    <header class="header">
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button type="button" onclick="backToAdminHomeFromSettings()" class="btn btn-secondary" style="width: auto; padding: 4px 10px; font-size: 11px;">← رجوع</button>
+        <h3 style="font-size: 13px; font-weight: 900;">الإعدادات</h3>
+      </div>
+    </header>
+    <div class="container">
+      <div class="card">
+        <h5 style="font-size: 12px; font-weight: 900; margin-bottom: 8px;">👷 بيانات الفني وتليجرام</h5>
+        <select id="settingsTechSelect" onchange="loadSelectedTechData()" class="input-control"></select>
+        <input type="text" id="settingsTechName" placeholder="الاسم" class="input-control">
+        <label style="font-size: 10px; font-weight: 800; color: #2563eb; display: block; margin-bottom: 2px;">Telegram Chat ID:</label>
+        <input type="text" id="settingsTechTelegram" placeholder="مثال: 5007105167" class="input-control" style="direction: ltr; font-weight: 800;">
+        <button type="button" onclick="saveSelectedTechAccount()" class="btn btn-primary">حفظ البيانات 💾</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- شاشة الفني -->
+  <div id="screenTech" class="hidden">
+    <header class="header">
+      <div>
+        <h3 id="techDispName" style="font-size: 14px; font-weight: 900;">الفني</h3>
+        <span style="font-size: 10px; color: #64748b; font-weight: 700;">أعطالي المسندة</span>
+      </div>
+      <button type="button" onclick="handleLogout()" class="btn btn-danger" style="width: auto; padding: 4px 10px; font-size: 11px;">خروج</button>
+    </header>
+    <div class="container">
+      <div class="card" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; text-align: center; border: none; padding: 18px 10px;">
+        <span style="font-size: 11px; opacity: 0.9;">إجمالي رصيد البونص</span>
+        <h2 id="techBonusBalance" style="font-size: 32px; font-weight: 900; margin: 4px 0;">0 ج</h2>
+      </div>
+      <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+        <button type="button" id="tabBtnPending" onclick="switchTechTab('pending')" class="btn btn-primary" style="flex: 1; padding: 7px; font-size: 11px;">المطلوبة (<span id="countTechPending">0</span>)</button>
+        <button type="button" id="tabBtnDone" onclick="switchTechTab('done')" class="btn btn-secondary" style="flex: 1; padding: 7px; font-size: 11px;">المنجزة (<span id="countTechDone">0</span>)</button>
+      </div>
+      <div id="techOrdersList"></div>
+    </div>
+  </div>
+
+  <!-- نافذة حل العطل -->
+  <div id="modalSolveOrder" class="modal-overlay hidden">
+    <div class="modal-content">
+      <h4 style="font-size: 13px; font-weight: 900; margin-bottom: 8px; color: #059669;">تأكيد حل المشكلة ✓</h4>
+      <input type="hidden" id="solveOrderId">
+      <input type="text" id="solveReasonText" placeholder="ما تم إنجازه..." class="input-control">
+      <div class="grid-2">
+        <button type="button" onclick="submitSolveOrder()" class="btn btn-success">تأكيد الحل</button>
+        <button type="button" onclick="closeSolveModal()" class="btn btn-secondary">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FIREBASE_DB = "https://maintanance-7de19-default-rtdb.firebaseio.com";
+    const TELEGRAM_BOT_TOKEN = "9027122334:AAGV1B4QIk9dtIHMecW2hqcGXkjwYZy4PeM";
+    const DEFAULT_TELEGRAM_CHAT = "5007105167";
+
+    let appAccounts = [
+      { id: 1, role: 'admin', name: 'المدير العام', username: 'mega_admin', pass: 'M@g@#2026!Sec' },
+      { id: 2, role: 'tech', name: 'أحمد سعيد', username: 'ahmed', pass: '111', accumulatedBonus: 0, telegramChatId: '' },
+      { id: 3, role: 'tech', name: 'محمود علي', username: 'mahmoud', pass: '222', accumulatedBonus: 0, telegramChatId: '5007105167' }
+    ];
+
+    let appOrders = [];
+    let currentUser = null;
+    let techCurrentTab = 'pending';
+    let adminFilter = 'pending';
+
+    function getToday() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    async function sendTelegramAlert(targetTechName, messageText) {
+      try {
+        const tech = appAccounts.find(a => a.name === targetTechName);
+        const chatId = (tech && tech.telegramChatId) ? tech.telegramChatId : DEFAULT_TELEGRAM_CHAT;
+        if (!chatId) return;
+
+        const endpoint = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+        fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: messageText,
+            parse_mode: 'HTML'
+          })
+        }).catch(err => console.error("TG Err:", err));
+      } catch (e) {
+        console.error("TG send error:", e);
+      }
+    }
+
+    function handleLogin() {
+      const u = (document.getElementById('logUser').value || '').trim().toLowerCase();
+      const p = (document.getElementById('logPass').value || '').trim();
+
+      const user = appAccounts.find(a => a.username.toLowerCase() === u && a.pass === p);
+      if (user) {
+        currentUser = user;
+        localStorage.setItem('saved_active_user', JSON.stringify(currentUser));
+        showUserScreen();
+      } else {
+        alert('بيانات الدخول غير صحيحة!');
+      }
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      localStorage.removeItem('saved_active_user');
+      document.getElementById('screenAdmin').classList.add('hidden');
+      document.getElementById('screenOrdersPage').classList.add('hidden');
+      document.getElementById('screenSettingsPage').classList.add('hidden');
+      document.getElementById('screenTech').classList.add('hidden');
+      document.getElementById('screenLogin').classList.remove('hidden');
+    }
+
+    function showUserScreen() {
+      if (!currentUser) return;
+      document.getElementById('screenLogin').classList.add('hidden');
+
+      if (currentUser.role === 'admin') {
+        document.getElementById('screenAdmin').classList.remove('hidden');
+        document.getElementById('adminDate').innerText = getToday();
+        renderAdmin();
+      } else {
+        document.getElementById('screenTech').classList.remove('hidden');
+        document.getElementById('techDispName').innerText = currentUser.name;
+        renderTech();
+      }
+    }
+
+    function saveNewOrder() {
+      const name = document.getElementById('newCustName').value.trim();
+      const phone = document.getElementById('newCustPhone').value.trim();
+      const jobType = document.getElementById('newJobType').value;
+      const desc = document.getElementById('newCustDesc').value.trim();
+
+      if (!name) return alert('يرجى إدخال اسم العميل');
+
+      const newOrder = {
+        id: 'ORD-' + Date.now().toString().slice(-5),
+        customer: name,
+        phone: phone,
+        jobType: jobType,
+        desc: desc,
+        tech: '',
+        status: 'pending',
+        date: getToday(),
+        createdAt: Date.now()
+      };
+
+      appOrders.unshift(newOrder);
+      document.getElementById('newCustName').value = '';
+      document.getElementById('newCustPhone').value = '';
+      document.getElementById('newCustDesc').value = '';
+
+      renderAdmin();
+      syncUp();
+    }
+
+    function saveAssignDirectly(orderId, selectElem) {
+      const targetTech = selectElem.value;
+      if (!targetTech) return;
+
+      const ord = appOrders.find(o => o.id === orderId);
+      if (ord) {
+        ord.tech = targetTech;
+        ord.status = 'pending';
+
+        const msg = `🔔 <b>عطل جديد مسند إليك!</b>\n\n👤 <b>العميل:</b> ${ord.customer}\n🛠 <b>نوع الطلب:</b> ${ord.jobType}\n📞 <b>الهاتف:</b> <code>${ord.phone || 'بدون رقم'}</code>\n📍 <b>الملاحظات:</b> ${ord.desc || 'لا توجد'}`;
+        sendTelegramAlert(targetTech, msg);
+
+        syncUp();
+        renderAdmin();
+      }
+    }
+
+    function renderAdmin() {
+      const pendingCount = appOrders.filter(o => o.status === 'pending' && (!o.tech || o.tech === '')).length;
+      const assignedCount = appOrders.filter(o => o.status === 'pending' && Boolean(o.tech)).length;
+      const postponedCount = appOrders.filter(o => o.status === 'postponed').length;
+      const doneCount = appOrders.filter(o => o.status === 'done').length;
+
+      document.getElementById('statPending').innerText = pendingCount;
+      document.getElementById('statAssigned').innerText = assignedCount;
+      document.getElementById('statPostponed').innerText = postponedCount;
+      document.getElementById('statDone').innerText = doneCount;
+
+      const techBox = document.getElementById('adminTechsList');
+      techBox.innerHTML = '';
+      const techs = appAccounts.filter(a => a.role === 'tech');
+
+      techs.forEach(t => {
+        techBox.innerHTML += `
+          <div class="card" style="display:flex; justify-content:space-between; align-items:center; padding:10px 12px;">
+            <div>
+              <strong style="font-size:13px;">${t.name}</strong>
+              <span style="display:block; color:#10b981; font-weight:800; font-size:14px;">${t.accumulatedBonus || 0} ج</span>
+            </div>
+            <button onclick="promptBonus('${t.name}')" class="btn btn-success" style="width:auto; padding:4px 8px; font-size:11px;">➕ بونص</button>
+          </div>
+        `;
+      });
+    }
+
+    function openOrdersPage(type) {
+      adminFilter = type;
+      document.getElementById('screenAdmin').classList.add('hidden');
+      document.getElementById('screenOrdersPage').classList.remove('hidden');
+      renderAdminOrders();
+    }
+
+    function backToAdminHome() {
+      document.getElementById('screenOrdersPage').classList.add('hidden');
+      document.getElementById('screenAdmin').classList.remove('hidden');
+      renderAdmin();
+    }
+
+    function renderAdminOrders() {
+      const ordBox = document.getElementById('adminOrdersList');
+      ordBox.innerHTML = '';
+      const techs = appAccounts.filter(a => a.role === 'tech');
+
+      let filtered = [];
+      if (adminFilter === 'pending') filtered = appOrders.filter(o => o.status === 'pending' && (!o.tech || o.tech === ''));
+      else if (adminFilter === 'assigned') filtered = appOrders.filter(o => o.status === 'pending' && Boolean(o.tech));
+      else if (adminFilter === 'postponed') filtered = appOrders.filter(o => o.status === 'postponed');
+      else if (adminFilter === 'done') filtered = appOrders.filter(o => o.status === 'done');
+
+      if (filtered.length === 0) {
+        ordBox.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">لا توجد طلبات</p>';
+        return;
+      }
+
+      filtered.forEach(o => {
+        let techOpts = '<option value="">اختر الفني للإسناد...</option>';
+        techs.forEach(t => {
+          techOpts += `<option value="${t.name}" ${o.tech === t.name ? 'selected' : ''}>${t.name}</option>`;
+        });
+
+        ordBox.innerHTML += `
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <strong style="font-size:13px;">${o.customer} (${o.jobType})</strong>
+              <span class="badge ${o.status === 'done' ? 'badge-done' : (o.tech ? 'badge-assigned' : 'badge-pending')}">${o.status}</span>
+            </div>
+            <p style="font-size:11px; color:#475569; margin-bottom:6px;">${o.desc || 'لا توجد ملاحظات'} ${o.phone ? `| 📞 ${o.phone}` : ''}</p>
+            ${o.status !== 'done' ? `
+              <select class="input-control" onchange="saveAssignDirectly('${o.id}', this)" style="margin-bottom:0;">
+                ${techOpts}
+              </select>
+            ` : `<span style="font-size:11px; color:#059669; font-weight:700;">بواسطة: ${o.tech}</span>`}
+          </div>
+        `;
+      });
+    }
+
+    function renderTech() {
+      const me = appAccounts.find(a => a.id === currentUser.id) || currentUser;
+      document.getElementById('techBonusBalance').innerText = `${me.accumulatedBonus || 0} ج`;
+
+      const myOrders = appOrders.filter(o => o.tech === me.name);
+      const pendingList = myOrders.filter(o => o.status !== 'done');
+      const doneList = myOrders.filter(o => o.status === 'done');
+
+      document.getElementById('countTechPending').innerText = pendingList.length;
+      document.getElementById('countTechDone').innerText = doneList.length;
+
+      const list = techCurrentTab === 'pending' ? pendingList : doneList;
+      const feed = document.getElementById('techOrdersList');
+      feed.innerHTML = '';
+
+      if (list.length === 0) {
+        feed.innerHTML = '<p style="text-align:center; color:#94a3b8; font-size:12px; padding:20px;">لا توجد طلبات</p>';
+        return;
+      }
+
+      list.forEach(o => {
+        feed.innerHTML += `
+          <div class="card">
+            <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+              <strong style="font-size:13px;">${o.customer}</strong>
+              <span class="badge ${o.status === 'done' ? 'badge-done' : 'badge-assigned'}">${o.jobType}</span>
+            </div>
+            <p style="font-size:11px; color:#475569; margin-bottom:6px;">${o.desc || 'لا توجد ملاحظات'}</p>
+            ${o.status !== 'done' ? `
+              <div class="grid-2">
+                ${o.phone ? `<a href="tel:${o.phone}" class="btn btn-success" style="font-size:11px;">📞 اتصال</a>` : '<div></div>'}
+                <button onclick="openSolveModal('${o.id}')" class="btn btn-primary" style="font-size:11px;">تم الحل ✓</button>
+              </div>
+            ` : ''}
+          </div>
+        `;
+      });
+    }
+
+    function switchTechTab(tab) {
+      techCurrentTab = tab;
+      document.getElementById('tabBtnPending').className = tab === 'pending' ? 'btn btn-primary' : 'btn btn-secondary';
+      document.getElementById('tabBtnDone').className = tab === 'done' ? 'btn btn-primary' : 'btn btn-secondary';
+      renderTech();
+    }
+
+    function openSolveModal(id) {
+      document.getElementById('solveOrderId').value = id;
+      document.getElementById('solveReasonText').value = '';
+      document.getElementById('modalSolveOrder').classList.remove('hidden');
+    }
+    function closeSolveModal() {
+      document.getElementById('modalSolveOrder').classList.add('hidden');
+    }
+
+    function submitSolveOrder() {
+      const id = document.getElementById('solveOrderId').value;
+      const reason = document.getElementById('solveReasonText').value.trim() || 'تم الإنجاز';
+      const ord = appOrders.find(o => o.id === id);
+
+      if (ord) {
+        ord.status = 'done';
+        ord.doneReason = reason;
+        closeSolveModal();
+        renderTech();
+        syncUp();
+      }
+    }
+
+    function promptBonus(techName) {
+      const amt = prompt(`أدخل مبلغ البونص لـ (${techName}):`, "50");
+      if (amt && Number(amt) > 0) {
+        const t = appAccounts.find(a => a.name === techName);
+        if (t) {
+          t.accumulatedBonus = (Number(t.accumulatedBonus) || 0) + Number(amt);
+          renderAdmin();
+          syncUp();
+        }
+      }
+    }
+
+    function openSettingsPage() {
+      document.getElementById('screenAdmin').classList.add('hidden');
+      document.getElementById('screenSettingsPage').classList.remove('hidden');
+      const sel = document.getElementById('settingsTechSelect');
+      sel.innerHTML = '';
+      appAccounts.filter(a => a.role === 'tech').forEach(t => {
+        sel.innerHTML += `<option value="${t.id}">${t.name}</option>`;
+      });
+      loadSelectedTechData();
+    }
+
+    function backToAdminHomeFromSettings() {
+      document.getElementById('screenSettingsPage').classList.add('hidden');
+      document.getElementById('screenAdmin').classList.remove('hidden');
+      renderAdmin();
+    }
+
+    function loadSelectedTechData() {
+      const selId = document.getElementById('settingsTechSelect').value;
+      const tech = appAccounts.find(a => a.id == selId);
+      if (tech) {
+        document.getElementById('settingsTechName').value = tech.name;
+        document.getElementById('settingsTechTelegram').value = tech.telegramChatId || '';
+      }
+    }
+
+    function saveSelectedTechAccount() {
+      const selId = document.getElementById('settingsTechSelect').value;
+      const tech = appAccounts.find(a => a.id == selId);
+      if (tech) {
+        tech.name = document.getElementById('settingsTechName').value.trim();
+        tech.telegramChatId = document.getElementById('settingsTechTelegram').value.trim();
+        syncUp();
+        alert('تم حفظ البيانات بنجاح ✓');
+      }
+    }
+
+    function syncDown() {
+      fetch(`${FIREBASE_DB}/bonus_system_data.json?ts=${Date.now()}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data) return;
+          if (Array.isArray(data.accounts)) appAccounts = data.accounts;
+          if (Array.isArray(data.orders)) appOrders = data.orders;
+
+          if (currentUser) {
+            const updated = appAccounts.find(a => a.id === currentUser.id);
+            if (updated) currentUser = Object.assign({}, currentUser, updated);
+            currentUser.role === 'admin' ? renderAdmin() : renderTech();
+          }
+        }).catch(() => {});
+    }
+
+    function syncUp() {
+      fetch(`${FIREBASE_DB}/bonus_system_data.json`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ accounts: appAccounts, orders: appOrders })
+      }).catch(() => {});
+    }
+
+    window.onload = function() {
+      const saved = localStorage.getItem('saved_active_user');
+      if (saved) currentUser = JSON.parse(saved);
+      showUserScreen();
+      syncDown();
+      setInterval(syncDown, 6000);
+    };
+  </script>
 </body>
 </html>
