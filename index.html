@@ -366,6 +366,16 @@
             position: relative;
         }
 
+        .hero-card::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
         .hero-top {
             display: flex;
             justify-content: space-between;
@@ -1294,7 +1304,7 @@
         }).catch(err => console.error("Cloud push history error:", err));
     }
 
-    /* سحب البيانات مع حماية الرصيد من التصفير بتحديث وقت البداية */
+    /* سحب البيانات مع ضبط الوقت الحقيقي بدقة مطابقة للبايثون */
     function syncFromCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
         
@@ -1317,8 +1327,8 @@
                                 monthlyPackage: Number(l.monthlyPackage) || 700,
                                 alertGB: Number(l.alertGB) || 50,
                                 alertDays: Number(l.alertDays) || 5,
-                                // اعتماد وقت السحب كنقطة انطلاق لمنع التصفير التلقائي
-                                lastSyncTime: Date.now(),
+                                // هنا التصحيح: قراءة وقت المزامنة المسجل على السحابة بالضبط
+                                lastSyncTime: Number(l.lastSyncTime) || Date.now(),
                                 isPaid: Boolean(l.isPaid)
                             }));
 
@@ -1866,7 +1876,7 @@
     renderStaticDetails();
     setInterval(tickLiveStats, 1000);
 
-    // سحب المزامنة كل 4 ثوانٍ دون رفع أي شيء
+    // سحب البيانات من السحابة كل 4 ثوانٍ دون رفع أي شيء
     syncFromCloud();
     setInterval(syncFromCloud, 4000);
 </script>
