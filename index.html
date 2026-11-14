@@ -261,6 +261,18 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
         }
 
+        .btn-early-renew {
+            background: rgba(245, 158, 11, 0.16);
+            color: #fbbf24;
+            border: 1.5px solid rgba(245, 158, 11, 0.55);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .btn-early-renew:hover {
+            background: rgba(245, 158, 11, 0.25);
+        }
+
         .btn-history {
             background: rgba(245, 158, 11, 0.12);
             color: #fbbf24;
@@ -451,9 +463,9 @@
             display: flex;
             flex-direction: column;
             gap: 6px;
-            width: 118px;
-            min-width: 118px;
-            max-width: 118px;
+            width: 124px;
+            min-width: 124px;
+            max-width: 124px;
             flex-shrink: 0;
         }
 
@@ -913,6 +925,10 @@
                     <i class="fa-solid fa-plus-circle"></i> <span>كوتة إضافية</span>
                 </button>
 
+                <button class="btn btn-early-renew" onclick="triggerEarlyRenewal()">
+                    <i class="fa-solid fa-rotate"></i> <span>تجديد مبكر</span>
+                </button>
+
                 <button class="btn btn-pay" id="paySubscriptionBtn" onclick="togglePaymentStatus()">
                     <i class="fa-solid fa-circle-check"></i> <span id="payBtnLabel">دفع الاشتراك</span>
                 </button>
@@ -1161,7 +1177,6 @@
     const ADMIN_PERM_KEY = 'NET_TRACKER_IS_ADMIN_DEVICE';
     const DEFAULT_FIREBASE_URL = "https://my-net-tracker-default-rtdb.firebaseio.com";
 
-    // افتراضياً: أي جهاز يفتح هو للعرض فقط لحماية البيانات
     let isMasterAdmin = (localStorage.getItem(ADMIN_PERM_KEY) === 'true');
 
     let canSendLiveAlerts = false;
@@ -1276,12 +1291,8 @@
         }
     }
 
-    /* حظر الرفع تماماً إذا لم يكن هذا جهازك أنت (Admin) */
     function syncToCloud() {
-        if (!isMasterAdmin) {
-            console.warn("جهاز عرض فقط: ممنوع الرفع إلى السحابة.");
-            return;
-        }
+        if (!isMasterAdmin) return;
 
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
         
@@ -1304,7 +1315,6 @@
         }).catch(err => console.error("Cloud push history error:", err));
     }
 
-    /* سحب البيانات مع ضبط الوقت الحقيقي بدقة مطابقة للبايثون */
     function syncFromCloud() {
         const fireUrl = (cloudSettings.firebaseUrl || DEFAULT_FIREBASE_URL).trim().replace(/\/$/, "");
         
@@ -1327,7 +1337,6 @@
                                 monthlyPackage: Number(l.monthlyPackage) || 700,
                                 alertGB: Number(l.alertGB) || 50,
                                 alertDays: Number(l.alertDays) || 5,
-                                // هنا التصحيح: قراءة وقت المزامنة المسجل على السحابة بالضبط
                                 lastSyncTime: Number(l.lastSyncTime) || Date.now(),
                                 isPaid: Boolean(l.isPaid)
                             }));
@@ -1418,6 +1427,50 @@
         sendTelegramAlert(`🔔 <b>رسالة اختبار من التطبيق</b>\nالربط سليم وجاهز للتنبيهات.`);
         sendNativeNotification("🔔 اختبار الإشعارات", "إشعارات الأندرويد الأصلية تعمل بنجاح!");
         showToast("تم إرسال الطلب لتيليجرام والهاتف");
+    }
+
+    /* دالة التجديد المبكر للباقة */
+    function triggerEarlyRenewal() {
+        if (!isMasterAdmin) return alert("عفواً، هذا الجهاز للمتابعة فقط. التجديد يتم من هاتف الأدمن.");
+        const line = getActiveLine();
+        if (!line) return;
+
+        const pkgSize = Number(line.monthlyPackage) || 0;
+        const currentLive = getCurrentLiveBalance(line);
+        const newTotal = Number((currentLive + pkgSize).toFixed(3));
+        const newExpiry = getOffsetDate(30);
+
+        const confirmMsg = `هل تريد تنفيذ تجديد مبكر للخط (${line.name})؟\n\n` +
+                           `• سيتم إضافة باقة: +${pkgSize} GB\n` +
+                           `• الإجمالي الجديد بعد الترحيل: ${newTotal.toFixed(2)} GB\n` +
+                           `• تاريخ الانتهاء الجديد (30 يوم من اليوم): ${newExpiry}`;
+
+        if (!confirm(confirmMsg)) return;
+
+        line.baseBalance = newTotal;
+        line.lastSyncTime = Date.now();
+        line.expiryDate = newExpiry;
+        line.isPaid = false;
+
+        delete sentAlertsMap[`gb_${line.id}`];
+        delete sentAlertsMap[`days_${line.id}`];
+        localStorage.setItem(SENT_ALERTS_KEY, JSON.stringify(sentAlertsMap));
+
+        logGlobalActivity({
+            type: 'renewal',
+            title: 'تجديد مبكر للباقة (30 يوم)',
+            lineId: line.id,
+            lineName: line.name,
+            lineAddress: line.address || line.note || "",
+            amount: pkgSize,
+            desc: `الرصيد الجديد: ${newTotal.toFixed(2)} GB | الانتهاء: ${newExpiry}`
+        });
+
+        sortLinesDynamically();
+        persistData(true);
+        buildTableStructure();
+        renderStaticDetails();
+        showToast(`✅ تم التجديد المبكر (+${pkgSize} GB) وفتح 30 يوماً`);
     }
 
     function togglePaymentStatus() {
@@ -1876,7 +1929,6 @@
     renderStaticDetails();
     setInterval(tickLiveStats, 1000);
 
-    // سحب البيانات من السحابة كل 4 ثوانٍ دون رفع أي شيء
     syncFromCloud();
     setInterval(syncFromCloud, 4000);
 </script>
